@@ -1,0 +1,120 @@
+<!-- chapter1.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2: Recurrent Neural Networks</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script defer src="../js/math-config.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Home</a>
+
+        <header>
+            <h1>Chapter 2: Recurrent Neural Networks</h1>
+        </header>
+
+
+        <!-- Template for next problem -->
+        <div class="RNN section">
+            <h3>Intro to Recurrent Neural Networks</h3>
+            <p><strong>Sequential Data Processing:</strong></p>
+            <p>
+                RNNs are designed to handle sequential data like time series, text, and speech.<br>
+                <strong>Idea:</strong> 
+                <ul style="margin-top: 4px; margin-left: 0; padding-left: 50px; text-align: left;"> 
+                    <li>Weight sharing across time</li> <li>Reduce number of parameters</li> <li>Capture temporal dependencies</li> 
+                </ul>
+                <strong>Applications:</strong> NLP, Time series, Forecasting, Stock or weather prediction, load prediction at server .<br>
+                <img src="../assets/rnn/rnn1.png" alt="RNN Illustration" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+
+                <strong>Types of RNN:</strong>
+                <img src="../assets/rnn/types_of_rnn.png" alt="Types of RNN " class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+                <strong>Vanilla RNN:</strong>
+                <img src="../assets/rnn/vanillarnn.png" alt="Vanilla RNN " class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+                <strong>Vanilla RNN Summary Equations:</strong>
+                <img src="../assets/rnn/rnnsummary.png" alt="Vanilla RNN Summary equations" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+                <strong>Alternate Vanilla RNN Architecture:</strong>
+                <img src="../assets/rnn/alt_rnn_arch.png" alt="Alt RNN Architecture" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+                <img src="../assets/rnn/alt_rnn_fix.png" alt="Alt RNN Architecture fix" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+                <strong>Simplified GRU:</strong>
+                <img src="../assets/rnn/simplified_gru.png" alt="Simplified GRU" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+                
+
+            </p>
+
+            <div class="note">
+                    <h4>Notes</h4>
+                    <p>
+                        There is no memory cell in Vanilla RNNs, which makes them less effective for capturing long-term dependencies.<br>
+                        Fixing the architecture to include memory cells, as seen in LSTMs and GRUs, helps mitigate this issue.
+                    </p>
+            </div>
+            <div class="GRU section">
+                <h3>Gated Recurrent Units (GRU)</h3>
+                <p><strong>Motivation:</strong></p>
+                <p>
+                    GRUs were introduced to address the vanishing gradient problem in traditional RNNs.<br>
+                    They use gating mechanisms to control the flow of information, allowing the network to retain relevant information over longer sequences.
+                </p>
+                <img src="../assets/rnn/simplified_gru_eq.png" alt="GRU Equations" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+                <p><strong>GRU Architecture:</strong></p>
+                <img src="../assets/rnn/gru_arch.png" alt="GRU Architecture" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+        
+        </div>    
+        <div class="LSTM section">
+            <h3>Long Short-Term Memory (LSTM)</h3>
+            <p><strong>Motivation:</strong></p>
+            <p>
+                LSTMs were developed to overcome the limitations of traditional RNNs in capturing long-term dependencies.<br>
+                They introduce a memory cell and gating mechanisms to regulate the flow of information, enabling the network to retain important information over extended sequences.
+            </p>
+            <img src="../assets/rnn/lstm_eq.png" alt="LSTM Equations" class="context-image"
+                    style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+            <p><strong>LSTM Architecture:</strong></p>
+            <img src="../assets/rnn/lstm_arch.png" alt="LSTM Architecture" class="context-image"
+                    style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy"-->
+
+
+        </div>
+
+        <p>
+            <div style="margin:20px; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                <h3 style="margin-top:0;">RNN + LSTM Notebook</h3>
+                <p>
+                    Explore and run the RNN + LSTM code interactively in Google Colab.<br>
+                    <a href="https://colab.research.google.com/github/ch24m582/Fundamentals-of-Deep-Learning/blob/main/codes/RNN_LSTM_Time_Series_Analysis.ipynb" target="_blank" style="font-weight:bold; color:#0066cc; text-decoration:none;">
+                    RNN + LSTM Notebook in Colab
+                    </a>
+                </p>
+            </div>
+        </p>
+
+
+
+        <footer>
+            <p><a href="../index.html">Home</a> | <a href="chapter2.html">Next Chapter →</a></p>
+            <p style="margin-top: 10px;">Created with ❤️ for the ML community</p>
+        </footer>
+    </div>
+</body>
+
+</html>
