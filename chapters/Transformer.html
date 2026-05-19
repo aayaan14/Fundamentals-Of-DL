@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformers</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script defer src="../js/math-config.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Home</a>
+
+        <header>
+            <h1>Transformers</h1>
+
+            <div class="chapter-intro">
+                <p>In this chapter, we'll explore how machines translate "Ein Mann steht in einer Küche"
+                    (German) to "A man is standing in a kitchen" (English) using the revolutionary Transformer
+                    architecture—focusing purely on the mathematical elegance behind it.</p>
+            </div>
+
+            <div class="chapter">
+
+                <!-- 1. The Big Picture -->
+                <div class="problem" id="big-picture">
+                    <h3>The Big Picture</h3>
+
+                    <div class="context">
+                        <p>Here's how a Transformer might look at a very high level for our task.
+                        </p>
+
+                        <br>
+
+                        <img src="../assets/transformer/t_blackbox.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+
+                        <br>
+
+                        <p>You can think of this as a black box that takes German text and outputs English text.</p>
+
+                        <p>Now let's try to open up this black box!!!!</p>
+
+                        <br>
+
+                        <img src="../assets/transformer/t_arch.png" alt="Transformer Architecture" class="context-image"
+                            style="max-height: 550px; width: auto; display: block; margin: 0 auto;" loading="lazy">
+
+                        <br>
+
+                        <p>This looks scary!!! But do not worry, we'll learn this architecture (in 2 parts: encoder and
+                            decoder) thoroughly and understand
+                            how did our text get translated step by step.</p>
+                    </div>
+                </div>
+
+                <!-- 2. The Encoder -->
+                <div class="problem" id="encoder">
+                    <h3>The Encoder: Building Context</h3>
+
+                    <div class="context">
+                        <p>The encoder's job is to build a rich, context-aware representation of the input sentence
+                            (German).</p>
+
+                        <p>Each encoder layer has these sub-components:</p>
+                        <ol>
+                            <li><strong>Multi-Head Self-Attention</strong>
+                            </li>
+                            <li><strong>Feed-Forward Network</strong></li>
+                            <li><strong>Residual Connections</strong></li>
+                            <li><strong>Layer Normalization</strong></li>
+                            <li><strong>Dropout</strong>
+                            </li>
+                        </ol>
+
+                        <p>This is how the Encoder Architecture looks like in the paper:</p>
+
+                    </div>
+                    <br>
+                    <img src="../assets/transformer/t_encoder.png" alt="Black box" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                    <br>
+                    <p>Let's break this down step by step.</p>
+                </div>
+
+                <!-- 3. Embeddings -->
+                <div class="problem" id="embeddings">
+                    <h3>Embeddings: From Words to Vectors</h3>
+
+                    <div class="context">
+                        <p>Our Model can't work with words directly—they need numbers. But a simple index like
+                            "423"
+                            doesn't capture meaning. We need representations that encode semantic relationships.</p>
+
+                        <p>One way to deal with this is given in the paper "Efficient Estimation of Word Representations
+                            in Vector Space", where the author introduced the concept of word embeddings.</p>
+
+                        <p>You can think of embeddings as a way to represent words in a continuous vector space, where
+                            the position of each word encodes its meaning.</p>
+
+                        <img src="../assets/transformer/t_emb.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+
+                        <h4>The Mathematical Transformation</h4>
+                        <p>Each token (word) gets mapped to a high-dimensional vector space:</p>
+                        \[
+                        \text{Embedding}: \mathbb{Z} \rightarrow \mathbb{R}^{d_{model}}
+                        \]
+                        \[
+                        \text{where } d_{model} = 512
+                        \]
+
+                        <p>We now convert our input words (tokens) into these high-dimensional vectors.</p>
+
+                        <img src="../assets/transformer/t_wordsemb.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+
+                    </div>
+                </div>
+
+                <!-- 4. Positional Encoding -->
+                <div class="problem" id="positional">
+                    <h3>Positional Encoding: Teaching Order</h3>
+
+                    <div class="context">
+                        <p>Unlike RNNs that process words sequentially, Transformers process all tokens simultaneously.
+                            This
+                            creates a problem: <strong>the model has no inherent sense of word order!</strong></p>
+
+                        <p>Consider these two sentences:</p>
+                        <ul>
+                            <li>"Ein Mann steht in einer Küche" - The man is standing in kitchen</li>
+                            <li>"Ein Küche steht in einer Mann" - The kitchen is standing in man</li>
+                        </ul>
+                        <p>Without positional information, the model can't distinguish between them!</p>
+
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>The Sinusoidal Solution</h4>
+                        <p>We add position-dependent patterns using sine and cosine functions. For position \(pos\) and
+                            dimension \(i\):</p>
+                        \[
+                        PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)
+                        \]
+                        \[
+                        PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)
+                        \]
+
+                        <p><strong>Where:</strong></p>
+                        <ul>
+                            <li>\(pos\): Position in the sequence (0, 1, 2, ...)</li>
+                            <li>\(i\): Dimension index (0 to \(d_{model}/2\))</li>
+                            <li>\(d_{model}\): Model dimension (512)</li>
+                        </ul>
+                    </div>
+
+                    <div class="solution">
+                        <h4>Why Sinusoidal Works</h4>
+
+                        <div class="step">
+                            <strong>Reason 1: Unique Signatures</strong>
+                            <p>Each position gets a unique combination of sine and cosine values across all dimensions.
+                                No
+                                two positions have the same encoding.</p>
+                            \[
+                            PE_{pos_1} \neq PE_{pos_2} \quad \forall pos_1 \neq pos_2
+                            \]
+                        </div>
+
+                        <div class="step">
+                            <strong>Reason 2: Smooth Variation</strong>
+                            <p>Nearby positions have similar encodings. The similarity decreases gradually with
+                                distance:
+                            </p>
+                            \[
+                            \text{similarity}(PE_{pos}, PE_{pos+1}) > \text{similarity}(PE_{pos}, PE_{pos+5})
+                            \]
+                        </div>
+
+                        <div class="step">
+                            <strong>Reason 3: Relative Position Learning</strong>
+                            <p>The model can learn to attend to relative positions. For any fixed offset \(k\), the
+                                function \(PE_{pos+k}\) can be represented as a linear function of \(PE_{pos}\):</p>
+                            \[
+                            PE_{pos+k} = f_k(PE_{pos})
+                            \]
+                            <p>This allows the model to learn patterns like "attend to the word 3 positions before"</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Reason 4: Frequency Intuition</strong>
+                            <p>Different dimensions oscillate at different frequencies:</p>
+                            <ul>
+                                <li><strong>Lower dimensions:</strong> Oscillate slowly (wavelength ≈ 2π to 10000·2π)
+                                </li>
+                                <li><strong>Higher dimensions:</strong> Oscillate quickly</li>
+                            </ul>
+                            <p>This creates a spectrum from coarse to fine-grained positional information.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Final Input Representation</strong>
+                            <p>The complete input to the encoder/decoder is:</p>
+                            \[
+                            \mathbf{x}_{input} = \text{Embedding}(\mathbf{x}) \cdot \sqrt{d_{model}} + PE(\mathbf{x})
+                            \]
+                            <p>The multiplication by \(\sqrt{d_{model}}\) ensures embeddings dominate over positional
+                                encodings (since embeddings are learned and more important).</p>
+                        </div>
+
+                        <div class="tip">
+                            <strong>💡 Key Insight:</strong> Positional encoding is a brilliant solution that requires
+                            no
+                            learning—it's a fixed mathematical function that gives each position a unique, learnable
+                            signature. The sine/cosine waves at different frequencies create a coordinate system for
+                            positions in the sequence.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Attention Mechanism -->
+                <div class="problem" id="attention">
+                    <h3>Attention Mechanism: The Heart of Transformers</h3>
+
+                    <div class="context">
+                        <p>We'll begin by describing a <strong>single head of attention</strong>. Think of it as asking:
+                            <strong>"Which other tokens should I pay attention to when
+                                processing this token?"</strong>
+                        </p>
+
+                        <p>Suppose the only type of update that we care about (for now), is looking at how tokens such
+                            as steht and kuche is affecting the embedding of Mann</p>
+
+                        <img src="../assets/transformer/t_attention.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+
+                        <p>Our goal is to ingest the meaning of the surrounding words (steht and kuche) to update the
+                            embedding of Mann.</p>
+
+                        <div class="note">
+                            <strong>Note:</strong> The true nature of the attention head is harder to parse as it's
+                            based on tweaking and tuning a huge number of parameters to minimize some cost function.
+                            However, for the sake of understanding, we will simplify the to the above Example.
+                        </div>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4 style="text-align: center;">Queries</h4>
+
+                        <p>For the first step in this attention block, we can imagine each content word asking a
+                            question:</p>
+                        <p><em>Which words describe where I'm and what I'm doing?</em></p>
+                        <br>
+                        <img src="../assets/transformer/t_query.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <p>These questions can be encoded as vectors in the query space. To do the same, we apply a
+                            linear transformation to the embeddings using a query matrix \(W_Q\) .</p>
+                        <br>
+                        <img src="../assets/transformer/t_queryembspace.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <p>We then find the query vectors for all the tokens in the context window</p>
+                        <br>
+                        <img src="../assets/transformer/t_querymatrix.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4 style="text-align: center;">Keys</h4>
+
+                        <p>Simultaneously, we create a <strong>key matrix</strong> \(W_K\) is multiplied by each of the
+                            embeddings.</p>
+
+                        <p>Conceptually, we want to think these keys as representing the potential answers to the
+                            queries.</p>
+                        <br>
+                        <img src="../assets/transformer/t_keys.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <p>The way we measure how close a query is to a key is by computing their dot product. This
+                            gives
+                            us a score indicating how much attention the query should pay to the key.</p>
+                        <br>
+                        <img src="../assets/transformer/t_dotprod.jpg" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <p>We then compute the softmax along the columns of this matrix to compute the attention weights
+                            (probability scores).</p>
+
+                        \[softmax\left(\frac{QK^T}{\sqrt{d_k}}\right)\]
+                        <p>where, softmax is \(\frac{e^{x_i}}{\sum_{j} e^{x_j}}\) and is computed along the column</p>
+
+                        <div class="note"><strong>Note: </strong>For the Purpose of numerical stability, we scale the
+                            dot products by \(\frac{1}{\sqrt{d_k}}\).</div>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4 style="text-align: center;">Values</h4>
+                        <p>Once we've defined the softmax scores, our aim now is to actually update the embeddings.</p>
+                        <p>Since our query/key subspace is of a lower dimension, we want to linearly transform it to
+                            higher dimension equivalent to the embedding space.</p>
+                        <p>To do this, we'll use a <strong>Value Matrix</strong> \(W_V\).</p>
+                        <br>
+                        <img src="../assets/transformer/t_value.jpg" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <p>The result yields a <strong>value vector</strong> for each token. We'll use this to add to
+                            our embeddings.</p>
+                        <br>
+                        <img src="../assets/transformer/t_valuemat.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <p>We then compute the weighted sum of the value vectors using the attention weights to get the
+                            final output.</p>
+                        \[
+                        \mathbf{E}'_{\text{Mann}}
+                        =
+                        \sum_{i}
+                        \alpha_{\text{Mann}, i}\,\mathbf{V}_i
+                        +
+                        \mathbf{E}_{\text{Mann}}
+                        \]
+                        <p>Finally, the overall step can be summarized by: </p>
+                        \[\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V\]
+                    </div>
+
+                </div>
+
+                <!-- 6. Multi-Head Attention -->
+                <div class="problem" id="multi-head">
+                    <h3>Multi-Head Attention: Multiple Perspectives</h3>
+
+                    <div class="context">
+                        <p>All we've learnt so far is all contained in a single head of attention. Now, we'll extend
+                            this idea to multiple heads to capture different types of relationships simultaneously.</p>
+
+                        <p>For example, when processing the word "Mann", we might want to attend to:</p>
+                        <ul>
+                            <li><strong>Head 1:</strong> Syntactic relationships (subject-verb-object)</li>
+                            <li><strong>Head 2:</strong> Semantic similarities (noun groups, verb groups)</li>
+                            <li><strong>Head 3:</strong> Local context (adjacent words)</li>
+                            <li><strong>Head 4:</strong> Long-range dependencies (first/last words)</li>
+                        </ul>
+                        <br>
+                        <img src="../assets/transformer/t_multihead.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <p>A more detailed explanation of multi-head attention looks like this:</p>
+                        <br>
+                        <img src="../assets/transformer/t_multidet.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>Construction of Multi-Head Attention</h4>
+                        <p>Let’s formalize this:</p>
+
+                        <ul>
+                            <li>Model Dimension: \(d_{model} = 512 \)</li>
+                            <li>Number of heads: \(h = 8\)</li>
+                        </ul>
+                        <p>Each head operates in a lower-dimensional subspace:</p>
+                        \[d_k = d_v = \frac{d_{model}}{h} = \frac{512}{8} = 64\]
+                    </div>
+
+                    <div class="solution">
+
+                        <div class="step">
+                            <strong>Step 1: Linear Projections (Per Head)</strong>
+                            <p>Instead of one set of matrices \(W_Q, W_K, W_V\), we now have one set per head:</p>
+                            \[
+                            W^{(i)}_Q, W^{(i)}_K, W^{(i)}_V \text{ for } i=1…h
+                            \]
+
+                            <p>For head \(i\):</p>
+                            \[
+                            Q^{(i)} = XW^{(i)}_Q, \quad K^{(i)} = XW^{(i)}_K, \quad V^{(i)} = XW^{(i)}_V
+                            \]
+                            <p>where \(Q^{(i)}, K^{(i)}, V^{(i)} \in \mathbb{R}^{n \times d_k}\)</p>
+
+                            <p>Each head sees the same input embeddings
+                                \(X\),
+                                but projects them into different subspaces.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Step 2: Scaled Dot-Product Attention (Per Head)</strong>
+                            <p>Each head independently computes attention:</p>
+                            \[
+                            \text{head}_i = \text{softmax}\left(\frac{Q^{(i)} K^{(i)T}}{\sqrt{d_k}}\right) V^{(i)}
+                            \]
+
+                            <p>So we now have \(h\) different outputs, one per head.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Step 3: Concatenation</strong>
+                            <p>We stack the outputs of all heads:</p>
+                            \[
+                            \text{Concat}(\text{head}_1, \ldots, \text{head}_8) \in \mathbb{R}^{n \times (8 \times 64)}
+                            =
+                            \mathbb{R}^{n \times d_{model}}
+                            \]
+                        </div>
+
+                        <div class="step">
+                            <strong>Step 4: Final Linear Projection</strong>
+                            <p>Apply output transformation:</p>
+                            \[
+                            \text{Output} = \text{Concat}(\text{heads}) \cdot W_{O} \in \mathbb{R}^{n \times d_{model}}
+                            \]
+
+                            <p>Now you might ask why yet another linear projection?</p>
+                            <p>Since the concatenated outputs don't really communicate to each other, by allowing
+                                another linear projection, we enable the model to combine information from all heads in
+                                a learned way.</p>
+                        </div>
+                        <div class="note">
+                            The resulting multi-head attention mechanism allows the model to jointly attend to
+                            information from different representation subspaces at different positions. This is crucial
+                            for capturing the complex relationships in language.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Feed Forward Networks -->
+                <div class="problem" id="feed-forward">
+                    <h3>Feed Forward Networks: Position-wise Transformations</h3>
+
+                    <div class="context">
+                        <p>After the multi-head attention mechanism has allowed tokens to gather information from each
+                            other, each token's representation is passed through a <strong>Feed Forward Network
+                                (FFN)</strong>. This might seem anticlimactic after the complexity of attention, but it
+                            plays a crucial role!</p>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>The Architecture</h4>
+                        <p>The FFN is surprisingly simple—it's a two-layer fully connected network applied identically
+                            and independently to each position:</p>
+                        \[
+                        \text{FFN}(x) = \max(0, xW_1 + b_1)W_2 + b_2
+                        \]
+
+                        <p>Where:</p>
+                        <ul>
+                            <li><strong>\(W_1 \in \mathbb{R}^{d_{model} \times d_{ff}}\):</strong> First layer weights
+                                (512 × 2048)</li>
+                            <li><strong>\(W_2 \in \mathbb{R}^{d_{ff} \times d_{model}}\):</strong> Second layer weights
+                                (2048 × 512)</li>
+                            <li><strong>\(b_1, b_2\):</strong> Bias vectors</li>
+                            <li><strong>\(d_{ff} = 2048\):</strong> Inner dimension (4× the model dimension!)</li>
+                            <li><strong>\(\max(0, \cdot)\):</strong> ReLU activation function</li>
+                        </ul>
+                        <br>
+                        <img src="../assets/transformer/t_ffn.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <p>Before understanding the full architecture, let's ask why do we require it in first place???
+                        </p>
+
+                        <p><strong>Attention alone isn't enough:</strong> Attention is a mechanism which communicates
+                            information across tokens. It is still fundamentally a linear operation.</p>
+                        <p>By utilizing a Feed Forward Network (FFN) to each token embeddings (<em>independently</em>),
+                            we can apply non-linear transformations (helps in capturing complex patterns) to each
+                            token's representation.</p>
+                        </p>
+                        \[
+                        \text{FFN}(x_1), \text{FFN}(x_2), \ldots, \text{FFN}(x_n)
+                        \]
+
+                        <p>Each token goes through their <em>same</em> FFN, but with no interaction between tokens.
+                        </p>
+                        <br>
+                        <img src="../assets/transformer/t_mulffn.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <p>Let's now understand the working and what each component does here:</p>
+                    </div>
+
+                    <div class="solution">
+
+                        <div class="step">
+                            <strong>1. Linear Transformation(Up-Scaling):</strong>
+                            <p>The first step is to convert our resultant outputs from the Multi-Headed Attention (MHA)
+                                block to a higher dimension.</p>
+                            <p>The main motive behind this is to learn more features by projecting the resultant vector
+                                onto a higher dimensional space.</p>
+
+                            <p>Mathematically, this is equivalent to:</p>
+                            \[
+                            E''_{\text{Mann}} = E'_{\text{Mann}} \cdot W_1 + b_1
+                            \]
+
+                            <p>where, \(E'_{\text{Mann}} \in \mathbb{R}^{512}\), \(W_1 \in \mathbb{R}^{512 \times
+                                2048}\), and \(b_1 \in \mathbb{R}^{2048}\)</p>
+                            <p>Our new vector \(E''_{\text{Mann}} \in \mathbb{R}^{2048}\) is now in a higher dimensional
+                                space.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>2. ReLU Activation (Non-linear Transformation):</strong>
+                            <p>Now, we perform a ReLU activation:</p>
+                            \[
+                            E'''_{\text{Mann}} = \max(0, E''_{\text{Mann}})
+                            \]
+                            <p>What ReLU does here is, if a neuron's input is negative, it sets the output to zero;
+                                otherwise, it passes the input through unchanged.</p>
+                            <p>This is where the non-linearity stuff occurs.</p>
+                            <br>
+                            <img src="../assets/transformer/t_relu.png" alt="Black box" class="context-image"
+                                style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                            <br>
+                            <p>Our new vector \(E'''_{\text{Mann}} \in \mathbb{R}^{2048}\) retains the same shape as it
+                                did previously.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>3. Linear Transformation(Down-Scaling):</strong>
+                            <p>Finally, we project the vector back to the original dimension:</p>
+                            \[
+                            E''''_{\text{Mann}} = E'''_{\text{Mann}} \cdot W_2 + b_2
+                            \]
+                            <p>where, \(E'''_{\text{Mann}} \in \mathbb{R}^{2048}\), \(W_2 \in \mathbb{R}^{2048 \times
+                                512}\), and \(b_2 \in \mathbb{R}^{512}\)</p>
+                            <p>Our final vector \(E''''_{\text{Mann}} \in \mathbb{R}^{512}\) is now back in the original
+                                dimension.</p>
+
+                            <p>We can write the overall transformation as:</p>
+                            \[
+                            FFN(x) = \max(0, xW_1 + b_1)W_2 + b_2
+                            \]
+                        </div>
+
+                        <div class="step">
+                            <strong>The Big Picture</strong>
+                            <p>At this point in the Transformer, each token has:</p>
+                            <ol>
+                                <li><strong>Gathered context</strong> via multi-head attention</li>
+                                <li><strong>Processed that context</strong> via the FFN</li>
+                            </ol>
+
+                            <p>But we're not done yet! These operations are wrapped in something called <strong>residual
+                                    connections</strong> and <strong>layer normalization</strong>—our next topics.</p>
+                        </div>
+
+                        <div class="note">
+                            <p>
+                                The FFN/MLPs are the components that may actually store
+                                <em>factual knowledge</em>. They account for approximately
+                                \( \tfrac{2}{3} \) of the model’s parameters.
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Residual Connections -->
+                <div class="problem" id="residual-connections">
+                    <h3>Residual Connections: Learning Refinements, Not Replacements</h3>
+
+                    <div class="context">
+                        <p>We've discussed the major chunk of the encoder block, i.e. Self attention and the FFN layer.
+                            But the encoder block alone won't have a single self attention and FFN layer. We stack
+                            multiple encoder blocks together, and each block contains a self attention layer and an FFN
+                            layer as shown in the diagram below.</p>
+
+                        <br>
+                        <img src="../assets/transformer/t_nonresid.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <p>Now the problem here is we have stacked multiple encoder blocks together. This leads to
+                            <em>vanishing gradients</em> as the information flows through many layers, making it
+                            difficult for gradients to propagate back effectively.
+                        </p>
+
+                        <p>To solve this issue, we introduce <strong>residual connections</strong>.</p>
+
+                        <p>Residual connections solve this by allowing information to flow directly across blocks, which
+                            ensures that gradients can flow more effectively through the network.</p>
+
+                        <br>
+                        <img src="../assets/transformer/t_resid.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>The Core Idea</h4>
+
+                        <p>Rather than computing:</p>
+                        \[
+                        \mathbf{y} = F(\mathbf{x})
+                        \]
+
+                        <p>we compute:</p>
+                        \[
+                        \mathbf{y} = \mathbf{x} + F(\mathbf{x})
+                        \]
+
+                        <p>Here:</p>
+                        <ul>
+                            <li>\(\mathbf{x}\): Input to the sub-layer</li>
+                            <li>\(F(\mathbf{x})\): Transformation (Attention or FFN)</li>
+                            <li>\(\mathbf{y}\): Output after residual addition</li>
+                        </ul>
+                    </div>
+
+                    <div class="solution">
+                        <h4>Why Residual Connections Work</h4>
+
+                        <div class="step">
+                            <strong>Reason 1: Gradient Flow</strong>
+                            <p>During backpropagation, gradients can flow directly through the skip connection without
+                                passing through the layer's transformation:</p>
+                            \[
+                            \frac{\partial \mathbf{x}_{\text{out}}}{\partial \mathbf{x}_{\text{in}}} = \frac{\partial
+                            F(\mathbf{x})}{\partial \mathbf{x}} + I
+                            \]
+
+                            <p>The identity term \(I\) ensures that even if \(\frac{\partial F(\mathbf{x})}{\partial
+                                \mathbf{x}}\) is small, gradients can still propagate. This solves the vanishing
+                                gradient problem!</p>
+
+                            <p><strong>Intuition:</strong> Think of it as a "highway" that lets information bypass
+                                potentially problematic transformations.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Reason 2: Identity Mapping</strong>
+                            <p>If a layer doesn't need to transform the input, it can simply learn to output zeros:</p>
+                            \[
+                            \text{If } F(\mathbf{x}) \approx \mathbf{0}, \text{ then } \mathbf{x}_{\text{out}} \approx
+                            \mathbf{x}
+                            \]
+
+                            <p>This makes it easier for the network to learn—the layer doesn't have to reconstruct the
+                                input from scratch, it only needs to learn the <em>changes</em> (residuals) to make.</p>
+
+                            <p><strong>Example:</strong> If the embedding for "Mann" already captures most of its
+                                meaning, the layer can make small adjustments rather than recomputing everything.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Reason 3: Ensemble Effect</strong>
+                            <p>Residual networks can be viewed as an ensemble of exponentially many paths. Consider a
+                                network with \(L\) layers—there are \(2^L\) possible paths through the network!</p>
+
+                            <p>Each path corresponds to choosing whether to use the transformation \(F(\cdot)\) or skip
+                                it at each layer. For a 6-layer Transformer encoder, this creates \(2^6 = 64\) different
+                                effective paths.</p>
+
+                            <p><strong>Intuition:</strong> The network learns multiple complementary representations
+                                simultaneously, making it more robust.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Reason 4: Incremental Learning</strong>
+                            <p>With residual connections, each layer learns to make incremental improvements:</p>
+                            \[
+                            \begin{aligned}
+                            \mathbf{x}_0 & = \text{Embedding} + \text{PositionalEncoding} \\
+                            \mathbf{x}_1 & = \mathbf{x}_0 + \Delta_1 \quad \text{(Layer 1 adds refinement)} \\
+                            \mathbf{x}_2 & = \mathbf{x}_1 + \Delta_2 \quad \text{(Layer 2 adds more)} \\
+                            & \vdots \\
+                            \mathbf{x}_L & = \mathbf{x}_0 + \sum_{i=1}^{L} \Delta_i
+                            \end{aligned}
+                            \]
+
+                            <p>Each \(\Delta_i\) represents a small, focused change rather than a complete
+                                re-transformation. This makes optimization much easier.</p>
+                        </div>
+
+                        <div class="note">
+                            <p>
+                                Residual connections alone are powerful—but adding them repeatedly can cause
+                                activations to grow uncontrollably.
+                            </p>
+
+                            <p>
+                                To fix this, Transformers apply <strong>Layer Normalization</strong>
+                                immediately after each residual block.
+                            </p>
+
+                            <p>
+                                That’s exactly what we’ll study next.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 9. Layer Normalization -->
+                <div class="problem" id="layer-norm">
+                    <h3>Layer Normalization: Stabilizes the Learning Process</h3>
+
+                    <div class="context">
+                        <p>Up to now, we’ve built a powerful pipeline:</p>
+                        <ul>
+                            <li><strong>Embeddings + Positional Encoding</strong> give meaning and order</li>
+                            <li><strong>Multi-Head Attention</strong> mixes information across tokens</li>
+                            <li><strong>FFNs</strong> apply rich non-linear transformations</li>
+                            <li><strong>Residual connections</strong> ensure gradients flow and learning is incremental
+                            </li>
+                        </ul>
+
+                        <p>But stacking many such blocks introduces a new problem:</p>
+                        <ul>
+                            <li><strong>Unstable training:</strong> Large activations → exploding gradients</li>
+                            <li><strong>Slow convergence:</strong> The optimizer struggles with inconsistent scales</li>
+                            <li><strong>Dead neurons:</strong> Some dimensions dominate while others vanish</li>
+                        </ul>
+                        <p>To fix these issues, we introduce <strong>Layer Normalization</strong>.</p>
+
+                        <br>
+                        <img src="../assets/transformer/t_layernorm.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>The Core Idea</h4>
+                        <p>Layer Normalization normalizes the features of a single token, instead of normalizing across
+                            the batch (Batch Normalization).</p>
+
+                        <p>For a token representation </p>
+                        \[
+                        \mathbf{x} = [x_1, x_2, \ldots, x_{d_{model}}]
+                        \]
+                        <p>LayerNorm Computes:</p>
+                        \[
+                        \mu = \frac{1}{d_{model}} \sum_{i=1}^{d_{model}} x_i
+                        \]
+                        \[
+                        \sigma^2 = \frac{1}{d_{model}} \sum_{i=1}^{d_{model}} (x_i - \mu)^2
+                        \]
+                        \[
+                        \text{LayerNorm}(\mathbf{x}) = \gamma \odot \frac{\mathbf{x} - \mu}{\sqrt{\sigma^2 + \epsilon}}
+                        + \beta
+                        \]
+                        <p>Where:</p>
+                        <ul>
+                            <li><strong>\(\gamma\)</strong> and <strong>\(\beta\)</strong> are learnable parameters
+                                (scale and shift)</li>
+                            <li><strong>\(\epsilon\)</strong> is a small constant to prevent division by zero</li>
+                        </ul>
+                        <p>
+                            This guarantees that, for a token:
+                        </p>
+
+                        \[
+                        \mathbb{E}[\mathbf{x}] \approx 0,
+                        \quad
+                        \mathrm{Var}(\mathbf{x}) \approx 1
+                        \]
+                    </div>
+
+                    <div class="solution">
+
+                        <h4>Why Layer Normalization works</h4>
+                        <div class="step">
+                            <strong>1. Stable Activation Scale</strong>
+                            <p>LayerNorm ensures that each token representation has:</p>
+                            \[
+                            \mathbb{E}[\mathbf{x}] \approx 0,
+                            \quad
+                            \mathrm{Var}(\mathbf{x}) \approx 1
+                            \]
+                            <p>This prevents activations from <strong>exploding or shrinking</strong> as depth
+                                increases.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>2. Faster and More Reliable Convergence</strong>
+                            <p>When gradients propagate through normalized activations:</p>
+                            <ul>
+                                <li>Learning rates can be larger</li>
+                                <li>Optimization becomes more stable</li>
+                                <li>Training converges faster</li>
+                            </ul>
+                            <p>But how??</p>
+                            <p>The contour plot of an unnormalized loss function might look like this:</p>
+                            <br>
+                            <img src="../assets/transformer/t_unnormalized.png" alt="Black box" class="context-image"
+                                style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                            <br>
+                            <p>A larger Learning rate is not ideal for unnormalized data as it can lead to unstable
+                                gradients and poor convergence (higher jumps).</p>
+                            <p>So, we reduce the learning rate. But this leads to slower training!!!</p>
+
+                            <p>However, with Normalization, the loss contours become more spherical:</p>
+                            <br>
+                            <img src="../assets/transformer/t_normalized.png" alt="Black box" class="context-image"
+                                style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                            <br>
+                            <p>This makes the contour plot circular.</p>
+                            <p>Now, we can use a larger learning rate without without worrying about instability.</p>
+                        </div>
+
+                        <div class="note">
+                            <strong><em>Why Layer Normalization is preferred over Batch Normalization</em></strong>
+
+                            <p>Batch Normalization normalizes across the batch dimension, which mixes information
+                                across batch. Layer Normalization normalizes across
+                                the embedding dimension for each token independently, preserving the unique
+                                characteristics of each token's representation.</p>
+
+                            <br>
+                            <img src="../assets/transformer/t_batchvslayer.png" alt="Black box" class="context-image"
+                                style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                            <br>
+                        </div>
+
+                        <div class="note">
+                            <strong><em>Post-Norm vs Pre-Norm</em></strong>
+
+                            <p>Post-Norm (Original Transformer)</p>
+                            \[
+                            x_{\text{out}} = \text{LayerNorm}\bigl(x + \text{Attention}(x)\bigr)
+                            \]
+                            <p>Pre-Norm (Improved Stability)</p>
+                            \[
+                            x_{\text{out}} = x + \text{Attention}\bigl(\text{LayerNorm}(x)\bigr)
+                            \]
+
+                            <br>
+                            <img src="../assets/transformer/t_prevspostnorm.jpg" alt="Black box" class="context-image"
+                                style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                            <br>
+
+                            <p>Why is Pre-Norm preferred over Post-Norm?</p>
+                            <ul>
+                                <li><strong>Improved Gradient Flow:</strong> Normalizing before the sub-layer ensures
+                                    that gradients remain stable as they pass through the layer, reducing the risk of
+                                    vanishing or exploding gradients.</li>
+                                <li><strong>Faster Convergence:</strong> Pre-Norm often leads to faster training times
+                                    because the model can learn more effectively from the start.</li>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 10. Dropout -->
+                <div class="problem" id="dropout">
+                    <h3>Dropout: Controlled Noise for Robust Learning</h3>
+
+                    <div class="context">
+                        <p>
+                            Up to this point, our Transformer encoder is very powerful—perhaps <strong>too
+                                powerful</strong>.
+                        </p>
+                        <p>With:</p>
+                        <p>
+                        <ul>
+                            <li>
+                                High-dimensional embeddings
+                            </li>
+                            <li>Multi-head attention</li>
+                            <li>Large FFNs (2048 hidden units)</li>
+                            <li>Deep stacking</li>
+                        </ul>
+                        …the model has millions of parameters, making it prone to <strong>overfitting</strong>.
+                        </p>
+                        <p>
+                            To prevent the model from memorizing training data instead of learning generalizable
+                            patterns, Transformers introduce <strong>Dropout</strong>.
+                        </p>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>The Core Idea</h4>
+                        <p>
+                            Dropout works by randomly zeroing out a subset of activations during training.
+                            For an input vector \( x \), dropout is defined as:
+                        </p>
+
+                        <p>
+                            \[
+                            \text{Dropout}(x) = m \odot x
+                            \]
+                        </p>
+
+                        <p>
+                            where:
+                        </p>
+                        <ul>
+                            <li>\( m_i \sim \text{Bernoulli}(1 - p) \)</li>
+                            <li>\( p \) is the dropout probability (typically \( p = 0.1 \))</li>
+                            <li>\( \odot \) denotes element-wise multiplication</li>
+                        </ul>
+                        <br>
+                        <img src="../assets/transformer/t_dropout.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                    </div>
+
+                    <div class="solution">
+                        <h4>Why Dropout Works</h4>
+
+                        <div class="step">
+                            <strong>1. Prevents Co-Adaptation</strong>
+                            <p>
+                                Without dropout, neurons may rely heavily on specific other neurons.
+                                Dropout forces each neuron to contribute meaningfully on its own.
+                            </p>
+                            <p>
+                                This discourages fragile feature dependencies and promotes
+                                more robust representations.
+                            </p>
+
+                        </div>
+
+                        <div class="step">
+                            <strong>2. Implicit Model Averaging</strong>
+                            <p>
+                                Each dropout mask corresponds to a different sub-network.
+                                Training with dropout is equivalent to averaging predictions
+                                from exponentially many such networks.
+                            </p>
+                            <p>
+                                This dramatically improves generalization performance.
+                            </p>
+                        </div>
+
+
+                        <div class="note">
+                            <div class="step">
+                                <p>
+                                    <strong>Where Dropout Appears in Transformers</strong>
+                                </p>
+
+                                <em>1. After Embeddings + Positional Encoding</em>
+                                <p>
+                                    \[
+                                    x_0 = \text{Dropout}\big(\text{Embedding}(x)\sqrt{d_{\text{model}}} + PE(x)\big)
+                                    \]
+                                </p>
+                                <p>This prevents the model from over-relying on:</p>
+                                <ul>
+                                    <li>Specific embedding dimensions</li>
+                                    <li>Exact positional signals</li>
+                                </ul>
+
+                                <em>2. On Attention Weights</em>
+                                <p>
+                                    After computing attention scores:
+                                </p>
+                                <p>
+                                    \[
+                                    \alpha = \text{softmax}\!\left(\frac{QK^{\mathsf{T}}}{\sqrt{d_k}}\right)
+                                    \]
+                                </p>
+                                <p>
+                                    We apply dropout directly to the attention matrix:
+                                </p>
+                                <p>
+                                    \[
+                                    \tilde{\alpha} = \text{Dropout}(\alpha)
+                                    \]
+                                </p>
+                                <p>This means:</p>
+                                <ul>
+                                    <li>Some token-to-token connections are randomly weakened</li>
+                                    <li>The model cannot always attend to the same words</li>
+                                </ul>
+                                <p>
+                                    This is especially important for preventing <em>attention collapse</em>
+                                    (e.g., always attending to the same token).
+                                </p>
+
+                                <em>3. After Multi-Head Attention Output</em>
+                                <p>
+                                    \[
+                                    x_{\text{attn}} = \text{Dropout}(\text{MHA}(x))
+                                    \]
+                                </p>
+                                <p>
+                                    Then wrapped with residual connection and layer normalization:
+                                </p>
+                                <p>
+                                    \[
+                                    x_1 = \text{LayerNorm}(x + x_{\text{attn}})
+                                    \]
+                                </p>
+
+                                <em>4. After the Feed Forward Network</em>
+                                <p>
+                                    \[
+                                    x_{\text{ffn}} = \text{Dropout}(\text{FFN}(x_1))
+                                    \]
+                                </p>
+                                <p>
+                                    \[
+                                    x_2 = \text{LayerNorm}(x_1 + x_{\text{ffn}})
+                                    \]
+                                </p>
+                                <p>
+                                    This prevents the large feed-forward network (which contains most of the model’s
+                                    parameters) from overfitting.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="note"><strong>Note: </strong>Always apply dropout during training only and not
+                            during inference.
+                        </div>
+
+                        <p>
+                            This wraps up our Encoder section — and now, we’re finally ready to decode!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 11. The Decoder -->
+                <div class="problem" id="decoder">
+                    <h3>The Decoder: Generating Translation</h3>
+
+                    <div class="context">
+                        <p>Now that we've covered most of the concepts on the encoder side, we basically know how the
+                            components of decoders work as well (except causal-masking and cross-attention mechanism).
+                        </p>
+                        <p>The decoder's main job is to generate the English translation one word at a time, using both
+                            the encoder's context and the words it has already generated.</p>
+
+                        <p>We derive most of the components from encoder here except:</p>
+                        <ol>
+                            <li><strong>Masked Self-Attention</strong></li>
+                            <li><strong>Cross-Attention</strong></li>
+                        </ol>
+                        <p>Here's how a decoder looks like:</p>
+                        <br>
+                        <img src="../assets/transformer/t_decoder.jpg" alt="Decoder Architecture" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>Autoregressive Generation: Creating One Token at a Time</h4>
+                        <p>The decoder operates <strong>autoregressively</strong>—meaning it generates the output
+                            sequence one token at a time, where each new token depends on all previously generated
+                            tokens.</p>
+                        <p>Let's understand this mathematically and intuitively.</p>
+                    </div>
+
+                    <div class="solution">
+                        <div class="step">
+                            <strong>The Sequential Process</strong>
+                            <p>When translating "Ein Mann steht in einer Küche" → "A man is standing in a kitchen", the
+                                decoder doesn't generate all words at once. Instead:</p>
+
+                            <p><strong>Step 1:</strong> Generate "A"</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Input: [START]
+Output: "A"</pre>
+
+                            <p><strong>Step 2:</strong> Generate "man" (using "A")</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Input: [START] A
+Output: "man"</pre>
+
+                            <p><strong>Step 3:</strong> Generate "is" (using "A man")</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Input: [START] A man
+Output: "is"</pre>
+
+                            <p><strong>Step 4:</strong> Generate "standing" (using "A man is")</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Input: [START] A man is
+Output: "standing"</pre>
+
+                            <p>...and so on until we generate [END].</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>The Mathematical Formulation</strong>
+
+                            <p>
+                                For an output sequence <strong>y</strong> = (y₁, y₂, …, y<sub>T</sub>), the decoder
+                                models the
+                                conditional probability of the entire sequence as:
+                            </p>
+
+                            \[
+                            P(\mathbf{y} \mid \mathbf{X})
+                            =
+                            \prod_{t=1}^{T}
+                            P\!\left(y_t \mid y_{< t}, \mathbf{X}\right) \] <p><strong>Where:</strong></p>
+                                <ul>
+                                    <li><strong>y<sub>t</sub></strong>: Token generated at position <em>t</em></li>
+                                    <li>
+                                        <strong>y<sub>&lt;t</sub></strong>:
+                                        All previously generated tokens
+                                        (y₁, y₂, …, y<sub>t−1</sub>)
+                                    </li>
+                                    <li>
+                                        <strong>X</strong>:
+                                        Encoder output representing the source sentence context
+                                    </li>
+                                    <li><strong>T</strong>: Length of the output sequence</li>
+                                </ul>
+
+                                <p>This autoregressive decomposition means:</p>
+
+                                <ul>
+                                    <li>
+                                        The probability of generating <em>"man"</em> is conditioned on having already
+                                        generated
+                                        <em>"A"</em>
+                                    </li>
+                                    <li>
+                                        The probability of generating <em>"is"</em> is conditioned on having generated
+                                        <em>"A man"</em>
+                                    </li>
+                                    <li>
+                                        Each token is generated using the full history of previously generated tokens
+                                    </li>
+                                </ul>
+                        </div>
+
+                        <p>Now let's understand how causal masking works in detail.</p>
+                    </div>
+                </div>
+
+                <!-- 12. Causal/Masked Attention -->
+                <div class="problem" id="masked-attention">
+                    <h3>Masked Attention: Preventing Information Leakage</h3>
+
+                    <div class="context">
+                        <p>The decoder's self-attention mechanism has a critical constraint: it must be
+                            <strong>causal</strong>—meaning each position can only attend to previous positions, never
+                            future ones.
+                        </p>
+                        <p>Without this constraint, the decoder would "cheat" during training by looking at the answer
+                            it's supposed to predict!</p>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>The Problem Without Masking</h4>
+                        <p>Imagine we're generating "A man is standing in a kitchen" and we're currently at the word
+                            "is".</p>
+
+                        <p><strong>Without masking:</strong></p>
+                        <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Query: "is"
+Can attend to: "A", "man", "is", "standing", "in", "a", "kitchen"
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                         FUTURE TOKENS!</pre>
+                        <p>The model could simply copy "standing" from the future, making training meaningless!</p>
+
+                        <p><strong>With masking:</strong></p>
+                        <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Query: "is"
+Can attend to: "A", "man", "is"
+                            ^^^ (only past + current)</pre>
+                        <p>Now the model must genuinely predict "standing" based only on past context.</p>
+                    </div>
+
+                    <div class="solution">
+                        <div class="step">
+                            <strong>The Mathematical Solution</strong>
+                            <p>Recall the attention formula from earlier:</p>
+                            \[\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V\]
+
+                            <p>To make it causal, we modify the softmax step by applying a <strong>mask</strong>:</p>
+                            \[\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T + M}{\sqrt{d_k}}\right)V\]
+                            <p>Where <strong>M</strong> is the causal mask matrix.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>The Causal Mask Matrix</strong>
+                            <p>The mask <strong>M</strong> is an upper-triangular matrix filled with −∞ (in practice, a
+                                very large negative number like -1e9):</p>
+                            \[M = \begin{bmatrix}
+                            0 & -\infty & -\infty & -\infty \\
+                            0 & 0 & -\infty & -\infty \\
+                            0 & 0 & 0 & -\infty \\
+                            0 & 0 & 0 & 0
+                            \end{bmatrix}\]
+                            <p>For a sequence of length 4: ["A", "man", "is", "standing"]</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Why This Works</strong>
+                            <p>When we compute attention scores:</p>
+                            \[S = \frac{QK^T}{\sqrt{d_k}} + M\]
+
+                            <p><strong>Before softmax:</strong></p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Position 0 (A):         [s₀₀,  -∞,   -∞,   -∞]
+Position 1 (man):       [s₁₀,  s₁₁,  -∞,   -∞]
+Position 2 (is):        [s₂₀,  s₂₁,  s₂₂,  -∞]
+Position 3 (standing):  [s₃₀,  s₃₁,  s₃₂,  s₃₃]</pre>
+
+                            <p><strong>After softmax:</strong></p>
+                            \[\text{softmax}([-\infty]) = e^{-\infty} / (\text{sum}) \approx 0\]
+
+                            <p>So masked positions get <strong>zero attention weight</strong>:</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Position 0 (A):         [1.0,  0,    0,    0]
+Position 1 (man):       [0.3,  0.7,  0,    0]
+Position 2 (is):        [0.2,  0.5,  0.3,  0]
+Position 3 (standing):  [0.1,  0.3,  0.4,  0.2]</pre>
+                            <p>Each position can only attend to itself and earlier positions!</p>
+                        </div>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>Comparing Encoder vs. Decoder Attention</h4>
+                        <div class="step">
+                            <p><strong>Encoder Self-Attention (Bidirectional):</strong></p>
+                            <ul>
+                                <li>Can attend to <strong>all</strong> positions (past, current, future)</li>
+                                <li>Used for understanding/encoding the input</li>
+                                <li>No mask needed</li>
+                            </ul>
+                            \[\text{Attention matrix} = \begin{bmatrix}
+                            ✓ & ✓ & ✓ & ✓ \\
+                            ✓ & ✓ & ✓ & ✓ \\
+                            ✓ & ✓ & ✓ & ✓ \\
+                            ✓ & ✓ & ✓ & ✓
+                            \end{bmatrix}\]
+
+                            <p><strong>Decoder Self-Attention (Causal):</strong></p>
+                            <ul>
+                                <li>Can attend only to <strong>past</strong> positions (and current)</li>
+                                <li>Used for generation</li>
+                                <li>Causal mask required</li>
+                            </ul>
+                            \[\text{Attention matrix} = \begin{bmatrix}
+                            ✓ & ✗ & ✗ & ✗ \\
+                            ✓ & ✓ & ✗ & ✗ \\
+                            ✓ & ✓ & ✓ & ✗ \\
+                            ✓ & ✓ & ✓ & ✓
+                            \end{bmatrix}\]
+                        </div>
+                    </div>
+
+                    <div class="tip">
+                        <strong>💡 Key Insight:</strong> Causal masking is a simple mathematical trick (adding −∞) that
+                        enforces a profound constraint: respect the flow of time in language generation. It's what
+                        transforms a powerful bidirectional attention mechanism into a principled generative model.
+                    </div>
+                </div>
+
+                <!-- 13. Cross-Attention -->
+                <div class="problem" id="cross-attention">
+                    <h3>Cross-Attention: Bridging Encoder and Decoder</h3>
+
+                    <div class="context">
+                        <p>We've now seen how the decoder uses <strong>masked self-attention</strong> to process its own
+                            generated tokens autoregressively. But there's a critical piece missing: <strong>how does
+                                the decoder access information from the source sentence?</strong></p>
+
+                        <p>The answer is <strong>Cross-Attention</strong>—the mechanism that connects the encoder's
+                            understanding of the German input to the decoder's English generation.</p>
+
+                        <p>While self-attention allows tokens to attend to other tokens in the <em>same</em> sequence,
+                            cross-attention allows tokens in the <em>decoder</em> to attend to tokens in the
+                            <em>encoder</em>.
+                        </p>
+
+                        <br>
+                        <img src="../assets/transformer/t_crossattention.png" alt="Cross-Attention" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>The Core Idea</h4>
+                        <p>In cross-attention, the decoder asks:</p>
+                        <p><em>"Which parts of the source sentence (German) should I focus on to generate the current
+                                target word (English)?"</em></p>
+
+                        <p>For example, when generating "standing", the decoder should attend strongly to "steht" in the
+                            encoder's output.</p>
+
+                        <p><strong>Key difference from self-attention:</strong></p>
+                        <ul>
+                            <li><strong>Self-Attention:</strong> Queries, Keys, and Values all come from the
+                                <em>same</em> sequence
+                            </li>
+                            <li><strong>Cross-Attention:</strong> Queries come from the <em>decoder</em>, but Keys and
+                                Values come from the <em>encoder</em></li>
+                        </ul>
+                    </div>
+
+                    <div class="solution">
+                        <div class="step">
+                            <strong>The Mathematical Formulation</strong>
+                            <p>Recall that standard attention is:</p>
+                            \[\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V\]
+
+                            <p>In cross-attention, we have:</p>
+                            <ul>
+                                <li><strong>Q (Queries):</strong> Come from the decoder's current state</li>
+                                <li><strong>K (Keys):</strong> Come from the encoder's output</li>
+                                <li><strong>V (Values):</strong> Come from the encoder's output</li>
+                            </ul>
+
+                            <p>Mathematically:</p>
+                            \[
+                            \begin{aligned}
+                            Q &= \text{DecoderState} \cdot W_Q \\
+                            K &= \text{EncoderOutput} \cdot W_K \\
+                            V &= \text{EncoderOutput} \cdot W_V
+                            \end{aligned}
+                            \]
+
+                            <p>Then we compute:</p>
+                            \[\text{CrossAttention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V\]
+                        </div>
+
+                        <div class="step">
+                            <strong>A Concrete Example</strong>
+                            <p>Let's walk through generating the word "standing" when translating "Ein Mann steht in
+                                einer Küche".</p>
+
+                            <p><strong>Step 1: Decoder State (Query Source)</strong></p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Decoder has generated: [START] A man is
+Current position: generating next word (should be "standing")</pre>
+
+                            <p>The decoder's current hidden state at position "is" becomes the <strong>query</strong>:
+                            </p>
+                            \[Q_{\text{is}} = \text{DecoderState}_{\text{is}} \cdot W_Q\]
+
+                            <p><strong>Step 2: Encoder Output (Key & Value Source)</strong></p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Encoder processed: Ein Mann steht in einer Küche
+Encoder outputs: [E_Ein, E_Mann, E_steht, E_in, E_einer, E_Küche]</pre>
+
+                            <p>These encoder outputs are transformed into keys and values:</p>
+                            \[
+                            \begin{aligned}
+                            K &= \begin{bmatrix} E_{\text{Ein}} \\ E_{\text{Mann}} \\ E_{\text{steht}} \\ E_{\text{in}}
+                            \\ E_{\text{einer}} \\ E_{\text{Küche}} \end{bmatrix} \cdot W_K \\
+                            V &= \begin{bmatrix} E_{\text{Ein}} \\ E_{\text{Mann}} \\ E_{\text{steht}} \\ E_{\text{in}}
+                            \\ E_{\text{einer}} \\ E_{\text{Küche}} \end{bmatrix} \cdot W_V
+                            \end{aligned}
+                            \]
+
+                            <p><strong>Step 3: Compute Attention Scores</strong></p>
+                            <p>The query "is" computes similarity with each encoder key:</p>
+                            \[\text{Scores} = \frac{Q_{\text{is}} \cdot K^T}{\sqrt{d_k}}\]
+
+                            <p>This might produce scores like:</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Ein:   0.05
+Mann:  0.10
+steht: 0.70  ← High attention! (This is the verb we need)
+in:    0.05
+einer: 0.05
+Küche: 0.05</pre>
+
+                            <p><strong>Step 4: Apply Softmax</strong></p>
+                            \[\alpha = \text{softmax}(\text{Scores})\]
+
+                            <p><strong>Step 5: Weighted Sum of Values</strong></p>
+                            \[\text{Output}_{\text{is}} = \sum_{i} \alpha_i \cdot V_i\]
+
+                            <p>This creates a context-aware representation that strongly incorporates information from
+                                "steht", helping the decoder generate "standing".</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Multi-Head Cross-Attention</strong>
+                            <p>Just like self-attention, cross-attention uses multiple heads to capture different types
+                                of relationships:</p>
+
+                            <ul>
+                                <li><strong>Head 1:</strong> Might focus on direct word translations (Mann → man, Küche
+                                    → kitchen)</li>
+                                <li><strong>Head 2:</strong> Might focus on grammatical structure (verb positioning)
+                                </li>
+                                <li><strong>Head 3:</strong> Might focus on semantic context (kitchen → cooking-related
+                                    words)</li>
+                                <li><strong>Head 4:</strong> Might focus on word order differences between German and
+                                    English</li>
+                            </ul>
+
+                            <p>The computation remains the same as multi-head self-attention:</p>
+                            \[
+                            \text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h) W_O
+                            \]
+                            \[
+                            \text{where } \text{head}_i = \text{Attention}(QW^i_Q, KW^i_K, VW^i_V)
+                            \]
+
+                            <p>The only difference: <strong>K</strong> and <strong>V</strong> come from the encoder,
+                                while <strong>Q</strong> comes from the decoder.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>No Masking in Cross-Attention!</strong>
+                            <p>An important distinction:</p>
+
+                            <ul>
+                                <li><strong>Decoder self-attention:</strong> Uses causal masking (can't look at future
+                                    decoder tokens)</li>
+                                <li><strong>Cross-attention:</strong> No masking! The decoder can attend to <em>all</em>
+                                    encoder positions</li>
+                            </ul>
+
+                            <p>Why? Because the encoder has already processed the <em>entire</em> source sentence.
+                                There's no "future" to hide—the decoder should have access to all source information
+                                when generating each target word.</p>
+
+                            <p>Every decoder position can attend to every encoder position.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Position in the Decoder Architecture</strong>
+                            <p>Cross-attention sits between the two self-attention operations in each decoder layer:</p>
+
+                            <ol>
+                                <li><strong>Masked Self-Attention:</strong> Decoder tokens attend to previous decoder
+                                    tokens</li>
+                                <li><strong>Cross-Attention:</strong> Decoder attends to encoder outputs ← <em>We are
+                                        here!</em></li>
+                                <li><strong>Feed-Forward Network:</strong> Non-linear transformation</li>
+                            </ol>
+
+                            <p>With residual connections and layer normalization:</p>
+                            \[
+                            \begin{aligned}
+                            x_1 &= \text{LayerNorm}(x + \text{MaskedSelfAttention}(x)) \\
+                            x_2 &= \text{LayerNorm}(x_1 + \text{CrossAttention}(x_1, \text{EncoderOutput})) \\
+                            x_3 &= \text{LayerNorm}(x_2 + \text{FFN}(x_2))
+                            \end{aligned}
+                            \]
+                        </div>
+
+                        <div class="step">
+                            <strong>Dimensions and Shapes</strong>
+                            <p>Let's clarify the matrix dimensions:</p>
+
+                            <p><strong>Encoder Output:</strong> \(\mathbb{R}^{n_{\text{src}} \times d_{\text{model}}}\)
+                            </p>
+                            <ul>
+                                <li>\(n_{\text{src}}\): Number of source tokens (e.g., 6 for "Ein Mann steht in einer
+                                    Küche")</li>
+                                <li>\(d_{\text{model}} = 512\): Model dimension</li>
+                            </ul>
+
+                            <p><strong>Decoder State:</strong> \(\mathbb{R}^{n_{\text{tgt}} \times d_{\text{model}}}\)
+                            </p>
+                            <ul>
+                                <li>\(n_{\text{tgt}}\): Number of target tokens generated so far</li>
+                            </ul>
+
+                            <p><strong>Cross-Attention Output:</strong> \(\mathbb{R}^{n_{\text{tgt}} \times
+                                d_{\text{model}}}\)</p>
+                            <ul>
+                                <li>Same shape as decoder state</li>
+                                <li>But now enriched with encoder information!</li>
+                            </ul>
+
+                            <p>The attention weight matrix has shape:</p>
+                            \[\text{Attention Weights} \in \mathbb{R}^{n_{\text{tgt}} \times n_{\text{src}}}\]
+                            <p>Each row shows how much each decoder position attends to each encoder position.</p>
+                        </div>
+
+                        <div class="note">
+                            <strong>Visualizing Cross-Attention</strong>
+                            <p>If we visualize the attention weights as a heatmap when generating "A man is standing in
+                                a kitchen":</p>
+
+                            <pre
+                                style="background: #f4f4f4; padding: 10px; border-radius: 3px; font-family: monospace; font-size: 0.85em;">
+            A     man    is   standing  in    a   kitchen
+Ein         🟦    🟦    🟦    🟦     🟦    🟦    🟦
+Mann        🟦    🟥    🟦    🟦     🟦    🟦    🟦    ← "man" attends here
+steht       🟦    🟦    🟥    🟥     🟦    🟦    🟦    ← "is" and "standing" attend here
+in          🟦    🟦    🟦    🟦     🟥    🟦    🟦    ← "in" attends here
+einer       🟦    🟦    🟦    🟦     🟦    🟥    🟦    ← "a" attends here
+Küche       🟦    🟦    🟦    🟦     🟦    🟦    🟥    ← "kitchen" attends here
+
+(🟥 = high attention, 🟦 = low attention)</pre>
+
+                            <p>This shows the alignment between source and target words—exactly what we need for
+                                translation!</p>
+                        </div>
+
+                        <div class="tip">
+                            <strong>💡 Key Insight:</strong> Cross-attention is the bridge between languages. It allows
+                            the decoder to selectively extract information from the encoder's representation of the
+                            source sentence. Without it, the decoder would be blind to the input—generating text based
+                            purely on its own previous outputs, with no connection to what it's supposed to translate!
+                        </div>
+
+                        <div class="note">
+                            <strong>Three Attention Mechanisms Summary</strong>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                                <tr style="background: #f4f4f4; font-weight: bold;">
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Mechanism</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Q Source</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">K, V Source</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Masking</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Purpose</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>Encoder
+                                            Self-Attention</strong></td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Encoder</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Encoder</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">None</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Understand source sentence</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>Decoder
+                                            Self-Attention</strong></td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Decoder</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Decoder</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Causal</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Process generated text</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>Cross-Attention</strong>
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Decoder</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Encoder</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">None</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Connect source to target</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 14. Output Layer -->
+                <div class="problem" id="output-layer">
+                    <h3>Output Layer: From Representations to Words</h3>
+
+                    <div class="context">
+                        <p>We've journeyed through the entire Transformer architecture:</p>
+                        <ul>
+                            <li>✓ Encoder processes the source sentence</li>
+                            <li>✓ Decoder generates target representations autoregressively</li>
+                            <li>✓ Cross-attention connects source to target</li>
+                        </ul>
+
+                        <p>But there's one final step: <strong>How do we convert the decoder's continuous vector
+                                representations back into actual words?</strong></p>
+
+                        <p>The decoder's output at each position is a vector in \(\mathbb{R}^{d_{\text{model}}}\) (512
+                            dimensions). We need to transform this into a probability distribution over our entire
+                            vocabulary (e.g., 30,000 English words).</p>
+
+                        <br>
+                        <img src="../assets/transformer/t_output.png" alt="Output Layer" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                    </div>
+
+                    <div class="problem-statement">
+                        <h4>The Architecture</h4>
+                        <p>The output layer consists of two simple but crucial operations:</p>
+
+                        <p><strong>1. Linear Projection</strong></p>
+                        \[
+                        \text{logits} = \text{DecoderOutput} \cdot W_{\text{vocab}} + b
+                        \]
+                        <p>Where:</p>
+                        <ul>
+                            <li>\(\text{DecoderOutput} \in \mathbb{R}^{d_{\text{model}}}\): The final decoder hidden
+                                state (512-dim)</li>
+                            <li>\(W_{\text{vocab}} \in \mathbb{R}^{d_{\text{model}} \times V}\): Weight matrix (512 ×
+                                30,000)</li>
+                            <li>\(b \in \mathbb{R}^{V}\): Bias vector</li>
+                            <li>\(V\): Vocabulary size (e.g., 30,000 words)</li>
+                        </ul>
+
+                        <p><strong>2. Softmax Activation</strong></p>
+                        \[
+                        P(w_i) = \frac{e^{\text{logit}_i}}{\sum_{j=1}^{V} e^{\text{logit}_j}}
+                        \]
+                        <p>This converts raw scores (logits) into a valid probability distribution where:</p>
+                        \[
+                        \sum_{i=1}^{V} P(w_i) = 1
+                        \]
+                    </div>
+
+                    <div class="solution">
+                        <div class="step">
+                            <strong>Step-by-Step: Generating "standing"</strong>
+                            <p>Let's see how the model generates the word "standing" after producing "A man is".</p>
+
+                            <p><strong>1. Decoder Output Vector</strong></p>
+                            <p>After processing through all decoder layers, we have:</p>
+                            \[
+                            \mathbf{h}_{\text{is}} \in \mathbb{R}^{512}
+                            \]
+                            <p>This is a rich, context-aware representation encoding:</p>
+                            <ul>
+                                <li>The meaning of previously generated words ("A man is")</li>
+                                <li>Information from the source sentence (via cross-attention)</li>
+                                <li>Predictions about what should come next</li>
+                            </ul>
+
+                            <p><strong>2. Project to Vocabulary Space</strong></p>
+                            \[
+                            \text{logits} = \mathbf{h}_{\text{is}} \cdot W_{\text{vocab}} + b \in \mathbb{R}^{30000}
+                            \]
+                            <p>This gives us a score for every word in the vocabulary:</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Word          Logit
+-----------------------
+the           2.3
+standing      8.7  ← Highest!
+running       3.1
+sitting       4.2
+walking       3.8
+...
+(29,995 more words)</pre>
+
+                            <p><strong>3. Apply Softmax</strong></p>
+                            \[
+                            P(\text{standing}) = \frac{e^{8.7}}{e^{2.3} + e^{8.7} + e^{3.1} + \cdots} \approx 0.87
+                            \]
+                            <p>This converts logits into probabilities:</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Word          Probability
+--------------------------
+standing      87.0%  ← Most likely!
+sitting       5.2%
+walking       3.1%
+running       2.0%
+the           1.5%
+...           1.2%</pre>
+
+                            <p><strong>4. Select Next Token</strong></p>
+                            <p>The model selects "standing" as the next word (we'll discuss selection strategies
+                                shortly).</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Weight Tying: A Clever Optimization</strong>
+                            <p>Notice that we have two large embedding matrices in the Transformer:</p>
+                            <ul>
+                                <li><strong>Input Embedding:</strong> \(W_{\text{emb}} \in \mathbb{R}^{V \times
+                                    d_{\text{model}}}\) (maps tokens → vectors)</li>
+                                <li><strong>Output Projection:</strong> \(W_{\text{vocab}} \in
+                                    \mathbb{R}^{d_{\text{model}} \times V}\) (maps vectors → tokens)</li>
+                            </ul>
+
+                            <p>These matrices are essentially doing opposite operations! The Transformer paper uses
+                                <strong>weight tying</strong>:
+                            </p>
+                            \[
+                            W_{\text{vocab}} = W_{\text{emb}}^T
+                            \]
+
+                            <p><strong>Benefits:</strong></p>
+                            <ul>
+                                <li>Reduces parameters by ~30,000 × 512 ≈ 15 million parameters</li>
+                                <li>Forces the model to learn a consistent representation space</li>
+                                <li>If "cat" has embedding \(\mathbf{e}_{\text{cat}}\), the output layer uses the same
+                                    vector to recognize "cat"</li>
+                            </ul>
+
+                            <p>Additionally, both embedding weights are scaled by \(\sqrt{d_{\text{model}}}\):</p>
+                            \[
+                            \text{logits} = \text{DecoderOutput} \cdot (W_{\text{emb}}^T \cdot \sqrt{d_{\text{model}}})
+                            \]
+                        </div>
+
+                        <div class="step">
+                            <strong>Token Selection Strategies</strong>
+                            <p>Once we have the probability distribution, how do we choose the next token?</p>
+
+                            <p><strong>1. Greedy Decoding (Simplest)</strong></p>
+
+                            \[
+                            w_t = \arg\max_{w} P(w \mid w_{\lt t}, X)
+                            \]
+
+                            <p>Always pick the most probable word.</p>
+
+
+
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">standing: 87%  ← Choose this!
+sitting:  5%
+walking:  3%</pre>
+                            <p><strong>Pros:</strong> Fast, deterministic</p>
+                            <p><strong>Cons:</strong> Can miss better overall sequences, repetitive output</p>
+
+                            <p><strong>2. Beam Search (Most Common)</strong></p>
+                            <p>Keep track of the top-k most likely sequences (beams).</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Beam 1: "A man is standing..." (log prob: -0.5)
+Beam 2: "A man is sitting..."  (log prob: -2.1)
+Beam 3: "A man is walking..."  (log prob: -2.8)</pre>
+                            <p>At each step, expand all beams and keep the top-k complete sequences.</p>
+                            <p><strong>Pros:</strong> Better overall sequences than greedy</p>
+                            <p><strong>Cons:</strong> Slower (k× more computation)</p>
+
+                            <p><strong>3. Sampling (For Creativity)</strong></p>
+                            <p>Sample from the probability distribution rather than taking the argmax:</p>
+                            \[
+                            w_t \sim P(w \mid w_{\lt t}, X) \] <p>This introduces randomness and diversity.</p>
+
+                            <p><strong>Temperature Scaling:</strong> Control randomness via temperature \(T\):
+                            </p>
+                            \[
+                            P(w_i) = \frac{e^{\text{logit}_i / T}}{\sum_j e^{\text{logit}_j / T}}
+                            \]
+                            <ul>
+                                <li>\(T < 1\): More confident (sharper distribution)</li>
+                                <li>\(T = 1\): Original distribution</li>
+                                <li>\(T > 1\): More random (flatter distribution)</li>
+                            </ul>
+
+                            <p><strong>4. Top-k / Top-p (Nucleus) Sampling</strong></p>
+                            <p>Sample only from the most likely tokens:</p>
+                            <ul>
+                                <li><strong>Top-k:</strong> Consider only the k most probable tokens</li>
+                                <li><strong>Top-p:</strong> Consider tokens until cumulative probability exceeds
+                                    p (e.g., 0.9)</li>
+                            </ul>
+                            <p>This prevents sampling extremely unlikely words while maintaining diversity.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Training: The Cross-Entropy Loss</strong>
+                            <p>During training, we know the correct target sequence. The model learns by minimizing the
+                                <strong>cross-entropy loss</strong>:
+                            </p>
+
+                            \[
+                            \mathcal{L} = -\sum_{t=1}^{T} \log P(y_t^* \mid y_{\lt t}, X) \] <p>Where:</p>
+                            <ul>
+                                <li>\(y_t^*\): The true/correct token at position t</li>
+                                <li>\(y_{\lt t}\): All previous true tokens</li>
+                                <li>\(X\): The source sentence (encoder output)</li>
+                            </ul>
+
+                            <p><strong>Example:</strong> Target sentence is "A man is standing"</p>
+
+                            <p>At position 4 (generating "standing"):</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Model predicts:
+standing: 87%
+sitting:  5%
+walking:  3%
+...
+
+True token: "standing"
+
+Loss = -log(0.87) ≈ 0.14  (low loss, good prediction!)</pre>
+
+                            <p>If the model predicted sitting: 60%, standing: 30%:</p>
+                            <pre
+                                style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Loss = -log(0.30) ≈ 1.20  (high loss, bad prediction!)</pre>
+
+                            <p>The loss is summed across all positions and all examples in the batch, then we use
+                                backpropagation to update the model weights.</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Teacher Forcing: A Training Trick</strong>
+                            <p>During training, we use a technique called <strong>teacher forcing</strong>:</p>
+
+                            <p><strong>Instead of:</strong></p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Step 1: Generate "A"
+Step 2: Use model's "A" to generate next token
+Step 3: Use model's output to generate next token
+...</pre>
+
+                            <p><strong>We do:</strong></p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">Step 1: Given true prefix [START], predict "A"
+Step 2: Given true prefix [START, A], predict "man"
+Step 3: Given true prefix [START, A, man], predict "is"
+...</pre>
+
+                            <p>We always feed the <em>true</em> previous tokens as input, not the model's predictions.
+                            </p>
+
+                            <p><strong>Why?</strong></p>
+                            <ul>
+                                <li><strong>Faster training:</strong> Can process all positions in parallel (since we
+                                    know all true tokens)</li>
+                                <li><strong>Stable gradients:</strong> Early mistakes don't compound</li>
+                                <li><strong>Better learning signal:</strong> Model learns from correct context</li>
+                            </ul>
+
+                            <p>This is possible because of the causal masking we learned earlier—even though we feed the
+                                entire true sequence, each position can only see previous positions!</p>
+                        </div>
+
+                        <div class="step">
+                            <strong>Inference vs Training: Key Differences</strong>
+
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                                <tr style="background: #f4f4f4; font-weight: bold;">
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Aspect</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Training</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Inference</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>Input</strong></td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Full target sequence (known)</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Generated tokens only</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>Processing</strong></td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Parallel (all positions at once)
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Sequential (one token at a time)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>Teacher Forcing</strong>
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Yes (use true tokens)</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">No (use model's own output)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>Objective</strong></td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Minimize loss</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Generate good translation</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>Dropout</strong></td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Active</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Disabled</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="step">
+                            <strong>The Complete Forward Pass</strong>
+                            <p>Let's trace the complete generation of one token:</p>
+
+                            <ol style="line-height: 1.8;">
+                                <li><strong>Input:</strong> "Ein Mann steht in einer Küche" + [START, A, man, is]</li>
+                                <li><strong>Encoder:</strong> Processes German sentence → encoder outputs</li>
+                                <li><strong>Decoder Input:</strong> [START, A, man, is] → embeddings + positional
+                                    encoding</li>
+                                <li><strong>Decoder Layers (×6):</strong>
+                                    <ul>
+                                        <li>Masked self-attention (within decoder)</li>
+                                        <li>Cross-attention (to encoder)</li>
+                                        <li>Feed-forward network</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Output Layer:</strong> \(\mathbf{h}_{\text{is}} \rightarrow \text{logits}
+                                    \rightarrow P(\text{word})\)</li>
+                                <li><strong>Selection:</strong> Choose "standing" (87% probability)</li>
+                                <li><strong>Next Step:</strong> Append "standing" and repeat for next token</li>
+                            </ol>
+                        </div>
+
+                        <div class="note">
+                            <strong>A Note on Stopping</strong>
+                            <p>How does the model know when to stop generating?</p>
+
+                            <p>The vocabulary includes a special <strong>[END]</strong> or <strong>[EOS]</strong> (End
+                                Of Sequence) token.</p>
+
+                            <p>When the model predicts [END] with high probability, generation stops:</p>
+                            <pre style="background: #f4f4f4; padding: 10px; border-radius: 3px;">... in a kitchen [END]
+                 ^^^^^ 
+                Stop here!</pre>
+
+                            <p>In beam search, we typically continue until all beams have generated [END] or reach a
+                                maximum length limit.</p>
+                        </div>
+
+                        <div class="tip">
+                            <strong>💡 Key Insight:</strong> The output layer is remarkably simple—just a linear
+                            projection and softmax—yet it's the bridge between the model's internal representations and
+                            actual language. The real magic happens in the learned weights \(W_{\text{vocab}}\), which
+                            encode the model's entire understanding of which vector patterns correspond to which words.
+                            Every earlier layer in the Transformer is working to create representations that make this
+                            final mapping as clean and accurate as possible.
+                        </div>
+
+                        <div class="note">
+                            <strong>🎉 Congratulations!</strong>
+                            <p>We've successfully understood the complete Transformer architecture from scratch!!!</p>
+                            <p>Below is the coding section, do have a look and code on your own!! :)</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <footer>
+                    <p>Written with mathematical rigor and visual intuition in mind.</p>
+                    <p><a href="../index.html">Back to Home</a></p>
+                    <p><a href="../index.html">Home</a> | <a href="ResNet.html">Next Chapter →</a></p>
+                </footer>
+
+                <script>
+                    // Render all LaTeX equations
+                    document.addEventListener("DOMContentLoaded", function () {
+                        renderMathInElement(document.body, {
+                            delimiters: [
+                                { left: "$", right: "$", display: true },
+                                { left: "\\[", right: "\\]", display: true },
+                                { left: "$", right: "$", display: false },
+                                { left: "\\(", right: "\\)", display: false }
+                            ],
+                            throwOnError: false
+                        });
+                    });
+                </script>
+</body>
+
+</html>

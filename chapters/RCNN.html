@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RCNN</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script defer src="../js/math-config.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Home</a>
+
+        <header>
+            <h1>RCNN Family</h1>
+
+            <div class="chapter-intro">
+                <p>In this chapter, we'll go through the what, how and why of Region-Based Convolutional Neural Networks
+                    (RCNN). Plus we'll also cover <strong>Fast, Faster & Mask R-CNN</strong>.</p>
+            </div>
+
+            <div class="chapter">
+                <!-- 1. RCNN -->
+                <h2 style="text-align: center;">Region-Based Convolutional Neural Networks (RCNN)</h2>
+                <div class="problem" id="prerequisites">
+                    <div class="context">
+                        <p>Previously, we had covered object classification (both in CNNs and ResNet).</p>
+                        \[
+                        f : \mathbb{R}^{H \times W \times 3} \to \mathbb{R}^{C}
+                        \quad \text{maps an image to a class probability vector}
+                        \]
+                        <p>Now, we want to classify multiple objects in an image. This is called <strong>object
+                                detection</strong>.</p>
+                        \[
+                        f : \mathbb{R}^{H \times W \times 3}
+                        \to
+                        \{(c_i, b_i)\}_{i=1}^{N}
+                        \]
+                        <p>where, </p>
+                        <ul>
+                            <li>\(c_i\): class label for the \(i\)-th object</li>
+                            <li>\(b_i\): bounding box coordinates for the \(i\)-th object</li>
+                        </ul>
+                        <p>The bounding box coordinates can be represented as \((x, y, w, h)\), where \((x, y)\) is
+                            the top-left corner and \((w, h)\) is the width and height.</p>
+
+                        <br>
+                        <img src="../assets/rcnn/obj_det.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 20em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                    </div>
+
+                    <h3>RCNN Architecture</h3>
+                    <div class="context">
+                        <p>RCNN introduces three stages to solve the object detection problem:</p>
+                        <ol>
+                            <li><strong>Region Proposal:</strong> Generate potential object bounding boxes (~2000).
+                            </li>
+                            <li><strong>Feature Extraction:</strong> Extract features from each proposed region
+                                (using a pre-trained CNN).</li>
+                            <li><strong>Classification:</strong> Classify each region using a classifier (SVM).</li>
+                        </ol>
+
+                        <br>
+                        <img src="../assets/rcnn/arch.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 20em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <p>Let's go through each stage thoroughly. </p>
+                    </div>
+
+                    <h3>1. Region Proposal via Selective Search</h3>
+                    <div class="context">
+                        <p>Selective Search is a region proposal method that generates a set of candidate bounding boxes
+                            for potential objects in the image.</p>
+                        <strong>How does it work?</strong>
+                        <ol>
+                            <li>
+                                At initialization, apply <strong>Felzenszwalb and Huttenlocher</strong> algorithm
+                                and retrieve regions
+                                \( R = \{r_1, r_2, \dots, r_n\} \)
+                                (more details on algorithm below)
+                            </li>
+
+                            <br>
+
+                            <img src="../assets/rcnn/felzenszwalb.png" alt="Convex Conjugate Illustration"
+                                class="context-image"
+                                style="max-width: 100%; height: 20em; display: block; margin: 0 auto;" loading="lazy">
+
+                            <br>
+
+                            <li>
+                                Use a greedy optimization approach to merge similar regions
+                                <ul>
+                                    <li>
+                                        First the <strong>similarities</strong> between all neighbouring regions are
+                                        calculated
+                                        (similarity is calculated based on color, texture, size and shape).
+                                    </li>
+
+                                    <li>
+                                        The two most similar regions are grouped together, and new similarities
+                                        are calculated between the resulting region and its neighbours.
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                This process is repeated until a <strong>stopping criterion</strong> is met.
+                            </li>
+                        </ol>
+                        <br>
+
+                        <img src="../assets/rcnn/selective_search.png" alt="Convex Conjugate Illustration"
+                            class="context-image" style="max-width: 100%; height: 20em; display: block; margin: 0 auto;"
+                            loading="lazy">
+
+                        <br>
+                        <p>The final output of Selective Search is a set of 2000 candidate bounding boxes.</p>
+
+                        <br>
+                        <img src="../assets/rcnn/ss_output.png" alt="Convex Conjugate Illustration"
+                            class="context-image" style="max-width: 100%; height: 20em; display: block; margin: 0 auto;"
+                            loading="lazy">
+                        <br>
+
+                        <div class="note">
+                            <strong>Felzenszwalb and Huttenlocher Algorithm:</strong>
+                            <p>The algo follows a bottom-up procedure. Given \( G = (V, E) \) and edge weights \( w(e)
+                                \):</p>
+                            <ol>
+                                <li>
+                                    Sort all edges in ascending order of weight: \( e_1, e_2, \dots, e_m \)
+                                </li>
+                                <li>
+                                    Initially, each pixel forms its own component, \( S^0 = \{\{v_1\}, \{v_2\}, \dots,
+                                    \{v_n\}\} \)
+                                </li>
+                                <li>
+                                    For \( k = 1,2,\dots,m \):
+                                    <ul>
+                                        <li>
+                                            Let \( S^k \) denote the segmentation at step \( k \). Take the \( k \)-th
+                                            edge \( e_k = (v_i, v_j) \).
+                                        </li>
+
+                                        <li>
+                                            If \( v_i \) and \( v_j \) belong to the same component, then \( S^{k+1} =
+                                            S^k \).
+                                        </li>
+
+                                        <li>
+                                            Otherwise, let \( C_i \) and \( C_j \) be the two components containing \(
+                                            v_i \) and \( v_j \) respectively in \( S^k \).
+                                        </li>
+
+                                        <li>
+                                            Merge \( C_i \) and \( C_j \) if
+                                            \[
+                                            w(e_k) \leq \min \big( \operatorname{Int}(C_i) + \tau(C_i),
+                                            \operatorname{Int}(C_j) + \tau(C_j) \big)
+                                            \]
+                                            where \( \operatorname{Int}(C) = \max_{e' \in E_C} w(e') \) is the internal
+                                            difference of component \( C \), and \( E_C \) is the set of edges with both
+                                            endpoints in \( C \). The function \( \tau(C) = k / |C| \) is a threshold
+                                            function that controls the degree of merging based on the size of the
+                                            component.
+                                        </li>
+
+                                        <li>
+                                            Otherwise, do nothing.
+                                        </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <h3>2. Labelling Proposals with IoU</h3>
+                    <div class="context">
+                        <p>Given ~2000 proposals & the ground truth bounding boxes (from the dataset), R-CNN needs to
+                            decide which proposals are <strong>positive</strong> (contain an object) and which are
+                            <strong>negative</strong> (background). The metric for this decision is <strong>Intersection
+                                over Union (IoU)</strong>.
+                        </p>
+
+                        <p>For a predicted bounding box \( P \) and a ground truth bounding box \( G \), the IoU is
+                            defined as:</p>
+                        \[
+                        \text{IoU} = \frac{|P \cap G|}{|P \cup G|} = \frac{|P \cap G|}{|P| + |G| - |P \cap G|}
+                        \]
+                        <br>
+
+                        <img src="../assets/rcnn/iou.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 20em; display: block; margin: 0 auto;" loading="lazy">
+
+                        <br>
+                        <p>R-CNN labels a proposal as:</p>
+                        <ul>
+                            <li><strong>Positive:</strong> if IoU \( > 0.5 \)</li>
+                            <li><strong>Negative:</strong> if IoU \( < 0.3 \)</li>
+                            <li><strong>Ignored:</strong> if IoU is between 0.5 and 0.3 (optional)</li>
+                        </ul>
+                    </div>
+
+                    <h3>3. Feature Extraction with a Pre-trained CNN</h3>
+                    <div class="context">
+                        <p>Each of the ~2000 proposals is warped to a fixed size of <strong>224 × 224</strong> (VGG-16
+                            architecture is used) and then passed through the pre-trained CNN to extract features
+                            (VGG-16).</p>
+                        <p>We extract the features from the fully connected layers of the pre-trained CNN.</p>
+
+                        \[
+                        \phi(p) \in \mathbb{R}^{4096}
+                        \]
+                    </div>
+
+                    <h3>4. Classification with a Linear SVM</h3>
+                    <div class="context">
+                        <p>For each object category, a separate linear SVM is trained on the extracted 4096 features.
+                        </p>
+                        <p>For class \( c \), the SVM solves:</p>
+                        \[
+                        \min_{w_c, b_c}
+                        \quad
+                        \frac{1}{2}\|w_c\|^2
+                        +
+                        C \sum_{i=1}^{N} \xi_i
+                        \]
+
+                        subject to
+                        \[
+                        y_i (w_c^T \phi(p_i) + b_c) \ge 1 - \xi_i, \quad \xi_i \ge 0
+                        \]
+
+                        <p>where \( y_i \in \{-1, +1\} \) is the true label for proposal \( p_i \), \( C \) is the
+                            regularization parameter, and \( \xi_i \) are slack variables.</p>
+
+                        <p>The SVM outputs a confidence score \( s_c(p) \) = \( w_c^T \phi(p) + b_c \) for each proposal
+                            \( p \).</p>
+
+                        <div class="note">
+                            <strong>Why SVM and not just a softmax layer on the CNN?</strong>
+                            <p>The original R-CNN paper found that fine-tuning the CNN with a softmax head and directly
+                                reading off the softmax scores slightly underperformed the SVM approach. The suspected
+                                reason: the CNN is fine-tuned with loose IoU thresholds (IoU > 0.5 as positive), which
+                                gives imprecise spatial examples. The SVM is trained with stricter positive/negative
+                                criteria, learning a tighter decision boundary.</p>
+                        </div>
+                    </div>
+
+                    <h3>5. Bounding Box Regression</h3>
+                    <div class="context">
+                        <p>Given Proposal \( P = (P_x, P_y, P_w, P_h) \) (center co-ordinates, width, height) and Ground
+                            Truth
+                            \( G = (G_x, G_y, G_w, G_h) \), the regressor is configured to learn scale-invariant
+                            transformation between two centers and log-scale transformation between widths and heights.
+                            All the transformation functions take as input.</p>
+                        \[\hat{G}_x = P_w \hat{t}_x + P_x, \quad \hat{G}_y = P_h \hat{t}_y + P_y\]
+                        \[\hat{G}_w = P_w \exp(\hat{t}_w), \quad \hat{G}_h = P_h \exp(\hat{t}_h)\]
+                        <br>
+                        <img src="../assets/rcnn/transformation.png" alt="Convex Conjugate Illustration"
+                            class="context-image" style="max-width: 100%; height: 20em; display: block; margin: 0 auto;"
+                            loading="lazy">
+                        <br>
+                        <p>
+                            An obvious benefit of applying such transformations is that all the
+                            bounding box correction functions,
+                            \( d_i(p) \), where \( i \in \{x, y, h, w\} \),
+                            can take values in \( (-\infty, +\infty) \).
+                        </p>
+                        <p>The targets for them to learn are: </p>
+                        \[
+                        t_x = \frac{G_x - P_x}{P_w}, \quad
+                        t_y = \frac{G_y - P_y}{P_h}, \quad
+                        \]
+                        \[
+                        t_w = \log\left(\frac{G_w}{P_w}\right), \quad
+                        t_h = \log\left(\frac{G_h}{P_h}\right)
+                        \]
+
+                        <p>A standard regression model can solve the problem by minimizing the SSE loss with
+                            regularization: </p>
+
+                        \[
+                        \mathcal{L}_{\text{reg}}
+                        =
+                        \sum_{i \in \{x, y, w, h\}}
+                        \left(
+                        (\hat{t}_i - t_i)^2
+                        +
+                        \lambda \|w\|^2
+                        \right)
+                        \]
+                    </div>
+
+                    <h3>6. Non-Maximum Suppression</h3>
+                    <div class="context">
+                        After regression, multiple proposals may surround the same object — each with slightly different
+                        coordinates and scores. <strong>Non-Maximum Suppression (NMS)</strong> selects the single best
+                        detection per object instance.
+
+                        <h4>Algorithm:</h4>
+                        <ol>
+                            <li>Sort all proposals by confidence score \(s\) in descending order.</li>
+                            <li>Take the top proposal \(p^*\). Add to output set.
+                            </li>
+                            <li>
+                                Remove all remaining proposals \( p_j \) where
+                                \( \operatorname{IoU}(p^*, p_j) > \tau \)
+                                (e.g., \( \tau = 0.3 \)).
+                            </li>
+                            <li>Repeat step 2</li>
+                        </ol>
+                        <br>
+                        <img src="../assets/rcnn/non-max-suppression.png" alt="Convex Conjugate Illustration"
+                            class="context-image" style="max-width: 100%; height: 20em; display: block; margin: 0 auto;"
+                            loading="lazy">
+                        <br>
+                    </div>
+
+                    <h3>R-CNN Pipeline</h3>
+                    <div class="context">
+                        <br>
+                        <img src="../assets/rcnn/rcnn_pipeline.png" alt="Convex Conjugate Illustration"
+                            class="context-image" style="max-width: 100%; height: 20em; display: block; margin: 0 auto;"
+                            loading="lazy">
+                        <br>
+                    </div>
+
+                    <h3>Evaluation — Mean Average Precision (mAP)</h3>
+                    <div class="context">
+                        <p>Object detection models are evaluated using <em>mean Average Precision (mAP)</em>.</p>
+                        \[
+                        \text{Precision} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Positives}}
+                        \]
+                        \[
+                        \text{Recall} = \frac{\text{True Positives}}{\text{True Positives} + \text{False
+                        Negatives}}
+                        \]
+
+                        <p>For each class, we compute the Average Precision (AP) as the area under the Precision-Recall
+                            curve. The mAP is then calculated as the mean of AP across all classes.</p>
+
+                        \[
+                        \text{AP} = \int_0^1 \text{Precision}(r) \, dr
+                        \]
+                        \[
+                        \quad\text{mAP} = \frac{1}{C} \sum_{c=1}^{C} \text{AP}_c
+                        \]
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <p>Written with mathematical rigor and visual intuition in mind.</p>
+                <p><a href="../index.html">Back to Home</a></p>
+                <p><a href="../index.html">Home</a> | <a href="GANs.html">Next Chapter →</a></p>
+            </footer>
+
+            <script>
+                // Render all LaTeX equations
+                document.addEventListener("DOMContentLoaded", function () {
+                    renderMathInElement(document.body, {
+                        delimiters: [
+                            { left: "$", right: "$", display: true },
+                            { left: "\\[", right: "\\]", display: true },
+                            { left: "$", right: "$", display: false },
+                            { left: "\\(", right: "\\)", display: false }
+                        ],
+                        throwOnError: false
+                    });
+                });
+            </script>
+</body>
+
+</html>

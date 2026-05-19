@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GANs</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script defer src="../js/math-config.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Home</a>
+
+        <header>
+            <h1>Generative Adversarial Networks</h1>
+
+            <div class="chapter-intro">
+                <p>In this chapter, we'll explore how GANs work and different architectures have been proposed, but
+                    before that, go through the prerequisites.</p>
+            </div>
+
+            <div class="chapter">
+                <!-- 1. Prerequisites -->
+                <div class="problem" id="prerequisites">
+                    <h3>Probability Density (\(p(x)\)) v/s Probability Distribution (\(\mathbb{P}(x)\))</h3>
+                    <div class="context">
+                        <p><strong>Discrete Variable: </strong></p>
+                        \[P(X = x) = p(x) \quad \text{(Probability Mass Function)}\]
+                        \[\mathbb{P}(X \in A) = \sum_{x \in A} p(x)\]
+
+                        <p><strong>Continuous Variable: </strong></p>
+                        No Probability Mass Function exists for continous variables (Cant find probability at a single
+                        point), but </p>
+                        \[\mathbb{P}(X \in A) = \int_A p(x) \, dx\]
+
+                    </div>
+
+                    <h3>i.i.d (Independent and Identically Distributed)</h3>
+                    <div class="context">
+                        <p><strong>Identical: </strong></p>
+                        If 2 R.V's is drawn from the same distribution, then it is said to be identical.</p>
+                        <p><strong>Independent: </strong></p>
+                        If the outcome of one R.V does not affect the outcome of another R.V, then they are said to be
+                        independent.</p>
+                        <p>Consider 2 random variables \(X_1, X_2\) that are independent.</p>
+                        <p>Then:</p>
+                        \[P(X_1 = x_1 | X_2 = x_2) = P(X_1 = x_1)\]
+
+                        <div class="note">
+                            <strong>Note:</strong> Whenever the term i.i.d is used, Law of Large Numbers is activated
+                            for that R.V.
+
+                            \[ \text{LLN: } \quad \frac{1}{n} \sum_{i=1}^{n} x_i \xrightarrow{P} \mathbb{E}[x] \quad
+                            \text{as } n \to \infty \]
+                        </div>
+                    </div>
+
+                    <h3>Convex Conjugate</h3>
+                    <div class="context">
+                        <p>Consider the graph given below.
+                            <br>
+                            <img src="../assets/gans/gans_conjugate.png" alt="Convex Conjugate Illustration"
+                                class="context-image"
+                                style="max-width: 100%; height: 20em; display: block; margin: 0 auto;" loading="lazy">
+                            <br>
+                        <p>Here, \( f(u) \) is some function(convex or non-convex) which we're interested in finding the
+                            convex conjugate of. </p>
+                        <p>and now we pick an arbitrary slope t, and line l(u) = tu + c</p>
+                        <p>to say that the line is convex conjugate, it must satisfy: </p>
+                        \[ l(u) \leq f(u) \quad \text{for all } u \] 
+                        \[ tu + c \leq f(u) \quad \text{for all } u \]
+                        \[ c \leq f(u) - tu \quad \text{for all } u \]
+
+                        <p>now, our job is to minimize c </p>
+                        \[ c = \inf_{u} \left\{ f(u) - tu \right\} \]
+                        <p>or, </p>
+                        \[ -c = \sup_{u} \left\{ tu - f(u) \right\} \]
+
+                        <p>We can write convex conjugate as a function of t:</p>
+
+                        \[
+                        f^*(t) = \sup_{u} \left\{ tu - f(u) \right\}
+                        \] 
+
+                        <div class="note">
+                            <strong>Note:</strong> We've used the supremum (sup) instead of maximum (max) because the
+                            maximum may not be attained if \( f \) is not continuous or does not have a maximum value.
+
+                            <p>Ex: Consider the function \( f(x) \) mapped in the range \([0, 1)\) and \( f(x) = 0 \)
+                                for all \( x \in [0, 1) \). </p>
+
+                            \[max_{x \in [0, 1)} \{ f(x) \} = undefined\]
+                            \[sup_{x \in [0, 1)} \{ f(x) \} = 1\]
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Variational Divergence Minimization -->
+                <div class="problem" id="Variational Divergence Minimization">
+                    <h3>Variational Divergence Minimization</h3>
+                    <div class="context">
+
+                        <br>
+                        <img src="../assets/gans/1.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/gans/2.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/gans/3.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 100em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/gans/4.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/gans/5.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/gans/6.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/gans/7.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 70em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/gans/8.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 70em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/gans/9.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 30em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                    </div>
+                </div>
+
+                <!-- 3. Generative Modelling via VDM -->
+                <div class="problem" id="Generative Modelling via VDM">
+                    <h3>Generative Modelling via VDM</h3>
+                    <div class="context">
+
+                        <br>
+                        <img src="../assets/gans/10.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <br>
+                        <img src="../assets/gans/11.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/gans/12.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                    </div>
+                </div>
+
+                <!-- 4. Generative Adversarial Networks -->
+                <div class="problem" id="Generative Adversarial Networks">
+                    <h3>Generative Adversarial Networks</h3>
+                    <div class="context">
+                        <h4>
+                            Let's derive the convex conjugate of
+                            \( f(u) = u \log u - (u+1)\log(u+1) \)
+                        </h4>
+
+                        <p>
+                            We want to find its convex conjugate, defined as:
+                            \[
+                            f^*(t) = \sup_{u > 0} \left\{ tu - u \log u + (u+1)\log(u+1) \right\}
+                            \]
+
+                            <strong>Step 1: Find the critical point</strong><br>
+                            Take the derivative of the expression inside the supremum with respect to u and set it to 0:
+                            \[
+                            \frac{d}{du} \left( tu - u \log u + (u+1)\log(u+1) \right) = t - (\log u + 1) + (\log(u+1) +
+                            1) = 0
+                            \]
+
+                            Simplifying this, we get the relationship between t and u at the optimum:
+                            \[
+                            t = \log u - \log(u+1)
+                            \]
+
+                            <em>(Note: Since \( u > 0 \), the ratio \( \frac{u}{u+1} < 1 \), which implies \( t < 0
+                                    \).)</em><br><br>
+
+                                    <strong>Step 2: Simplify the objective function</strong><br>
+                                    Instead of solving for u right away, substitute \( t = \log u - \log(u+1) \)
+                                    directly into the original supremum expression:
+                                    \[
+                                    f^*(t) = u(\log u - \log(u+1)) - u \log u + (u+1)\log(u+1)
+                                    \]
+
+                                    Expand the terms:
+                                    \[
+                                    f^*(t) = u \log u - u \log(u+1) - u \log u + u \log(u+1) + \log(u+1)
+                                    \]
+
+                                    Notice how beautifully almost everything cancels out, leaving just:
+                                    \[
+                                    f^*(t) = \log(u+1)
+                                    \]
+
+                                    <strong>Step 3: Solve for u+1 in terms of t</strong><br>
+                                    Now we just need to express \( \log(u+1) \) in terms of t. Using our relationship
+                                    from Step 1:
+                                    \[
+                                    t = \log\left(\frac{u}{u+1}\right)
+                                    \]
+                                    \[
+                                    e^t = \frac{u}{u+1}
+                                    \]
+
+                                    We can rewrite the right side as:
+                                    \[
+                                    e^t = 1 - \frac{1}{u+1}
+                                    \]
+
+                                    Rearranging to solve for u+1:
+                                    \[
+                                    \frac{1}{u+1} = 1 - e^t \implies u+1 = \frac{1}{1 - e^t}
+                                    \]
+
+                                    <strong>Step 4: Final Substitution</strong><br>
+                                    Substitute u+1 back into our simplified expression for \( f^*(t) \):
+                                    \[
+                                    f^*(t) = \log\left(\frac{1}{1 - e^t}\right)
+                                    \]
+
+                                    Using the property of logarithms \( \log(1/x) = -\log(x) \), we get the final
+                                    answer:
+                                    \[
+                                    \boxed{
+                                    f^*(t) = -\log(1 - e^t)
+                                    }
+                                    \qquad \text{for } t < 0 \] </p>
+                    </div>
+                    <div class="context">
+
+                        <br>
+                        <img src="../assets/gans/13.png" alt="Generative Adversarial Networks" class="context-image"
+                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        
+                        <br>
+                        <img src="../assets/gans/14.png" alt="Generative Adversarial Networks" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <br>
+                        <img src="../assets/gans/15.png" alt="Generative Adversarial Networks" class="context-image"
+                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <br>
+                        <img src="../assets/gans/16.png" alt="Generative Adversarial Networks" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                    </div>
+                </div>
+
+                <!-- 5. Training Generative Adversarial Networks -->
+                <div class="problem" id="Training GANs">
+                    <h3>Training GANs</h3>
+                    <div class="context">
+                        <br>
+                        <img src="../assets/gans/17.png" alt="Generative Adversarial Networks" class="context-image"
+                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <br>
+                        <img src="../assets/gans/18.png" alt="Generative Adversarial Networks" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                    </div>
+                </div>
+
+                <footer>
+                    <p>Written with mathematical rigor and visual intuition in mind.</p>
+                    <p><a href="../index.html">Back to Home</a></p>
+                    <p><a href="../index.html">Home</a> | <a href="Transformer.html">Next Chapter →</a></p>
+                </footer>
+
+                <script>
+                    // Render all LaTeX equations
+                    document.addEventListener("DOMContentLoaded", function () {
+                        renderMathInElement(document.body, {
+                            delimiters: [
+                                { left: "$", right: "$", display: true },
+                                { left: "\\[", right: "\\]", display: true },
+                                { left: "$", right: "$", display: false },
+                                { left: "\\(", right: "\\)", display: false }
+                            ],
+                            throwOnError: false
+                        });
+                    });
+                </script>
+</body>
+
+</html>

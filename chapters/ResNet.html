@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResNet</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script defer src="../js/math-config.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Home</a>
+
+        <header>
+            <h1>ResNet</h1>
+
+            <div class="chapter-intro">
+                <p>In this chapter, we'll explore how Residual Networks (ResNet) solve the degradation & vanishing
+                    gradient problem in deep neural networks.</p>
+            </div>
+
+            <div class="chapter">
+
+                <!-- 1. Why ResNet -->
+                <div class="problem" id="big-picture">
+                    <h3>Why Residual Connections?</h3>
+
+                    <div class="context">
+                        <p>Let's look at the given graph.
+                        </p>
+
+                        <br>
+
+                        <img src="../assets/resnet/res_plain_20vs56.png" alt="Black box" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+
+                        <br>
+
+                        <p>We expected the training/test error for the 56-layer network to be lower than the 20-layer
+                            network (since the solution space of a 20-layer network is subset of the solution space of a
+                            56-layer network), but it was the opposite!</p>
+
+                        <p>Why?</p>
+
+                        <p>This is primarily due to 2 problems:</p>
+                        <ol>
+                            <li><strong>Vanishing/Exploding Gradients</strong></li>
+                            <li><strong>The degradation problem</strong></li>
+                        </ol>
+                        <p>Let's look at each one by one</p>
+
+                    </div>
+                </div>
+
+                <!-- 2. Vanishing/Exploding Gradients Problem -->
+                <div class="problem" id="vanishing">
+                    <h3>Vanishing/Exploding Gradients Problem</h3>
+                    <div class="context">
+                        <p>
+                            During backpropagation, gradients propagate backward through every layer via the chain rule.
+                            For a network with \(L\) layers, the gradient of the loss with respect to the first layer's
+                            weights looks like this:
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Gradient via Chain Rule</h4>
+                            \[
+                            \frac{\partial \mathcal{L}}{\partial W_1}
+                            =
+                            \frac{\partial \mathcal{L}}{\partial x_L}
+                            \cdot
+                            \frac{\partial x_L}{\partial x_{L-1}}
+                            \cdot
+                            \frac{\partial x_{L-1}}{\partial x_{L-2}}
+                            \cdots
+                            \frac{\partial x_2}{\partial W_1}
+                            \]
+                        </div>
+
+                        <p>
+                            Each term \(\frac{\partial x_{i+1}}{\partial x_i}\) is the Jacobian of that layer's
+                            output with respect to its input. For a single layer with weight matrix \(W_i\) and
+                            activation \(\sigma\), this Jacobian is:
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Jacobian of a Single Layer</h4>
+                            \[
+                            \frac{\partial x_{i+1}}{\partial x_i}
+                            =
+                            W_i^{\top}
+                            \operatorname{diag}\!\left(\sigma'(x_i)\right)
+                            \]
+                            <p style="margin-top: 10px;">
+                                where \(\sigma'(x_i)\) is the derivative of the activation function — for ReLU,
+                                this is either \(0\) or \(1\).
+                            </p>
+                        </div>
+
+                        <p>
+                            So the full gradient product across \(L\) layers becomes:
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>The Vanishing Gradient — Full Product</h4>
+                            \[
+                            \frac{\partial \mathcal{L}}{\partial W_1}
+                            =
+                            \frac{\partial \mathcal{L}}{\partial x_L}
+                            \prod_{i=1}^{L-1}
+                            \left(
+                            W_i^{\top}
+                            \operatorname{diag}\!\left(\sigma'(x_i)\right)
+                            \right)
+                            \]
+                        </div>
+
+                        <p>
+                            This is a product of \(L - 1\) matrices. Two things can go wrong:
+                        </p>
+                        <ul>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Vanishing:</strong> If the singular values of \(W_i\) are less than \(1\),
+                                each multiplication shrinks the gradient. After \(L\) layers, the product
+                                \(\prod_{i=1}^{L-1} \lVert W_i \rVert\) collapses toward \(0\) exponentially fast.
+                                Early layers receive essentially no gradient signal and stop learning.
+                            </li>
+                            <li>
+                                <strong>Exploding:</strong> If the singular values of \(W_i\) are greater than \(1\),
+                                the product grows exponentially. Gradients become astronomically large, weight
+                                updates destabilize training, and loss diverges.
+                            </li>
+                        </ul>
+
+                        <div class="note">
+                            <strong>Note:</strong> ReLU already helps compared to sigmoid or tanh — its derivative
+                            is either exactly \(0\) or exactly \(1\), so it does not saturate. But with \(56\) layers,
+                            even a modest per-layer shrinkage compounds: if each Jacobian scales gradients by
+                            \(0.9\), after \(56\) layers you get \(0.9^{56} \approx 0.0015\) — less than \(0.2\%\) of
+                            the original gradient reaches the first layer.
+                        </div>
+
+                        <div class="tip">
+                            <strong>Key Insight:</strong> This is not an overfitting problem. The training error
+                            itself goes up with depth. The network has enough capacity — the optimizer simply
+                            cannot train it effectively because the gradient signal vanishes before reaching
+                            the early layers.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Degradation Problem -->
+                <div class="problem" id="degradation">
+                    <h3>The Degradation Problem</h3>
+                    <div class="context">
+                        <p>
+                            Even after reducing vanishing gradients (with better initialization and normalization),
+                            deeper plain networks can still train worse.
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>The Identity Argument</h4>
+                            <p>
+                                If a shallow network \(\mathcal{F}_s\) works well, a deeper network
+                                \(\mathcal{F}_d\) should match it by letting extra layers learn identity mappings:
+                            </p>
+
+                            \[
+                            \mathcal{F}_d(x) = \mathcal{F}_s(x)
+                            \quad
+                            \text{if the extra } k \text{ layers learn } h(x) = x
+                            \]
+
+                            <p style="margin-top: 10px;">
+                                So the deeper model should achieve at least the same training error.
+                            </p>
+                            <br>
+                            <img src="../assets/resnet/res_degradationproblem.png"
+                                alt="Degradation problem illustration" class="context-image"
+                                style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                            <br>
+                        </div>
+
+                        <p>
+                            In practice, this fails: the 56-layer plain net has <em>higher</em> training error
+                            than the 20-layer net. This is the <strong>degradation problem</strong>.
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Why Plain Layers Struggle</h4>
+
+                            \[
+                            h(x) = \sigma(Wx + b)
+                            \]
+
+                            <p style="margin-top: 10px;">
+                                To learn identity, layers must reach \(W \approx I\) and \(b \approx 0\) from
+                                random initialization. In deep non-convex optimization, gradient descent often
+                                fails to find this path.
+                            </p>
+                        </div>
+
+                        <div class="note">
+                            <strong>Note:</strong> Degradation is an optimization issue, not a capacity issue.
+                            Deeper models are more expressive, but harder to optimize.
+                        </div>
+
+                        <div class="tip">
+                            <strong>Key Insight:</strong> Plain nets must learn full mappings in each layer.
+                            ResNet instead learns residuals, making identity behavior easy and training more stable.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Skip Connections -->
+                <div class="problem" id="Skip-Connections">
+                    <h3>Skip Connections</h3>
+                    <p>Here's how ResNet solves the above problems:</p>
+                    <div class="context">
+
+                        <p>
+                            The core idea is simple: instead of asking each layer to learn a complete mapping
+                            \(H(x)\) from scratch, ResNet reformulates the problem. If the desired mapping is
+                            \(H(x)\), the layers are made to learn the <strong>residual</strong>:
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Residual Formulation</h4>
+                            \[
+                            F(x) := H(x) - x
+                            \]
+                            <p style="margin-top: 10px;">
+                                so the true mapping becomes:
+                            </p>
+                            \[
+                            H(x) = F(x) + x
+                            \]
+                            <p style="margin-top: 10px;">
+                                In the extreme case where identity is optimal, the layers only need to push
+                                \(F(x) \to 0\) — i.e., drive weights toward zero — which is far easier
+                                for gradient descent than learning \(W \approx I\) from random initialization.
+                            </p>
+                        </div>
+
+                        <h4>The Residual Block</h4>
+
+                        <p>
+                            The fundamental building block of ResNet is the <strong>residual block</strong>.
+                            A <strong>skip connection</strong> (also called a shortcut connection) bypasses one
+                            or more layers and adds the input \(x\) directly to the output:
+                        </p>
+
+                        <img src="../assets/resnet/res_residual_block.png" alt="Residual Block Diagram"
+                            class="context-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                            loading="lazy">
+
+                        <br>
+
+                        <p>
+                            Mathematically, the output of a residual block is:
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Residual Block Output</h4>
+                            \[
+                            y = F(x,\, \{W_i\}) + x
+                            \]
+                            <p style="margin-top: 10px;">
+                                where \(F(x, \{W_i\})\) is the residual mapping learned by the stacked layers
+                                (typically two or three conv layers), and \(x\) is passed through unchanged
+                                via the shortcut.
+                            </p>
+                        </div>
+
+                        <h4>Why This Fixes the Gradient Problem</h4>
+
+                        <p>
+                            The skip connection creates a direct gradient highway back through the network.
+                            During backpropagation, the gradient of the loss with respect to an earlier
+                            layer \(x\) becomes:
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Gradient Through a Residual Block</h4>
+                            \[
+                            \frac{\partial \mathcal{L}}{\partial x}
+                            =
+                            \frac{\partial \mathcal{L}}{\partial y}
+                            \cdot
+                            \left(
+                            \frac{\partial F}{\partial x} + I
+                            \right)
+                            \]
+                            <p style="margin-top: 10px;">
+                                The \(+\, I\) term means the gradient always has an additive component of \(1\),
+                                regardless of what the learned layers do. Even if \(\frac{\partial F}{\partial x}\)
+                                is small, the identity term ensures the gradient signal is never completely
+                                extinguished — early layers consistently receive a usable gradient.
+                            </p>
+                        </div>
+                        <p>We'll now implement 2 architectures: ResNet-18 and ResNet-50.</p>
+                    </div>
+                </div>
+
+                <!-- 5. ResNet-18 -->
+                <div class="problem" id="ResNet-18">
+                    <h3 style="text-align: center;">ResNet-18</h3>
+                    <p>We will now understand the implementation of ResNet-18 Architecture and understand each and every
+                        component</p>
+                    <br>
+                    <img src="../assets/resnet/res_resnet18.png" alt="ResNet-18 Architecture" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                    <br>
+                    <p>Let's understand each component required to code.</p>
+
+                    <!-- conv3x3 -->
+                    <div class="context">
+                        <h3>conv3x3</h3>
+
+                        <pre><code><span class="kw">def</span> <span class="fn">conv3x3</span>(
+    in_planes:  <span class="tp">int</span>,
+    out_planes: <span class="tp">int</span>,
+    stride:     <span class="tp">int</span> = <span class="num">1</span>,
+    groups:     <span class="tp">int</span> = <span class="num">1</span>,
+    dilation:   <span class="tp">int</span> = <span class="num">1</span>
+) -> nn.Conv2d:
+    <span class="st">"""3x3 convolution with padding"""</span>
+    <span class="kw">return</span> nn.Conv2d(
+        in_planes,
+        out_planes,
+        kernel_size=<span class="num">3</span>,
+        stride=stride,
+        padding=dilation,
+        groups=groups,
+        bias=<span class="kw">False</span>,
+        dilation=dilation,
+    )</code></pre>
+
+                        <p>
+                            Let's go through each argument and understand exactly why it's set the way it is.
+                        </p>
+
+                        <!-- ── kernel_size=3 ── -->
+                        <h4>1. <code>kernel_size=3</code></h4>
+                        <p>
+                            A \(3 \times 3\) kernel is the smallest that captures spatial relationships in
+                            both dimensions simultaneously. Two stacked \(3 \times 3\) convolutions have the
+                            same receptive field as one \(5 \times 5\) convolution, but with fewer parameters
+                            and an extra non-linearity between them:
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Parameters: Two 3×3 vs One 5×5</h4>
+                            \[
+                            2 \times (3 \times 3 \times C_{\mathrm{in}} \times C_{\mathrm{out}})
+                            \quad \text{vs} \quad
+                            (5 \times 5 \times C_{\mathrm{in}} \times C_{\mathrm{out}})
+                            \]
+                            \[
+                            \Rightarrow \quad
+                            18\, C_{\mathrm{in}} C_{\mathrm{out}}
+                            \quad \text{vs} \quad
+                            25\, C_{\mathrm{in}} C_{\mathrm{out}}
+                            \]
+                            <p style="margin-top: 10px;">
+                                Two \(3 \times 3\) convs use <strong>28% fewer parameters</strong> than one
+                                \(5 \times 5\), while achieving the same receptive field and adding an extra
+                                ReLU in between.
+                            </p>
+                        </div>
+
+                        <img src="../assets/resnet/res_3x3_vs_5x5.png" alt="3x3 vs 5x5 receptive field comparison"
+                            class="context-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                            loading="lazy">
+
+                        <br>
+
+                        <!-- ── padding=dilation ── -->
+                        <h4>2. <code>padding=dilation</code></h4>
+                        <p>
+                            The padding is set equal to the dilation value, not hardcoded to \(1\).
+                            To understand why, we first need to understand what dilation actually does.
+                        </p>
+
+                        <h4>What is Dilation?</h4>
+                        <p>
+                            In a standard convolution, the kernel samples <em>adjacent</em> pixels — each
+                            element of the \(3 \times 3\) kernel touches the pixel right next to it.
+                            Dilation inserts gaps between the kernel elements, so the kernel samples pixels
+                            that are spread further apart. The kernel size stays \(3 \times 3\), but it now
+                            covers a much larger region of the input.
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Effective Receptive Field with Dilation</h4>
+                            \[
+                            \text{effective kernel size} = d \times (k - 1) + 1
+                            \]
+                            <p style="margin-top: 10px;">
+                                where \(d\) is the dilation factor and \(k\) is the kernel size.
+                                For a \(3 \times 3\) kernel:
+                            </p>
+                            \[
+                            d = 1 \;\Rightarrow\; 1 \times 2 + 1 = 3 \times 3 \text{ coverage}
+                            \]
+                            \[
+                            d = 2 \;\Rightarrow\; 2 \times 2 + 1 = 5 \times 5 \text{ coverage}
+                            \]
+                            \[
+                            d = 3 \;\Rightarrow\; 3 \times 2 + 1 = 7 \times 7 \text{ coverage}
+                            \]
+                            <p style="margin-top: 10px;">
+                                You get a larger receptive field with the <strong>same number of parameters</strong>
+                                and <strong>no extra computation</strong> — just wider spacing between the kernel
+                                sample points.
+                            </p>
+                        </div>
+
+                        <img src="../assets/resnet/res_dilation_explained.png" alt="Dilation factor increasing receptive field"
+                            class="context-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                            loading="lazy">
+
+                        <br>
+
+                        <p>
+                            Now that we understand dilation, we can see why <code>padding=dilation</code>
+                            is the right default.
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Output Size Formula</h4>
+                            \[
+                            H_{\mathrm{out}} =
+                            \left\lfloor
+                            \frac{
+                            H_{\mathrm{in}}
+                            + 2\,\text{padding}
+                            - \text{dilation} \times (\text{kernel} - 1)
+                            - 1
+                            }{\text{stride}}
+                            + 1
+                            \right\rfloor
+                            \]
+                            <p style="margin-top: 10px;">
+                                Substituting \(\text{kernel} = 3\), \(\text{padding} = d\),
+                                \(\text{dilation} = d\), \(\text{stride} = 1\):
+                            </p>
+                            \[
+                            H_{\mathrm{out}}
+                            =
+                            \left\lfloor
+                            \frac{H_{\mathrm{in}} + 2d - d \times 2 - 1}{1} + 1
+                            \right\rfloor
+                            = H_{\mathrm{in}}
+                            \]
+                            <p style="margin-top: 10px;">
+                                The \(2d\) from padding exactly cancels the \(d \times 2\) lost to dilation —
+                                so spatial size is always preserved, for <em>any</em> dilation value.
+                                This is why <code>padding=dilation</code> is not a coincidence — it's
+                                a deliberate identity.
+                            </p>
+                        </div>
+
+
+                        <div class="tip">
+                            <strong>Key Insight:</strong> As dilation increases the kernel's reach, padding grows
+                            by exactly the same amount to compensate. The residual addition \(F(x) + x\) requires
+                            \(F(x)\) and \(x\) to have identical spatial dimensions — <code>padding=dilation</code>
+                            is what silently guarantees this for every possible dilation value.
+                        </div>
+
+                        <!-- ── stride ── -->
+                        <h4>3. <code>stride=1</code> (default)</h4>
+                        <p>
+                            When <code>stride=1</code>, the kernel moves one pixel at a time and the
+                            spatial size is preserved (given <code>padding=dilation</code> above).
+                            When <code>stride=2</code> is passed — which happens at the start of each
+                            new stage in ResNet-18 — the spatial dimensions are halved, acting as a
+                            learned downsampling operation.
+                        </p>
+
+                        <img src="../assets/resnet/res_stride.png" alt="stride=1 vs stride=2 spatial downsampling"
+                            class="context-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                            loading="lazy">
+
+                        <br>
+
+                        <!-- ── groups ── -->
+                        <h4>4. <code>groups=1</code> (default)</h4>
+                        <p>
+                            <code>groups=1</code> is a standard convolution — every input channel is
+                            connected to every output channel. Setting <code>groups=C</code> (where C is
+                            the number of channels) gives a <strong>depthwise convolution</strong>, where
+                            each input channel is convolved independently. ResNet-18 uses <code>groups=1</code>
+                            throughout, but the argument is exposed for variants like ResNeXt which use
+                            grouped convolutions to trade width for depth efficiently.
+                        </p>
+
+                        <img src="../assets/resnet/res_groups.png" alt="groups=1 standard conv vs depthwise conv"
+                            class="context-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                            loading="lazy">
+
+                        <br>
+
+                        <!-- ── bias=False ── -->
+                        <h4>5. <code>bias=False</code></h4>
+                        <p>
+                            Every <code>conv3x3</code> in ResNet is immediately followed by a Batch
+                            Normalization layer. BN subtracts the batch mean before scaling, which
+                            cancels out any constant offset — including whatever a conv bias \(b\) would
+                            have added. The learnable shift \(\beta\) inside BN already plays that role:
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Why bias=False with BatchNorm</h4>
+                            \[
+                            \operatorname{BN}(x)
+                            =
+                            \gamma
+                            \frac{x - \mu_{\mathcal{B}}}
+                            {\sqrt{\sigma_{\mathcal{B}}^{2} + \epsilon}}
+                            +
+                            \beta
+                            \]
+                            <p style="margin-top: 10px;">
+                                The mean subtraction \(\mu_{\mathcal{B}}\) cancels any constant offset —
+                                including whatever a conv bias \(b\) would have added. Setting
+                                <code>bias=False</code> removes a redundant parameter that would never
+                                have any effect.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <!-- conv1x1 -->
+                    <div class="context">
+                        <h3>conv1x1</h3>
+                        <p>
+                            Alongside <code>conv3x3</code>, ResNet defines a second helper — <code>conv1x1</code>.
+                            It looks almost trivially simple, but it does something <code>conv3x3</code> cannot:
+                            change the number of channels without touching spatial dimensions at all.
+                        </p>
+
+                        <pre><code><span class="kw">def</span> <span class="fn">conv1x1</span>(
+    in_planes:  <span class="tp">int</span>,
+    out_planes: <span class="tp">int</span>,
+    stride:     <span class="tp">int</span> = <span class="num">1</span>
+) -> nn.Conv2d:
+    <span class="st">"""1x1 convolution"""</span>
+    <span class="kw">return</span> nn.Conv2d(
+        in_planes,
+        out_planes,
+        kernel_size=<span class="num">1</span>,
+        stride=stride,
+        bias=<span class="kw">False</span>,
+    )</code></pre>
+
+                        <p>
+                            Notice what's missing compared to <code>conv3x3</code>: no <code>padding</code>,
+                            no <code>groups</code>, no <code>dilation</code>. A \(1 \times 1\) kernel
+                            looks at exactly one spatial location at a time — there's nothing to pad,
+                            no spatial extent to dilate, and grouping across channels is the entire point.
+                            Let's go through each argument.
+                        </p>
+
+                        <!-- ── kernel_size=1 ── -->
+                        <h4>1. <code>kernel_size=1</code></h4>
+                        <p>
+                            A \(1 \times 1\) convolution operates on a single pixel position at a time,
+                            across all input channels simultaneously. It applies a learned linear combination
+                            across the channel dimension — effectively a per-pixel fully connected layer.
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>What a 1×1 Conv Actually Computes</h4>
+                            <p>For a single spatial location \((h, w)\):</p>
+                            \[
+                            y_{c'}(h,w) = \sum_{c=1}^{C_{\mathrm{in}}} W_{c', c} \cdot x_c(h, w)
+                            \]
+                            <p style="margin-top: 10px;">
+                                This is just a dot product between the \(C_{\mathrm{in}}\)-dimensional
+                                feature vector at position \((h, w)\) and the \(c'\)-th row of the weight
+                                matrix \(W \in \mathbb{R}^{C_{\mathrm{out}} \times C_{\mathrm{in}}}\).
+                                No spatial mixing — only channel mixing.
+                            </p>
+                        </div>
+
+                        <p>
+                            This means a \(1 \times 1\) conv can project any number of input channels
+                            to any number of output channels, independently at every spatial location,
+                            with no change to \(H\) or \(W\):
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Parameter Count</h4>
+                            \[
+                            \text{params} = C_{\mathrm{in}} \times C_{\mathrm{out}}
+                            \]
+                            <p style="margin-top: 10px;">
+                                Compare this to a \(3 \times 3\) conv with \(9 \times C_{\mathrm{in}} \times
+                                C_{\mathrm{out}}\)
+                                parameters. A \(1 \times 1\) conv is <strong>9× cheaper</strong> for the same
+                                channel projection — which is precisely why the Bottleneck block uses it to
+                                compress channels before the expensive \(3 \times 3\) conv.
+                            </p>
+                        </div>
+
+                        <img src="../assets/resnet/res_conv1x1.png" alt="1x1 convolution channel projection"
+                            class="context-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                            loading="lazy">
+
+                        <br>
+
+                        <!-- ── Where conv1x1 is used in ResNet-18 ── -->
+                        <h4>Where is it used in ResNet-18?</h4>
+                        <p>
+                            In ResNet-18, <code>conv1x1</code> appears in exactly one place: the
+                            <strong>projection shortcut</strong>. Recall that the skip connection requires
+                            \(F(x)\) and \(x\) to have the same shape for the addition \(F(x) + x\) to work.
+                            When a residual block downsamples spatially (stride=2) or changes channel depth,
+                            the identity shortcut breaks — shapes no longer match.
+                        </p>
+                        <p>
+                            The projection shortcut fixes this by applying a \(1 \times 1\) conv to \(x\)
+                            to match the required shape:
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Projection Shortcut</h4>
+                            \[
+                            y = F(x,\, \{W_i\}) + W_s\, x
+                            \]
+                            <p style="margin-top: 10px;">
+                                where \(W_s\) is implemented as
+                                <code>conv1x1(in_planes, out_planes, stride=stride)</code>.
+                                The \(1 \times 1\) kernel changes the channel count, and the stride simultaneously
+                                halves the spatial dimensions — matching \(F(x)\) exactly, with minimal parameters.
+                            </p>
+                        </div>
+
+                        <!-- Image: two side-by-side residual block diagrams.
+         Left (identity shortcut): x flows through [Conv→BN→ReLU→Conv→BN], skip arrow goes straight
+         to ⊕ — works because shapes match (same channels, same H×W).
+         Right (projection shortcut): same block but x is also passed through a 1×1 conv (with stride)
+         before reaching ⊕ — shapes now match even though channels increased and H×W halved.
+         Label input/output shapes at each point. Use a different color (e.g. orange) for the 1×1 projection arrow. -->
+                        <img src="../assets/resnet/res_projection_shortcut.png" alt="Identity vs projection shortcut"
+                            class="context-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                            loading="lazy">
+
+                        <br>
+
+                        <!-- ── stride ── -->
+                        <h4>2. <code>stride=1</code> (default)</h4>
+                        <p>
+                            Like in <code>conv3x3</code>, stride defaults to \(1\) but can be set to \(2\)
+                            when used as a projection shortcut. Since a \(1 \times 1\) kernel has no spatial
+                            extent, stride is the <em>only</em> mechanism by which this conv can change spatial
+                            size — there's no kernel overlap to exploit, so the stride directly controls
+                            the downsampling factor.
+                        </p>
+
+                        <!-- ── bias=False ── -->
+                        <h4>3. <code>bias=False</code></h4>
+                        <p>
+                            Same reason as in <code>conv3x3</code> — every <code>conv1x1</code> in ResNet
+                            is followed by Batch Normalization, whose learnable \(\beta\) already provides
+                            a per-channel trainable offset. A conv bias would be redundant and immediately
+                            cancelled by the BN mean subtraction.
+                        </p>
+
+                        <div class="note">
+                            <strong>Note:</strong> No <code>padding</code> argument is needed here. A
+                            \(1 \times 1\) kernel always produces an output the same spatial size as the
+                            input (before stride) — there are no border effects to compensate for, so
+                            padding is always \(0\).
+                        </div>
+
+                        <div class="tip">
+                            <strong>Key Insight:</strong> <code>conv1x1</code> is the shape-matching
+                            primitive of ResNet. It lets the network change channel depth and spatial size
+                            on the shortcut path cheaply — keeping the residual addition valid across every
+                            stage transition without adding significant parameters or computation.
+                        </div>
+                    </div>
+                </div>
+
+                <footer>
+                    <p>Written with mathematical rigor and visual intuition in mind.</p>
+                    <p><a href="../index.html">Back to Home</a></p>
+                    <p><a href="../index.html">Home</a> | <a href="RCNN.html">Next Chapter →</a></p>
+                </footer>
+
+                <script>
+                    // Render all LaTeX equations
+                    document.addEventListener("DOMContentLoaded", function () {
+                        renderMathInElement(document.body, {
+                            delimiters: [
+                                { left: "$", right: "$", display: true },
+                                { left: "\\[", right: "\\]", display: true },
+                                { left: "$", right: "$", display: false },
+                                { left: "\\(", right: "\\)", display: false }
+                            ],
+                            throwOnError: false
+                        });
+                    });
+                </script>
+</body>
+
+</html>
