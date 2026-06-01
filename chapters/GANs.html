@@ -72,7 +72,7 @@
                             convex conjugate of. </p>
                         <p>and now we pick an arbitrary slope t, and line l(u) = tu + c</p>
                         <p>to say that the line is convex conjugate, it must satisfy: </p>
-                        \[ l(u) \leq f(u) \quad \text{for all } u \] 
+                        \[ l(u) \leq f(u) \quad \text{for all } u \]
                         \[ tu + c \leq f(u) \quad \text{for all } u \]
                         \[ c \leq f(u) - tu \quad \text{for all } u \]
 
@@ -85,7 +85,7 @@
 
                         \[
                         f^*(t) = \sup_{u} \left\{ tu - f(u) \right\}
-                        \] 
+                        \]
 
                         <div class="note">
                             <strong>Note:</strong> We've used the supremum (sup) instead of maximum (max) because the
@@ -254,7 +254,7 @@
                         <img src="../assets/gans/13.png" alt="Generative Adversarial Networks" class="context-image"
                             style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
-                        
+
                         <br>
                         <img src="../assets/gans/14.png" alt="Generative Adversarial Networks" class="context-image"
                             style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
@@ -286,6 +286,188 @@
                         <img src="../assets/gans/18.png" alt="Generative Adversarial Networks" class="context-image"
                             style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
+                    </div>
+                </div>
+
+                <!-- 6. Conversion of GAN loss to BCE -->
+                <div class="problem" id="Conversion of GAN loss to BCE">
+                    <h3>Conversion of GAN loss to BCE</h3>
+                    <div class="context">
+                        <p>We now convert the GAN loss to Binary Cross Entropy Loss version (for training purpose)</p>
+
+                        \[
+                        \mathcal{J}_\text{GAN} = \mathbb{E}_{p_{x}} [\log D_{w}(x)] + \mathbb{E}_{p_{\theta}} [\log (1 -
+                        D_{w}(g_{\theta}(z)))]
+                        \]
+
+                        <p>and we know, BCE Loss function for a single sample is:</p>
+                        \[
+                        \mathcal{L_\text{BCE}} = - \left [y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right ]
+                        \]
+
+                        <p>where, \(y\) is the true label {0,1} and \(\hat{y}\) is the predicted probability [0,1].</p>
+
+                        <br>
+                        <p>First, let's derive the Loss function of the <strong>Discriminator</strong>, viz divided into
+                            2 parts:</p>
+
+                        <p>1. Loss for real images:</p>
+
+                        \[
+                        \begin{aligned}
+                        \mathcal{L}_{\text{real}}
+                        &=
+                        BCE(1, D_w(x)) \\[4pt]
+                        &=
+                        -\left[
+                        1 \cdot \log D_w(x)
+                        +
+                        (1-1)\cdot \log(1-D_w(x))
+                        \right] \\[4pt]
+                        &=
+                        -\log D_w(x)
+                        \end{aligned}
+                        \]
+
+                        <p>2. Loss for fake images:</p>
+
+                        \[
+                        \begin{aligned}
+                        \mathcal{L}_{\text{fake}}
+                        &=
+                        BCE(0, D_w(g_\theta(z))) \\[4pt]
+                        &=
+                        -\left[
+                        0 \cdot \log D_w(g_\theta(z))
+                        +
+                        (1-0)\cdot \log(1-D_w(g_\theta(z)))
+                        \right] \\[4pt]
+                        &=
+                        -\log\left(1-D_w(g_\theta(z))\right)
+                        \end{aligned}
+                        \]
+
+                        <br>
+                        <p>Now, the total loss for the Discriminator is:</p>
+                        \[
+                        \begin{aligned}
+                        \mathcal{L}_D
+                        &=
+                        \mathcal{L}_{\text{real}} + \mathcal{L}_{\text{fake}} \\[6pt]
+
+                        &=
+                        -\log D_w(x)
+                        -
+                        \log\left(1-D_w(g_\theta(z))\right) \\[6pt]
+
+                        &=
+                        BCE(1, D_w(x))
+                        +
+                        BCE(0, D_w(g_\theta(z))) \\[6pt]
+
+                        \end{aligned}
+                        \]
+
+                        <p>and across B1 samples, </p>
+                        \[
+                        \begin{aligned}
+                        \mathcal{L}_D
+                        &=
+                        -\frac{1}{B_1} \sum_{i=1}^{B_1} \left[
+                        \log D_w(x^{(i)}) + \log\left(1-D_w(g_\theta(z^{(i)}))\right)
+                        \right]
+                        \end{aligned}
+                        \]
+
+                        \[
+                        \boxed{
+                        \begin{aligned}
+                        \mathcal{L}_D
+                        &=
+                        -\frac{1}{B_1}
+                        \sum_{i=1}^{B_1}
+                        \left[
+                        BCE(1, D_w(x^{(i)}))
+                        +
+                        BCE(0, D_w(g_\theta(z^{(i)})))
+                        \right]
+                        \end{aligned}
+                        }
+                        \]
+
+
+                        <p>Now, let's derive the Loss function for the <strong>Generator</strong>:</p>
+                        <p>Since the generator receives noise, </p>
+                        \[
+                        \begin{aligned}
+                        \mathcal{L}_G
+                        &=
+                        BCE(0, D_w(g_\theta(z))) \\[4pt]
+                        &=
+                        -\left[
+                        0 \cdot \log D_w(g_\theta(z))
+                        +
+                        (1-0)\cdot \log(1-D_w(g_\theta(z)))
+                        \right] \\[4pt]
+                        &=
+                        -\log(1-D_w(g_\theta(z)))
+                        \end{aligned}
+                        \]
+
+                        <p>and across B2 samples, </p>
+                        \[
+                        \begin{aligned}
+                        \mathcal{L}_G
+                        &=
+                        -\frac{1}{B_2} \sum_{i=1}^{B_2} \log\left(1-D_w(g_\theta(z^{(i)}))\right)
+                        \end{aligned}
+                        \]
+
+                        \[
+                        \boxed{
+                        \begin{aligned}
+                        \mathcal{L}_G
+                        &=
+                        -\frac{1}{B_2}
+                        \sum_{i=1}^{B_2}
+                        BCE(0, D_w(g_\theta(z^{(i)})))
+                        \end{aligned}
+                        }
+                        \]
+
+                    </div>
+                    <div class="note">
+                        <strong>Generator Trick</strong>
+                        <p>In practice, we do not use the original above loss for the Generator.</p>
+                        <p>But Why??</p>
+                        <p>Initially, the Generator outputs random noise & the Discriminator quickly learns to
+                            distinguish real images from random noise</p>
+                        \[
+                        D_w(g_\theta(z)) \approx 0 \quad \text{for all } z
+                        \]
+
+                        <p>
+                            The main job of the Generator is:
+                        </p>
+
+                        \[
+                        \underset{\theta}{\arg\min}\;\mathcal{L}_G
+                        \]
+
+                        <p>Now,</p>
+
+                        \[
+                        \frac{\partial \mathcal{L}_G}{\partial \hat{x}}
+                        =
+                        \frac{\partial}{\partial \hat{x}}\log(1-\hat{x})
+                        =
+                        -\frac{1}{1-\hat{x}}
+                        \]
+
+                        <p>When \( \hat{x} \approx 0 \), the gradient becomes very small, leading to vanishing gradients and
+                            slow learning for the Generator.</p>
+
+                        <p>TBC</p>
                     </div>
                 </div>
 
