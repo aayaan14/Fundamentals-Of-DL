@@ -169,7 +169,7 @@
 
                 <!-- 4. Generative Adversarial Networks -->
                 <div class="problem" id="Generative Adversarial Networks">
-                    <h3>Generative Adversarial Networks</h3>
+                    <h3 style="text-align: center;">Generative Adversarial Networks</h3>
                     <div class="context">
                         <h4>
                             Let's derive the convex conjugate of
@@ -510,6 +510,71 @@
                             </a>
                         </p>
 
+                    </div>
+                </div>
+
+                <!-- 7. Interpretation of GAN as Classifier-Guided Generative Sampler-->
+                <div class="problem" id="Interpretation of GAN as Classifier-Guided Generative Sampler">
+                    <h3>Interpretation of GAN as Classifier-Guided Generative Sampler</h3>
+                    <div class="context">
+                        <br>
+                        <img src="../assets/gans/imgs/19.png" alt="Generative Adversarial Networks"
+                            class="context-image" style="max-width: 100%; height: 60em; display: block; margin: 0 auto;"
+                            loading="lazy">
+                        <br>
+                        <img src="../assets/gans/imgs/20.png" alt="Generative Adversarial Networks"
+                            class="context-image" style="max-width: 100%; height: 60em; display: block; margin: 0 auto;"
+                            loading="lazy">
+                        <br>
+                        <img src="../assets/gans/imgs/21.png" alt="Generative Adversarial Networks"
+                            class="context-image" style="max-width: 100%; height: 70em; display: block; margin: 0 auto;"
+                            loading="lazy">
+                        <br>
+                        <img src="../assets/gans/imgs/22.png" alt="Generative Adversarial Networks"
+                            class="context-image" style="max-width: 100%; height: 60em; display: block; margin: 0 auto;"
+                            loading="lazy">
+                        <br>
+                    </div>
+                    <div class="note">
+                        <strong>Mode Collapse Problem</strong>
+                        <ul>
+                            <li>Ideally, different noise inputs should generate different samples:</li>
+                        </ul>
+
+                        \[
+                        z_1 \neq z_2
+                        \implies
+                        G(z_1) \neq G(z_2)
+                        \]
+
+                        <ul>
+                            <li>In mode collapse, many different noise inputs produce nearly the same output:</li>
+                        </ul>
+
+                        \[
+                        z_1 \neq z_2
+                        \quad \text{but} \quad
+                        G(z_1) \approx G(z_2)
+                        \]
+
+                        <ul>
+                            <li>The generator distribution covers only a few modes of the real data distribution and ignores the general distribution:</li>
+                        </ul>
+
+                        \[
+                        p_\theta(x) \subset p_{x}(x)
+                        \]
+
+                        <ul>
+                            <li>Result: less diversity, repeated samples, and missing modes.</li>
+                        </ul>
+
+                        <p>Example: after training our vanilla-GAN, it looks like our generator picked up <strong>9</strong> as it's main distribution and the Discriminator wasn't able to generalize it.</p>
+                        <br>
+                        <img src="../assets/gans/imgs/mode_collapse.png" alt="Mode Collapse Example"
+                            class="context-image" style="max-width: 200%; height: 20em; width:30em; display: block; margin: 0 auto;"
+                            loading="lazy">
+                        <br>
                     </div>
                 </div>
 
