@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GANs</title>
+    <title>VAE</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -17,268 +17,426 @@
         <a href="../index.html" class="back-link">← Back to Home</a>
 
         <header>
-            <h1>Generative Adversarial Networks</h1>
+            <h1>Variational Autoencoders</h1>
 
             <div class="chapter-intro">
-                <p>In this chapter, we'll explore how GANs work and different architectures have been proposed, but
-                    before that, go through the prerequisites.</p>
+                <p>In this chapter, we'll explore how Variational Autoencoders work and different architectures that
+                    have been proposed</p>
             </div>
 
             <div class="chapter">
-                <!-- 1. Prerequisites -->
-                <div class="problem" id="prerequisites">
-                    <h3>Probability Density (\(p(x)\)) v/s Probability Distribution (\(\mathbb{P}(x)\))</h3>
+                <!-- 1. Latent Variable Models -->
+                <div class="problem" id="Latent Variable Models">
+                    <h3>Latent Variable Models</h3>
                     <div class="context">
-                        <p><strong>Discrete Variable: </strong></p>
-                        \[P(X = x) = p(x) \quad \text{(Probability Mass Function)}\]
-                        \[\mathbb{P}(X \in A) = \sum_{x \in A} p(x)\]
+                        <br>
+                        <img src="../assets/vae/imgs/1.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
 
-                        <p><strong>Continuous Variable: </strong></p>
-                        No Probability Mass Function exists for continous variables (Cant find probability at a single
-                        point), but </p>
-                        \[\mathbb{P}(X \in A) = \int_A p(x) \, dx\]
-
-                    </div>
-
-                    <h3>i.i.d (Independent and Identically Distributed)</h3>
-                    <div class="context">
-                        <p><strong>Identical: </strong></p>
-                        If 2 R.V's is drawn from the same distribution, then it is said to be identical.</p>
-                        <p><strong>Independent: </strong></p>
-                        If the outcome of one R.V does not affect the outcome of another R.V, then they are said to be
-                        independent.</p>
-                        <p>Consider 2 random variables \(X_1, X_2\) that are independent.</p>
-                        <p>Then:</p>
-                        \[P(X_1 = x_1 | X_2 = x_2) = P(X_1 = x_1)\]
-
-                        <div class="note">
-                            <strong>Note:</strong> Whenever the term i.i.d is used, Law of Large Numbers is activated
-                            for that R.V.
-
-                            \[ \text{LLN: } \quad \frac{1}{n} \sum_{i=1}^{n} x_i \xrightarrow{P} \mathbb{E}[x] \quad
-                            \text{as } n \to \infty \]
-                        </div>
-                    </div>
-
-                    <h3>Convex Conjugate</h3>
-                    <div class="context">
-                        <p>Consider the graph given below.
-                            <br>
-                            <img src="../assets/gans/imgs/gans_conjugate.png" alt="Convex Conjugate Illustration"
-                                class="context-image"
-                                style="max-width: 100%; height: 20em; display: block; margin: 0 auto;" loading="lazy">
-                            <br>
-                        <p>Here, \( f(u) \) is some function(convex or non-convex) which we're interested in finding the
-                            convex conjugate of. </p>
-                        <p>and now we pick an arbitrary slope t, and line l(u) = tu + c</p>
-                        <p>to say that the line is convex conjugate, it must satisfy: </p>
-                        \[ l(u) \leq f(u) \quad \text{for all } u \]
-                        \[ tu + c \leq f(u) \quad \text{for all } u \]
-                        \[ c \leq f(u) - tu \quad \text{for all } u \]
-
-                        <p>now, our job is to minimize c </p>
-                        \[ c = \inf_{u} \left\{ f(u) - tu \right\} \]
-                        <p>or, </p>
-                        \[ -c = \sup_{u} \left\{ tu - f(u) \right\} \]
-
-                        <p>We can write convex conjugate as a function of t:</p>
-
-                        \[
-                        f^*(t) = \sup_{u} \left\{ tu - f(u) \right\}
-                        \]
-
-                        <div class="note">
-                            <strong>Note:</strong> We've used the supremum (sup) instead of maximum (max) because the
-                            maximum may not be attained if \( f \) is not continuous or does not have a maximum value.
-
-                            <p>Ex: Consider the function \( f(x) \) mapped in the range \([0, 1)\) and \( f(x) = 0 \)
-                                for all \( x \in [0, 1) \). </p>
-
-                            \[max_{x \in [0, 1)} \{ f(x) \} = undefined\]
-                            \[sup_{x \in [0, 1)} \{ f(x) \} = 1\]
-                        </div>
+                        <br>
+                        <img src="../assets/vae/imgs/2.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
                     </div>
                 </div>
 
-                <!-- 2. Variational Divergence Minimization -->
-                <div class="problem" id="Variational Divergence Minimization">
-                    <h3>Variational Divergence Minimization</h3>
+                <!-- 2. General Principles for Latent Variable Models -->
+                <div class="problem" id="General Principles for Latent Variable Models">
+                    <h3>General Principles for Latent Variable Models</h3>
                     <div class="context">
+                        <br>
+                        <img src="../assets/vae/imgs/3.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 70em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/vae/imgs/4.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 70em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <br>
+                        <img src="../assets/vae/imgs/5.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 70em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
 
                         <br>
-                        <img src="../assets/gans/imgs/1.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-                        <br>
-                        <img src="../assets/gans/imgs/2.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-                        <br>
-                        <img src="../assets/gans/imgs/3.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 100em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-                        <br>
-                        <img src="../assets/gans/imgs/4.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-                        <br>
-                        <img src="../assets/gans/imgs/5.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-                        <br>
-                        <img src="../assets/gans/imgs/6.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-                        <br>
-                        <img src="../assets/gans/imgs/7.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 70em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-                        <br>
-                        <img src="../assets/gans/imgs/8.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 70em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-                        <br>
-                        <img src="../assets/gans/imgs/9.png" alt="Convex Conjugate Illustration" class="context-image"
+                        <img src="../assets/vae/imgs/6.png" alt="Convex Conjugate Illustration" class="context-image"
                             style="max-width: 100%; height: 30em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
 
                     </div>
                 </div>
 
-                <!-- 3. Generative Modelling via VDM -->
-                <div class="problem" id="Generative Modelling via VDM">
-                    <h3>Generative Modelling via VDM</h3>
+                <!-- 3. Gaussian Mixture Model -->
+                <div class="problem" id="Gaussian Mixture Model">
+                    <h3>Gaussian Mixture Model</h3>
                     <div class="context">
-
                         <br>
-                        <img src="../assets/gans/imgs/10.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-
-                        <br>
-                        <img src="../assets/gans/imgs/11.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-                        <br>
-                        <img src="../assets/gans/imgs/12.png" alt="Convex Conjugate Illustration" class="context-image"
-                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
+                        <img src="../assets/vae/imgs/7.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
 
+                        <img src="../assets/vae/imgs/8.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 25em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <img src="../assets/vae/imgs/9.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
                     </div>
                 </div>
 
-                <!-- 4. Generative Adversarial Networks -->
-                <div class="problem" id="Generative Adversarial Networks">
-                    <h3 style="text-align: center;">Generative Adversarial Networks</h3>
+                <!-- 4. Expectation Maximization -->
+                <div class="problem" id="Expectation Maximization">
+                    <h3>Expectation Maximization</h3>
                     <div class="context">
-                        <h4>
-                            Let's derive the convex conjugate of
-                            \( f(u) = u \log u - (u+1)\log(u+1) \)
-                        </h4>
+                        <p>Let's consider a toy example:</p>
+                        <p>One coin, one flip. Call the probability of heads \( \theta \).</p>
 
-                        <p>
-                            We want to find its convex conjugate, defined as:
-                            \[
-                            f^*(t) = \sup_{u > 0} \left\{ tu - u \log u + (u+1)\log(u+1) \right\}
-                            \]
+                        \[
+                        P(X=x) = \theta^x (1-\theta)^{1-x}, \quad x \in \{0,1\}
+                        \]
+                        <p>Now, we extend to \(n\) independent flips:</p>
 
-                            <strong>Step 1: Find the critical point</strong><br>
-                            Take the derivative of the expression inside the supremum with respect to u and set it to 0:
-                            \[
-                            \frac{d}{du} \left( tu - u \log u + (u+1)\log(u+1) \right) = t - (\log u + 1) + (\log(u+1) +
-                            1) = 0
-                            \]
+                        \[
+                        P(X_1=x_1, X_2=x_2, \ldots, X_n=x_n)
+                        = \prod_{i=1}^{n} \theta^{x_i}(1-\theta)^{1-x_i}
+                        \]
 
-                            Simplifying this, we get the relationship between t and u at the optimum:
-                            \[
-                            t = \log u - \log(u+1)
-                            \]
+                        \[
+                        = \theta^{\sum_{i=1}^{n} x_i} (1-\theta)^{n - \sum_{i=1}^{n} x_i}
+                        \]
 
-                            <em>(Note: Since \( u > 0 \), the ratio \( \frac{u}{u+1} < 1 \), which implies \( t < 0
-                                    \).)</em><br><br>
+                        \[
+                        \boxed{
+                        \mathcal{L}(\theta) = P(\text{data} \mid \theta) = \theta^{h}(1-\theta)^{t}
+                        }
+                        \]
 
-                                    <strong>Step 2: Simplify the objective function</strong><br>
-                                    Instead of solving for u right away, substitute \( t = \log u - \log(u+1) \)
-                                    directly into the original supremum expression:
-                                    \[
-                                    f^*(t) = u(\log u - \log(u+1)) - u \log u + (u+1)\log(u+1)
-                                    \]
+                        <p>where \(h\) is the number of heads and \(t\) is the number of tails. (h + t = n)</p>
 
-                                    Expand the terms:
-                                    \[
-                                    f^*(t) = u \log u - u \log(u+1) - u \log u + u \log(u+1) + \log(u+1)
-                                    \]
+                        <h4>Maximum Likelihood Estimation</h4>
 
-                                    Notice how beautifully almost everything cancels out, leaving just:
-                                    \[
-                                    f^*(t) = \log(u+1)
-                                    \]
+                        \[
+                        \hat{\theta}
+                        =
+                        \arg\max_{\theta}
+                        \mathcal{L}(\theta)
+                        \]
 
-                                    <strong>Step 3: Solve for u+1 in terms of t</strong><br>
-                                    Now we just need to express \( \log(u+1) \) in terms of t. Using our relationship
-                                    from Step 1:
-                                    \[
-                                    t = \log\left(\frac{u}{u+1}\right)
-                                    \]
-                                    \[
-                                    e^t = \frac{u}{u+1}
-                                    \]
+                        \[
+                        \hat{\theta}
+                        =
+                        \arg\max_{\theta}
+                        \log \mathcal{L}(\theta)
+                        \]
 
-                                    We can rewrite the right side as:
-                                    \[
-                                    e^t = 1 - \frac{1}{u+1}
-                                    \]
+                        \[
+                        \hat{\theta}
+                        =
+                        \arg\max_{\theta}
+                        \left[
+                        h \log \theta + t \log (1-\theta)
+                        \right]
+                        \]
 
-                                    Rearranging to solve for u+1:
-                                    \[
-                                    \frac{1}{u+1} = 1 - e^t \implies u+1 = \frac{1}{1 - e^t}
-                                    \]
+                        \[
+                        \frac{d}{d\theta}\,\ell(\theta)
+                        =
+                        \frac{h}{\theta}
+                        -
+                        \frac{t}{1-\theta}
+                        =
+                        0
+                        \]
 
-                                    <strong>Step 4: Final Substitution</strong><br>
-                                    Substitute u+1 back into our simplified expression for \( f^*(t) \):
-                                    \[
-                                    f^*(t) = \log\left(\frac{1}{1 - e^t}\right)
-                                    \]
+                        \[
+                        \boxed{
+                        \hat{\theta}
+                        =
+                        \frac{h}{h+t}
+                        }
+                        \]
 
-                                    Using the property of logarithms \( \log(1/x) = -\log(x) \), we get the final
-                                    answer:
-                                    \[
-                                    \boxed{
-                                    f^*(t) = -\log(1 - e^t)
-                                    }
-                                    \qquad \text{for } t < 0 \] </p>
-                    </div>
-                    <div class="context">
+                        <h4>Two Coin Flips, Labels Known</h4>
 
-                        <br>
-                        <img src="../assets/gans/imgs/13.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 60em; display: block; margin: 0 auto;"
-                            loading="lazy">
-                        <br>
+                        <p>Now, there are two coins, A and B:</p>
 
-                        <br>
-                        <img src="../assets/gans/imgs/14.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 40em; display: block; margin: 0 auto;"
-                            loading="lazy">
-                        <br>
+                        <p>\( \theta_A = P(\text{Heads} \mid \text{Coin A}) \)</p>
 
-                        <br>
-                        <img src="../assets/gans/imgs/15.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 50em; display: block; margin: 0 auto;"
-                            loading="lazy">
-                        <br>
+                        <p>\( \theta_B = P(\text{Heads} \mid \text{Coin B}) \)</p>
 
-                        <br>
-                        <img src="../assets/gans/imgs/16.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 40em; display: block; margin: 0 auto;"
-                            loading="lazy">
-                        <br>
+                        <p>We run 5 experiments. In each experiment, we grab a coin, note it down then, we flip the coin
+                            10 times and observe the outcome:</p>
+                        <style>
+                            table {
+                                border-collapse: collapse;
+                                width: 100%;
+                                margin: 20px 0;
+                            }
+
+                            th,
+                            td {
+                                border: 1px solid #444;
+                                padding: 8px 12px;
+                                text-align: center;
+                            }
+
+                            th {
+                                background: #f4f4f4;
+                            }
+
+                            td.sequence {
+                                font-family: monospace;
+                                letter-spacing: 2px;
+                                width: 260px;
+                                white-space: nowrap;
+                            }
+                        </style>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Exp. \(i\)</th>
+                                    <th>Coin \(z_i\)</th>
+                                    <th>10 Flips</th>
+                                    <th>Heads</th>
+                                    <th>Tails</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>\(A\)</td>
+                                    <td class="sequence">H T H H H T H H T H</td>
+                                    <td>7</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>\(B\)</td>
+                                    <td class="sequence">T H T T T T H T T T</td>
+                                    <td>2</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>\(A\)</td>
+                                    <td class="sequence">H H H H T H H H T H</td>
+                                    <td>8</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>\(B\)</td>
+                                    <td class="sequence">T H T T T T H T T T</td>
+                                    <td>2</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>\(A\)</td>
+                                    <td class="sequence">H T H H H T H H T H</td>
+                                    <td>7</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>Log-Likelihood: \(\log p(x \mid \theta)\)</p>
+                        \[ \log p(x \mid \theta) = \sum_{i=1}^n \log p(x_i \mid \theta) \]
+                        \[ \log p(x \mid \theta) = \sum_{i=1}^n \log p(x_i \mid z_i, \theta) \]
+
+                        \[
+                        \ell(\theta_A,\theta_B)
+                        =
+                        \underbrace{
+                        \sum_{i:\, z_i=A}
+                        \left[
+                        h_i \log \theta_A
+                        +
+                        t_i \log(1-\theta_A)
+                        \right]
+                        }_{\text{involves only }\theta_A}
+                        +
+                        \underbrace{
+                        \sum_{i:\, z_i=B}
+                        \left[
+                        h_i \log \theta_B
+                        +
+                        t_i \log(1-\theta_B)
+                        \right]
+                        }_{\text{involves only }\theta_B}
+                        \]
+
+                        <p>Maximizing each term independently gives the MLEs:</p>
+                        \[
+                        \boxed{
+                        \hat{\theta}_A
+                        =
+                        \frac{\sum_{i:\,z_i=A} h_i}
+                        {\sum_{i:\,z_i=A}(h_i+t_i)}
+                        }
+                        \]
+
+                        \[
+                        \boxed{
+                        \hat{\theta}_B
+                        =
+                        \frac{\sum_{i:\,z_i=B} h_i}
+                        {\sum_{i:\,z_i=B}(h_i+t_i)}
+                        }
+                        \]
+
+                        <h4>Two Coins Flipped, Labels Unknown</h4>
+
+                        <p>Now, suppose we repeat the same experiment, but this time we <b>do not know</b> which coin
+                            was used in each experiment.</p>
+
+                        <p>The parameters remain:</p>
+
+                        <p>\( \theta_A = P(\text{Heads} \mid \text{Coin A}) \)</p>
+
+                        <p>\( \theta_B = P(\text{Heads} \mid \text{Coin B}) \)</p>
+
+                        <p>However, the coin identity \(z_i\) is now hidden.</p>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Exp. \(i\)</th>
+                                    <th>Coin \(z_i\)</th>
+                                    <th>10 Flips</th>
+                                    <th>Heads</th>
+                                    <th>Tails</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>?</td>
+                                    <td class="sequence">H T H H H T H H T H</td>
+                                    <td>7</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>?</td>
+                                    <td class="sequence">T H T T T T H T T T</td>
+                                    <td>2</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>?</td>
+                                    <td class="sequence">H H H H T H H H T H</td>
+                                    <td>8</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>?</td>
+                                    <td class="sequence">T H T T T T H T T T</td>
+                                    <td>2</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>?</td>
+                                    <td class="sequence">H T H H H T H H T H</td>
+                                    <td>7</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>Since \(z_i\) is hidden, we cannot separate the data into Coin A and Coin B as before.</p>
+
+                        \[
+                        \pi_A = P(z=A), \qquad \pi_B = P(z=B), \qquad \pi_A = \pi_B = 0.5
+                        \]
+
+                        <p>Marginalize over \(z_i\)</p>
+                        \[
+                        P(x_i \mid \theta)
+                        =
+                        \sum_{z_i \in \{A,B\}}
+                        P(x_i, z_i \mid \theta)
+                        \]
+
+                        \[
+                        \begin{aligned}
+                        P(x_i \mid \theta)
+                        &=
+                        \underbrace{
+                        \pi_A\,\theta_A^{h_i}(1-\theta_A)^{t_i}
+                        }_{\text{if Coin A}}
+                        +
+                        \underbrace{
+                        \pi_B\,\theta_B^{h_i}(1-\theta_B)^{t_i}
+                        }_{\text{if Coin B}}
+                        \end{aligned}
+                        \]
+
+                        \[
+                        \boxed{
+                        \ell(\theta)
+                        =
+                        \sum_{i=1}^{5}
+                        \log\left(
+                        \pi_A\,\theta_A^{h_i}(1-\theta_A)^{t_i}
+                        +
+                        \pi_B\,\theta_B^{h_i}(1-\theta_B)^{t_i}
+                        \right)
+                        }
+                        \]
+
+                        <p>Our goal is still to estimate</p>
+
+                        \[
+
+                        \hat{\theta}
+                        =
+                        (\hat{\theta}_A,\hat{\theta}_B)
+                        =
+                        \arg\max_{\theta_A,\theta_B}
+                        \ell(\theta)
+                        \]
+
+                        \[
+                        \frac{\partial \ell(\theta)}{\partial \theta_A}
+                        =
+                        \sum_{i=1}^{5}
+                        \frac{
+                        \pi_A
+                        \left(
+                        h_i\theta_A^{h_i-1}(1-\theta_A)^{t_i}
+                        -
+                        t_i\theta_A^{h_i}(1-\theta_A)^{t_i-1}
+                        \right)
+                        }{
+                        \pi_A\theta_A^{h_i}(1-\theta_A)^{t_i}
+                        +
+                        \pi_B\theta_B^{h_i}(1-\theta_B)^{t_i}
+                        }
+                        =
+                        0
+                        \]
+
+                        <p><b>Problem:</b> The logarithm is applied to a <i>sum</i>, so the derivatives do not simplify
+                            into a closed-form solution.</p>
+
+                        <p>Hence, maximizing \(\ell(\theta)\) directly becomes an <b>intractable optimization
+                                problem</b>.</p>
+
+                        <p>This is precisely where the <b>Expectation-Maximization (EM)</b> algorithm is used.</p>
+
+                        </p>
 
                     </div>
                 </div>
 
                 <!-- 5. Training Generative Adversarial Networks -->
-                <div class="problem" id="Training GANs">
+                <!-- <div class="problem" id="Training GANs">
                     <h3>Training GANs</h3>
                     <div class="context">
                         <br>
@@ -293,16 +451,18 @@
                             loading="lazy">
                         <br>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- 6. Conversion of GAN loss to BCE -->
-                <div class="problem" id="Conversion of GAN loss to BCE">
+                <!-- <div class="problem" id="Conversion of GAN loss to BCE">
                     <h3>Conversion of GAN loss to BCE</h3>
                     <div class="context">
-                        <p>We now convert the GAN loss to Binary Cross Entropy Loss version (for training purpose)</p>
+                        <p>We now convert the GAN loss to Binary Cross Entropy Loss version (for training purpose)
+                        </p>
 
                         \[
-                        \mathcal{J}_\text{GAN} = \mathbb{E}_{p_{x}} [\log D_{w}(x)] + \mathbb{E}_{p_{\theta}} [\log (1 -
+                        \mathcal{J}_\text{GAN} = \mathbb{E}_{p_{x}} [\log D_{w}(x)] + \mathbb{E}_{p_{\theta}} [\log
+                        (1 -
                         D_{w}(g_{\theta}(z)))]
                         \]
 
@@ -311,10 +471,12 @@
                         \mathcal{L_\text{BCE}} = - \left [y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right ]
                         \]
 
-                        <p>where, \(y\) is the true label {0,1} and \(\hat{y}\) is the predicted probability [0,1].</p>
+                        <p>where, \(y\) is the true label {0,1} and \(\hat{y}\) is the predicted probability [0,1].
+                        </p>
 
                         <br>
-                        <p>First, let's derive the Loss function of the <strong>Discriminator</strong>, viz divided into
+                        <p>First, let's derive the Loss function of the <strong>Discriminator</strong>, viz divided
+                            into
                             2 parts:</p>
 
                         <p>1. Loss for real images:</p>
@@ -470,11 +632,13 @@
                         -\frac{1}{1-\hat{x}}
                         \]
 
-                        <p>When \( \hat{x} \approx 0 \), the gradient becomes very small, leading to vanishing gradients
+                        <p>When \( \hat{x} \approx 0 \), the gradient becomes very small, leading to vanishing
+                            gradients
                             and
                             slow learning for the Generator.</p>
 
-                        <p>So, instead of minimizing \( -\log(1-\hat{x}) \) term viz numerically unstable, we maximize
+                        <p>So, instead of minimizing \( -\log(1-\hat{x}) \) term viz numerically unstable, we
+                            maximize
                             \( \log \hat{x} \) term:</p>
 
                         \[ \begin{aligned}
@@ -511,10 +675,10 @@
                         </p>
 
                     </div>
-                </div>
+                </div> -->
 
-                <!-- 7. Interpretation of GAN as Classifier-Guided Generative Sampler-->
-                <div class="problem" id="Interpretation of GAN as Classifier-Guided Generative Sampler">
+                <!-- 7. Interpretation of GAN as Classifier-Guided Generative Sampler -->
+                <!-- <div class="problem" id="Interpretation of GAN as Classifier-Guided Generative Sampler">
                     <h3>Interpretation of GAN as Classifier-Guided Generative Sampler</h3>
                     <div class="context">
                         <br>
@@ -571,7 +735,8 @@
                         </ul>
 
                         <p>Example: after training our vanilla-GAN, it looks like our generator picked up
-                            <strong>9</strong> as it's main distribution and the Discriminator wasn't able to generalize
+                            <strong>9</strong> as it's main distribution and the Discriminator wasn't able to
+                            generalize
                             it.
                         </p>
                         <br>
@@ -581,10 +746,10 @@
                             loading="lazy">
                         <br>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- 8. DCGAN -->
-                <div class="problem" id="DCGAN">
+                <!-- <div class="problem" id="DCGAN">
                     <h3 style="text-align: center;">Deep Convolutional-Generative Adversarial Networks</h3>
                     <div class="context">
                         <br>
@@ -611,10 +776,10 @@
                         </p>
 
                     </div>
-                </div>
+                </div> -->
 
                 <!-- 9. CGAN -->
-                <div class="problem" id="CGAN">
+                <!-- <div class="problem" id="CGAN">
                     <h3 style="text-align: center;">Conditional Generative Adversarial Networks</h3>
                     <div class="context">
                         <br>
@@ -638,10 +803,10 @@
                         </p>
 
                     </div>
-                </div>
-                
+                </div> -->
+
                 <!-- 10. WGAN -->
-                <div class="problem" id="WGAN">
+                <!-- <div class="problem" id="WGAN">
                     <h3 style="text-align: center;">Wasserstein Generative Adversarial Networks</h3>
                     <div class="context">
                         <br>
@@ -689,10 +854,10 @@
                         </p>
 
                     </div>
-                </div>
+                </div> -->
 
                 <!-- 11. Inversion with GANs -->
-                <div class="problem" id="InversionWithGans">
+                <!-- <div class="problem" id="InversionWithGans">
                     <h3 style="text-align: center;">Inversion with Generative Adversarial Networks</h3>
                     <div class="context">
                         <br>
@@ -728,12 +893,12 @@
                         </p>
 
                     </div>
-                </div>
+                </div> -->
 
                 <footer>
                     <p>Written with mathematical rigor and visual intuition in mind.</p>
                     <p><a href="../index.html">Back to Home</a></p>
-                    <p><a href="../index.html">Home</a> | <a href="VAE.html">Next Chapter →</a></p>
+                    <p><a href="../index.html">Home</a> | <a href="Transformer.html">Next Chapter →</a></p>
                 </footer>
 
                 <script>
