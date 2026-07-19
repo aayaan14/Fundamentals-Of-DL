@@ -254,15 +254,34 @@
 
                     <h3>5. Bounding Box Regression</h3>
                     <div class="context">
-                        <p>Given Proposal \( P = (P_x, P_y, P_w, P_h) \) (center co-ordinates, width, height) and Ground
-                            Truth
-                            \( G = (G_x, G_y, G_w, G_h) \), the regressor is configured to learn scale-invariant
-                            transformation between two centers and log-scale transformation between widths and heights.
-                            All the transformation functions take as input.</p>
+                        <p>Given Proposal \( P = (P_{x_1}, P_{y_1}, P_{x_2}, P_{y_2}) \) and Ground Truth
+                            \( G = (G_{x_1}, G_{y_1}, G_{x_2}, G_{y_2}) \), stored as bottom-left and top-right
+                            coordinates, we first convert each box to its center, width, and height:</p>
+                        \[
+                        P_x = \frac{P_{x_1} + P_{x_2}}{2}, \quad
+                        P_y = \frac{P_{y_1} + P_{y_2}}{2}, \quad
+                        P_w = P_{x_2} - P_{x_1}, \quad
+                        P_h = P_{y_2} - P_{y_1}
+                        \]
+                        \[
+                        G_x = \frac{G_{x_1} + G_{x_2}}{2}, \quad
+                        G_y = \frac{G_{y_1} + G_{y_2}}{2}, \quad
+                        G_w = G_{x_2} - G_{x_1}, \quad
+                        G_h = G_{y_2} - G_{y_1}
+                        \]
+                        <p>The regressor then learns a scale-invariant transformation between centers and a log-scale
+                            transformation between widths and heights.</p>
                         \[\hat{G}_x = P_w \hat{t}_x + P_x, \quad \hat{G}_y = P_h \hat{t}_y + P_y\]
                         \[\hat{G}_w = P_w \exp(\hat{t}_w), \quad \hat{G}_h = P_h \exp(\hat{t}_h)\]
+                        <p>Finally, the predicted box can be converted back to bottom-left and top-right coordinates:</p>
+                        \[
+                        \hat{G}_{x_1} = \hat{G}_x - \frac{\hat{G}_w}{2}, \quad
+                        \hat{G}_{y_1} = \hat{G}_y - \frac{\hat{G}_h}{2}, \quad
+                        \hat{G}_{x_2} = \hat{G}_x + \frac{\hat{G}_w}{2}, \quad
+                        \hat{G}_{y_2} = \hat{G}_y + \frac{\hat{G}_h}{2}
+                        \]
                         <br>
-                        <img src="../assets/rcnn/transformation.png" alt="Convex Conjugate Illustration"
+                        <img src="../assets/rcnn/transformation-corners.svg" alt="Bounding box regression corner coordinate transformation"
                             class="context-image" style="max-width: 100%; height: 20em; display: block; margin: 0 auto;"
                             loading="lazy">
                         <br>
