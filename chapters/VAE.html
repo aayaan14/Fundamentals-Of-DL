@@ -429,29 +429,119 @@
                                 problem</b>.</p>
 
                         <p>This is precisely where the <b>Expectation-Maximization (EM)</b> algorithm is used.</p>
+                        </p>
+                    </div>
 
+                    <div class="context">
+                        <h4>Let's imagine we knew the labels</h4>
+                        <p>Suppose current guess is: </p>
+                        \[ \theta_A = 0.6, \theta_B = 0.3 \]
+
+                        <p>& consider Experiment 1:</p>
+                        \[ x_1 = (h_1, t_1) = (7, 3) \]
+
+                        <p>how likely is Coin A?</p>
+                        \[ P(x_1 | A) = 0.6^7 * 0.4^3\]
+
+                        <p>how likely is Coin B?</p>
+                        \[ P(x_1 | B) = 0.3^7 * 0.7^3\]
+
+                        <p>Clearly, coin A explains 7 heads much better</p>
+                        <p>So instead of saying</p>
+                        \[ z_1 = A \]
+                        <p>we say</p>
+                        \[ P(z_1 = A | x_1) \]
+
+                        <p> &</p>
+                        \[ P(z_1 = B | x_1) \]
+
+                        <p>We can compute these probabilities using Bayes' theorem:</p>
+                        \[
+                        P(z_i = A | x_i) = \frac{P(x_i | A)P(z_i = A)}{P(x_i)} = \frac{P(x_i | A)P(z_i = A)}{P(x_i |
+                        A)P(z_i = A) + P(x_i | B)P(z_i = B)}
+                        \]
+
+                        \[
+                        \boxed{
+                        P(z_i=A\mid x_i)
+                        =
+                        \frac{
+                        \pi_A P(x_i\mid A)
+                        }{
+                        \pi_A P(x_i\mid A)
+                        +
+                        \pi_B P(x_i\mid B)
+                        }
+                        }
+                        \]
+
+                        <p>
+                            We define \( \gamma_i = P(z_i = A \mid x_i) \) as the
+                            <strong>responsibility</strong>.
+                        </p>
+
+                        <p>Responsibility of Coin B for explaining the data point \(x_i\):
+                            \[
+                            1 - \gamma_i = P(z_i = B \mid x_i)
+                            \]
+                        </p>
+
+                        <p>
+                            This is known as the <strong>Expectation (E) </strong>step:
+                            \[
+                            \mathbb{E}[z_i \mid x_i, \theta]
+                            \]
+                            where we replace the missing labels with their expected values.
                         </p>
 
                     </div>
-                </div>
 
-                <!-- 5. Training Generative Adversarial Networks -->
-                <!-- <div class="problem" id="Training GANs">
-                    <h3>Training GANs</h3>
                     <div class="context">
-                        <br>
-                        <img src="../assets/gans/imgs/17.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 60em; display: block; margin: 0 auto;"
-                            loading="lazy">
-                        <br>
+                        <p>Now that we have the <strong>"soft counts"</strong>, we can do the same MLE as before</p>
 
-                        <br>
-                        <img src="../assets/gans/imgs/18.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 40em; display: block; margin: 0 auto;"
-                            loading="lazy">
-                        <br>
+                        <p>Expected heads for Coins:</p>
+                        \[ H_A = \sum_{i=1}^5 \gamma_i h_i \]
+                        \[ H_B = \sum_{i=1}^5 (1 - \gamma_i) h_i \]
+
+                        <p>Expected tails for Coins:</p>
+                        \[ T_A = \sum_{i=1}^5 \gamma_i t_i \]
+                        \[ T_B = \sum_{i=1}^5 (1 - \gamma_i) t_i \]
+
+                        <p>Now, maximize exactly like the single-coin case:</p>
+                        \[
+                        \hat{\theta}_A = \frac{H_A}{H_A + T_A}, \quad \hat{\theta}_B = \frac{H_B}{H_B + T_B}
+                        \]
+
+                        <p>This is the <strong>Maximization (M)</strong> step.</p>
                     </div>
-                </div> -->
+
+                    <div class="context">
+                        <h4>EM Algo:</h4>
+                        <h4>EM Algo:</h4>
+
+                        <p>1. Initialize parameters \( \theta^{(0)} \)</p>
+
+                        <p>
+                            2. E-step: Compute responsibilities
+                            \( \gamma_i^{(t)} = P(z_i = A \mid x_i, \theta^{(t)}) \)
+                        </p>
+
+                        <p>
+                            3. M-step: Update parameters
+                            \[
+                            \theta^{(t+1)}
+                            =
+                            \arg\max_{\theta}
+                            \mathbb{E}_{z\mid x,\theta^{(t)}}
+                            \left[
+                            \log P(x,z\mid\theta)
+                            \right]
+                            \]
+                        </p>
+
+                        <p>4. Repeat until convergence</p>
+                    </div>
+                </div>
 
                 <!-- 6. Conversion of GAN loss to BCE -->
                 <!-- <div class="problem" id="Conversion of GAN loss to BCE">
