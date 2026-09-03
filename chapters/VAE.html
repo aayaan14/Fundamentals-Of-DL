@@ -542,447 +542,115 @@
                     </div>
                 </div>
 
-                <!-- 6. Conversion of GAN loss to BCE -->
-                <!-- <div class="problem" id="Conversion of GAN loss to BCE">
-                    <h3>Conversion of GAN loss to BCE</h3>
-                    <div class="context">
-                        <p>We now convert the GAN loss to Binary Cross Entropy Loss version (for training purpose)
-                        </p>
-
-                        \[
-                        \mathcal{J}_\text{GAN} = \mathbb{E}_{p_{x}} [\log D_{w}(x)] + \mathbb{E}_{p_{\theta}} [\log
-                        (1 -
-                        D_{w}(g_{\theta}(z)))]
-                        \]
-
-                        <p>and we know, BCE Loss function for a single sample is:</p>
-                        \[
-                        \mathcal{L_\text{BCE}} = - \left [y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right ]
-                        \]
-
-                        <p>where, \(y\) is the true label {0,1} and \(\hat{y}\) is the predicted probability [0,1].
-                        </p>
-
-                        <br>
-                        <p>First, let's derive the Loss function of the <strong>Discriminator</strong>, viz divided
-                            into
-                            2 parts:</p>
-
-                        <p>1. Loss for real images:</p>
-
-                        \[
-                        \begin{aligned}
-                        \mathcal{L}_{\text{real}}
-                        &=
-                        BCE(1, D_w(x)) \\[4pt]
-                        &=
-                        -\left[
-                        1 \cdot \log D_w(x)
-                        +
-                        (1-1)\cdot \log(1-D_w(x))
-                        \right] \\[4pt]
-                        &=
-                        -\log D_w(x)
-                        \end{aligned}
-                        \]
-
-                        <p>2. Loss for fake images:</p>
-
-                        \[
-                        \begin{aligned}
-                        \mathcal{L}_{\text{fake}}
-                        &=
-                        BCE(0, D_w(g_\theta(z))) \\[4pt]
-                        &=
-                        -\left[
-                        0 \cdot \log D_w(g_\theta(z))
-                        +
-                        (1-0)\cdot \log(1-D_w(g_\theta(z)))
-                        \right] \\[4pt]
-                        &=
-                        -\log\left(1-D_w(g_\theta(z))\right)
-                        \end{aligned}
-                        \]
-
-                        <br>
-                        <p>Now, the total loss for the Discriminator is:</p>
-                        \[
-                        \begin{aligned}
-                        \mathcal{L}_D
-                        &=
-                        \mathcal{L}_{\text{real}} + \mathcal{L}_{\text{fake}} \\[6pt]
-
-                        &=
-                        -\log D_w(x)
-                        -
-                        \log\left(1-D_w(g_\theta(z))\right) \\[6pt]
-
-                        &=
-                        BCE(1, D_w(x))
-                        +
-                        BCE(0, D_w(g_\theta(z))) \\[6pt]
-
-                        \end{aligned}
-                        \]
-
-                        <p>and across B1 samples, </p>
-                        \[
-                        \begin{aligned}
-                        \mathcal{L}_D
-                        &=
-                        -\frac{1}{B_1} \sum_{i=1}^{B_1} \left[
-                        \log D_w(x^{(i)}) + \log\left(1-D_w(g_\theta(z^{(i)}))\right)
-                        \right]
-                        \end{aligned}
-                        \]
-
-                        \[
-                        \boxed{
-                        \begin{aligned}
-                        \mathcal{L}_D
-                        &=
-                        -\frac{1}{B_1}
-                        \sum_{i=1}^{B_1}
-                        \left[
-                        BCE(1, D_w(x^{(i)}))
-                        +
-                        BCE(0, D_w(g_\theta(z^{(i)})))
-                        \right]
-                        \end{aligned}
-                        }
-                        \]
-
-
-                        <p>Now, let's derive the Loss function for the <strong>Generator</strong>:</p>
-                        <p>Since the generator receives noise, </p>
-                        \[
-                        \begin{aligned}
-                        \mathcal{L}_G
-                        &=
-                        BCE(0, D_w(g_\theta(z))) \\[4pt]
-                        &=
-                        -\left[
-                        0 \cdot \log D_w(g_\theta(z))
-                        +
-                        (1-0)\cdot \log(1-D_w(g_\theta(z)))
-                        \right] \\[4pt]
-                        &=
-                        -\log(1-D_w(g_\theta(z)))
-                        \end{aligned}
-                        \]
-
-                        <p>and across B2 samples, </p>
-                        \[
-                        \begin{aligned}
-                        \mathcal{L}_G
-                        &=
-                        -\frac{1}{B_2} \sum_{i=1}^{B_2} \log\left(1-D_w(g_\theta(z^{(i)}))\right)
-                        \end{aligned}
-                        \]
-
-                        \[
-                        \boxed{
-                        \begin{aligned}
-                        \mathcal{L}_G
-                        &=
-                        -\frac{1}{B_2}
-                        \sum_{i=1}^{B_2}
-                        BCE(0, D_w(g_\theta(z^{(i)})))
-                        \end{aligned}
-                        }
-                        \]
-
-                    </div>
-                    <div class="note">
-                        <strong>Generator Trick</strong>
-                        <p>In practice, we do not use the original above loss for the Generator.</p>
-                        <p>But Why??</p>
-                        <p>Initially, the Generator outputs random noise & the Discriminator quickly learns to
-                            distinguish real images from random noise</p>
-                        \[
-                        D_w(g_\theta(z)) \approx 0 \quad \text{for all } z
-                        \]
-
-                        <p>
-                            The main job of the Generator is:
-                        </p>
-
-                        \[
-                        \underset{\theta}{\arg\min}\;\mathcal{L}_G
-                        \]
-
-                        <p>Now,</p>
-
-                        \[
-                        \frac{\partial \mathcal{L}_G}{\partial \hat{x}}
-                        =
-                        \frac{\partial}{\partial \hat{x}}\log(1-\hat{x})
-                        =
-                        -\frac{1}{1-\hat{x}}
-                        \]
-
-                        <p>When \( \hat{x} \approx 0 \), the gradient becomes very small, leading to vanishing
-                            gradients
-                            and
-                            slow learning for the Generator.</p>
-
-                        <p>So, instead of minimizing \( -\log(1-\hat{x}) \) term viz numerically unstable, we
-                            maximize
-                            \( \log \hat{x} \) term:</p>
-
-                        \[ \begin{aligned}
-                        \mathcal{L}_G
-                        &=
-                        -\frac{1}{B_2} \sum_{i=1}^{B_2} \log D_w(g_\theta(z^{(i)})) \\[4pt]
-                        &=
-                        -\frac{1}{B_2} \sum_{i=1}^{B_2} BCE(1, D_w(g_\theta(z^{(i)})))
-                        \end{aligned}
-                        \]
-
-                        <p>Therefore, our new loss function for the Generator is:</p>
-
-                        \[
-                        \boxed{
-                        \begin{aligned}
-                        \mathcal{L}_G
-                        &=
-                        -\frac{1}{B_2}
-                        \sum_{i=1}^{B_2}
-                        BCE(1, D_w(g_\theta(z^{(i)})))
-                        \end{aligned}
-                        }
-                        \]
-                    </div>
-                    <div>
-                        <h3 style="margin-top:0;">Vanilla-GAN Notebook</h3>
-                        <p>
-                            Explore and run the Vanilla-GAN code interactively in Google Colab.<br>
-                            <a href="https://colab.research.google.com/drive/1gOpd60TjTguX2TuPASGHCNV01jeL4h7U?usp=sharing"
-                                target="_blank" style="font-weight:bold; color:#0066cc; text-decoration:none;">
-                                Vanilla-GAN Notebook in Colab
-                            </a>
-                        </p>
-
-                    </div>
-                </div> -->
-
-                <!-- 7. Interpretation of GAN as Classifier-Guided Generative Sampler -->
-                <!-- <div class="problem" id="Interpretation of GAN as Classifier-Guided Generative Sampler">
-                    <h3>Interpretation of GAN as Classifier-Guided Generative Sampler</h3>
+                <!-- 5. EM for GMM -->
+                <div class="problem" id="EM for GMM">
+                    <h3>EM for GMM</h3>
                     <div class="context">
                         <br>
-                        <img src="../assets/gans/imgs/19.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 60em; display: block; margin: 0 auto;"
-                            loading="lazy">
+                        <img src="../assets/vae/imgs/10.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
-                        <img src="../assets/gans/imgs/20.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 60em; display: block; margin: 0 auto;"
-                            loading="lazy">
-                        <br>
-                        <img src="../assets/gans/imgs/21.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 70em; display: block; margin: 0 auto;"
-                            loading="lazy">
-                        <br>
-                        <img src="../assets/gans/imgs/22.png" alt="Generative Adversarial Networks"
-                            class="context-image" style="max-width: 100%; height: 60em; display: block; margin: 0 auto;"
-                            loading="lazy">
+
+                        <img src="../assets/vae/imgs/11.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 30em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
                     </div>
-                    <div class="note">
-                        <strong>Mode Collapse Problem</strong>
-                        <ul>
-                            <li>Ideally, different noise inputs should generate different samples:</li>
-                        </ul>
+                </div>
 
-                        \[
-                        z_1 \neq z_2
-                        \implies
-                        G(z_1) \neq G(z_2)
-                        \]
-
-                        <ul>
-                            <li>In mode collapse, many different noise inputs produce nearly the same output:</li>
-                        </ul>
-
-                        \[
-                        z_1 \neq z_2
-                        \quad \text{but} \quad
-                        G(z_1) \approx G(z_2)
-                        \]
-
-                        <ul>
-                            <li>The generator distribution covers only a few modes of the real data distribution and
-                                ignores the general distribution:</li>
-                        </ul>
-
-                        \[
-                        p_\theta(x) \subset p_{x}(x)
-                        \]
-
-                        <ul>
-                            <li>Result: less diversity, repeated samples, and missing modes.</li>
-                        </ul>
-
-                        <p>Example: after training our vanilla-GAN, it looks like our generator picked up
-                            <strong>9</strong> as it's main distribution and the Discriminator wasn't able to
-                            generalize
-                            it.
-                        </p>
-                        <br>
-                        <img src="../assets/gans/imgs/mode_collapse.png" alt="Mode Collapse Example"
-                            class="context-image"
-                            style="max-width: 200%; height: 20em; width:30em; display: block; margin: 0 auto;"
-                            loading="lazy">
-                        <br>
-                    </div>
-                </div> -->
-
-                <!-- 8. DCGAN -->
-                <!-- <div class="problem" id="DCGAN">
-                    <h3 style="text-align: center;">Deep Convolutional-Generative Adversarial Networks</h3>
+                <!-- 6. Variational Auto-Encoder -->
+                <div class="problem" id="Variational Auto-Encoder">
+                    <h2 style="text-align: center;">Variational Auto-Encoder</h2>
                     <div class="context">
                         <br>
-                        <img src="../assets/gans/imgs/23.png" alt="DCGAN Architecture" class="context-image"
+                        <img src="../assets/vae/imgs/12.png" alt="Convex Conjugate Illustration" class="context-image"
                             style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
-                    </div>
 
-                    <div class="note">
+                        <img src="../assets/vae/imgs/13.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 20em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
-                        <img src="../assets/gans/imgs/24.png" alt="DCGAN Architecture" class="context-image"
+
+                        <img src="../assets/vae/imgs/14.png" alt="Convex Conjugate Illustration" class="context-image"
                             style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
+
+                        <img src="../assets/vae/imgs/15.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 20em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
                     </div>
 
-                    <div>
-                        <h3 style="margin-top:0;">DC-GAN Notebook</h3>
-                        <p>
-                            Explore and run the DC-GAN code interactively in Google Colab.<br>
-                            <a href="https://colab.research.google.com/drive/1OFcfm9NqA2RhALE543QGlhCClWg-4yXt?usp=sharing"
-                                target="_blank" style="font-weight:bold; color:#0066cc; text-decoration:none;">
-                                DC-GAN Notebook in Colab
-                            </a>
-                        </p>
-
-                    </div>
-                </div> -->
-
-                <!-- 9. CGAN -->
-                <!-- <div class="problem" id="CGAN">
-                    <h3 style="text-align: center;">Conditional Generative Adversarial Networks</h3>
                     <div class="context">
-                        <br>
-                        <img src="../assets/gans/imgs/25.png" alt="CGAN Architecture" class="context-image"
+                        <h3>Probability Distribution Representations via Neural Networks</h3>
+                        <img src="../assets/vae/imgs/16.png" alt="Convex Conjugate Illustration" class="context-image"
                             style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
 
-                        <img src="../assets/gans/imgs/26.png" alt="CGAN Architecture" class="context-image"
+                        <img src="../assets/vae/imgs/17.png" alt="Convex Conjugate Illustration" class="context-image"
                             style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <img src="../assets/vae/imgs/18.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 30em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
                     </div>
 
-                    <div>
-                        <h3 style="margin-top:0;">CGAN Notebook</h3>
-                        <p>
-                            Explore and run the CGAN code interactively in Google Colab.<br>
-                            <a href="https://colab.research.google.com/drive/17B_7yXQBDFUaDI_ERWJN2XMnX_bCoi7_?usp=sharing"
-                                target="_blank" style="font-weight:bold; color:#0066cc; text-decoration:none;">
-                                CGAN Notebook in Colab
-                            </a>
-                        </p>
-
-                    </div>
-                </div> -->
-
-                <!-- 10. WGAN -->
-                <!-- <div class="problem" id="WGAN">
-                    <h3 style="text-align: center;">Wasserstein Generative Adversarial Networks</h3>
                     <div class="context">
-                        <br>
-                        <img src="../assets/gans/imgs/27.png" alt="WGAN Architecture" class="context-image"
+                        <h3>Reparameterization Trick</h3>
+                        <img src="../assets/vae/imgs/19.png" alt="Convex Conjugate Illustration" class="context-image"
                             style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
 
-                        <img src="../assets/gans/imgs/28.png" alt="WGAN Architecture" class="context-image"
+                        <img src="../assets/vae/imgs/20.png" alt="Convex Conjugate Illustration" class="context-image"
                             style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
 
-                        <img src="../assets/gans/imgs/29.png" alt="WGAN Architecture" class="context-image"
-                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-
-                        <img src="../assets/gans/imgs/30.png" alt="WGAN Architecture" class="context-image"
-                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-
-                        <img src="../assets/gans/imgs/31.png" alt="WGAN Architecture" class="context-image"
-                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-
-                        <img src="../assets/gans/imgs/32.png" alt="WGAN Architecture" class="context-image"
-                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-
-                        <img src="../assets/gans/imgs/33.png" alt="WGAN Architecture" class="context-image"
-                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
-                        <br>
-
-                        <img src="../assets/gans/imgs/34.png" alt="WGAN Architecture" class="context-image"
+                        <img src="../assets/vae/imgs/21.png" alt="Convex Conjugate Illustration" class="context-image"
                             style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
                     </div>
 
-                    <div>
-                        <h3 style="margin-top:0;">WGAN Notebook</h3>
-                        <p>
-                            Explore and run the WGAN code interactively in Google Colab.<br>
-                            <a href="https://colab.research.google.com/drive/15eh5i4pq0t2c52KKWMweplXZ0k-c2D7P?usp=sharing"
-                                target="_blank" style="font-weight:bold; color:#0066cc; text-decoration:none;">
-                                WGAN Notebook in Colab
-                            </a>
-                        </p>
-
-                    </div>
-                </div> -->
-
-                <!-- 11. Inversion with GANs -->
-                <!-- <div class="problem" id="InversionWithGans">
-                    <h3 style="text-align: center;">Inversion with Generative Adversarial Networks</h3>
                     <div class="context">
+                        <h3>Encoder Training</h3>
+                        <img src="../assets/vae/imgs/22.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
-                        <img src="../assets/gans/imgs/35.png" alt="WGAN Architecture" class="context-image"
+
+                        <img src="../assets/vae/imgs/23.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 50em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <img src="../assets/vae/imgs/24.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+
+                        <img src="../assets/vae/imgs/25.png" alt="Convex Conjugate Illustration" class="context-image"
                             style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
 
-                        <img src="../assets/gans/imgs/36.png" alt="WGAN Architecture" class="context-image"
-                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
+                        <img src="../assets/vae/imgs/26.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
 
-                        <img src="../assets/gans/imgs/37.png" alt="WGAN Architecture" class="context-image"
-                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
+                        <img src="../assets/vae/imgs/27.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
 
-                        <img src="../assets/gans/imgs/38.png" alt="WGAN Architecture" class="context-image"
-                            style="max-width: 100%; height: 80em; display: block; margin: 0 auto;" loading="lazy">
+                        <img src="../assets/vae/imgs/28.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
 
-                        <img src="../assets/gans/imgs/39.png" alt="WGAN Architecture" class="context-image"
-                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
+                        <img src="../assets/vae/imgs/29.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 40em; display: block; margin: 0 auto;" loading="lazy">
                         <br>
                     </div>
 
-                    <div>
-                        <h3 style="margin-top:0;">BiGAN</h3>
-                        <p>
-                            Explore and run the BiGAN code interactively in Google Colab.<br>
-                            <a href="https://colab.research.google.com/drive/15eh5i4pq0t2c52KKWMweplXZ0k-c2D7P?usp=sharing"
-                                target="_blank" style="font-weight:bold; color:#0066cc; text-decoration:none;">
-                                BiGAN Notebook in Colab
-                            </a>
-                        </p>
-
+                    <div class="context">
+                        <h3>Decoder Training</h3>
+                        <img src="../assets/vae/imgs/30.png" alt="Convex Conjugate Illustration" class="context-image"
+                            style="max-width: 100%; height: 60em; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
                     </div>
-                </div> -->
+                </div>
 
                 <footer>
                     <p>Written with mathematical rigor and visual intuition in mind.</p>
