@@ -10,6 +10,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <script defer src="../js/math-config.js"></script>
+    <script defer src="../js/zoomable-image.js"></script>
 </head>
 
 <body>
@@ -421,9 +422,9 @@
                             </p>
                         </div>
 
-                        <img src="../assets/resnet/res_dilation_explained.png" alt="Dilation factor increasing receptive field"
-                            class="context-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
-                            loading="lazy">
+                        <img src="../assets/resnet/res_dilation_explained.png"
+                            alt="Dilation factor increasing receptive field" class="context-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
 
                         <br>
 
@@ -687,6 +688,30 @@
                             on the shortcut path cheaply — keeping the residual addition valid across every
                             stage transition without adding significant parameters or computation.
                         </div>
+                    </div>
+
+                    <!-- Full ResNet-18 implementation -->
+                    <div class="context">
+                        <h3>Putting It All Together</h3>
+                        <p>
+                            With <code>conv3x3</code>, <code>conv1x1</code>, and the residual block understood,
+                            here is the complete ResNet-18 implementation — every block and every stage
+                            transition, laid out end to end.
+                        </p>
+
+                        <div class="fullscreen-image-card">
+                            <button class="fullscreen-image-button" type="button"
+                                aria-label="Open complete ResNet-18 implementation in full screen">
+                                <img src="../assets/resnet/resnet18_complete.png"
+                                    alt="Complete ResNet-18 implementation with all blocks and stages"
+                                    class="fullscreen-preview-image" loading="lazy">
+                                <span class="fullscreen-image-overlay">
+                                    <span class="fullscreen-icon" aria-hidden="true">⛶</span>
+                                    <span>Click to view full screen</span>
+                                </span>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
 
