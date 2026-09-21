@@ -714,6 +714,359 @@
 
                     </div>
 
+                </div>
+
+                <!-- 6. ResNet-50 -->
+                <div class="problem" id="ResNet-50">
+                    <h3 style="text-align: center;">ResNet-50</h3>
+                    <p>
+                        ResNet-18 uses the <code>BasicBlock</code>, which contains two \(3 \times 3\) convolutions.
+                        ResNet-50 replaces this with the <code>Bottleneck</code> block: three convolutions
+                        arranged as \(1 \times 1 \rightarrow 3 \times 3 \rightarrow 1 \times 1\).
+                        This bottleneck design makes it possible to build a much deeper network without making
+                        the model prohibitively expensive.
+                    </p>
+                    <br>
+
+                    <img src="../assets/resnet/res_resnet50.png" alt="ResNet-50 Architecture" class="context-image"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+
+                    <br>
+
+                    <p>
+                        Before looking at the code, notice the most important difference from ResNet-18:
+                        <strong>ResNet-50 uses 3, 4, 6, and 3 Bottleneck blocks across its four stages.</strong>
+                    </p>
+
+                    <div class="problem-statement">
+                        <h4>ResNet-50 Architecture at a Glance</h4>
+                        <table style="width:100%; border-collapse: collapse; margin-top: 15px;">
+                            <tr>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Stage</th>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Output Channels</th>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Bottleneck Blocks</th>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Output Size</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ccc;">conv1</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">64</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">—</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">112 × 112</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ccc;">conv2_x</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">256</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">3</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">56 × 56</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ccc;">conv3_x</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">512</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">4</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">28 × 28</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ccc;">conv4_x</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">1024</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">6</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">14 × 14</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ccc;">conv5_x</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">2048</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">3</td>
+                                <td style="padding: 10px; border: 1px solid #ccc;">7 × 7</td>
+                            </tr>
+                        </table>
+
+                        <p style="margin-top: 15px;">
+                            The \(3+4+6+3=16\) Bottleneck blocks contain \(16\times3=48\) convolutional layers.
+                            Adding the initial \(7\times7\) convolution and the final fully connected layer gives
+                            \(48+1+1=50\) layers.
+                        </p>
+                    </div>
+
+                    <p>Let's understand each component required to code ResNet-50.</p>
+
+                    <!-- Bottleneck -->
+                    <div class="context">
+                        <h3>Bottleneck</h3>
+
+                        <pre><code><span class="kw">class</span> <span class="tp">Bottleneck</span>(nn.Module):
+    expansion: <span class="tp">int</span> = <span class="num">4</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(
+        self,
+        inplanes:   <span class="tp">int</span>,
+        planes:     <span class="tp">int</span>,
+        stride:     <span class="tp">int</span> = <span class="num">1</span>,
+        downsample: Optional[nn.Module] = <span class="kw">None</span>,
+        groups:     <span class="tp">int</span> = <span class="num">1</span>,
+        base_width: <span class="tp">int</span> = <span class="num">64</span>,
+        dilation:   <span class="tp">int</span> = <span class="num">1</span>,
+    ) -&gt; <span class="kw">None</span>:
+        super().__init__()
+
+        norm_layer = nn.BatchNorm2d
+
+        width = <span class="tp">int</span>(planes * (base_width / <span class="num">64.</span>)) * groups
+
+        self.conv1 = conv1x1(inplanes, width)
+        self.bn1   = norm_layer(width)
+
+        self.conv2 = conv3x3(width, width, stride, groups, dilation)
+        self.bn2   = norm_layer(width)
+
+        self.conv3 = conv1x1(width, planes * self.expansion)
+        self.bn3   = norm_layer(planes * self.expansion)
+
+        self.relu = nn.ReLU(inplace=<span class="kw">True</span>)
+        self.downsample = downsample
+        self.stride = stride</code></pre>
+
+                        <p>
+                            The name <strong>Bottleneck</strong> comes from the channel dimensions:
+                            the block first compresses the representation, performs the expensive spatial
+                            operation at this smaller width, and finally expands the representation again.
+                        </p>
+
+                        <!-- ── expansion ── -->
+                        <h4>1. <code>expansion = 4</code></h4>
+                        <p>
+                            In ResNet-18, <code>BasicBlock</code> keeps its output width equal to <code>planes</code>.
+                            ResNet-50's <code>Bottleneck</code> instead expands the output to
+                            <code>4 × planes</code>.
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Channel Shape Through a Bottleneck</h4>
+                            \[
+                            C_{\mathrm{in}}
+                            \xrightarrow{\;1\times1\;}
+                            w
+                            \xrightarrow{\;3\times3\;}
+                            w
+                            \xrightarrow{\;1\times1\;}
+                            4p
+                            \]
+                            <p style="margin-top: 10px;">
+                                Here \(p=\text{planes}\) and, for standard ResNet-50,
+                                \(w=p\). So a block such as <code>planes=64</code> has the channel flow
+                                \(256 \rightarrow 64 \rightarrow 64 \rightarrow 256\).
+                            </p>
+                        </div>
+
+                        <!-- ── width ── -->
+                        <h4>2. <code>width = int(planes * (base_width / 64.)) * groups</code></h4>
+                        <p>
+                            For standard ResNet-50, <code>base_width=64</code> and <code>groups=1</code>.
+                            Therefore:
+                        </p>
+
+                        \[
+                        \text{width}
+                        =
+                        \text{planes}\times\frac{64}{64}\times1
+                        =
+                        \text{planes}
+                        \]
+
+                        <p>
+                            The more general expression is kept because the same block implementation can support
+                            grouped-convolution variants such as ResNeXt.
+                        </p>
+
+                        <!-- ── conv1 ── -->
+                        <h4>3. <code>conv1 = conv1x1(inplanes, width)</code></h4>
+                        <p>
+                            The first \(1\times1\) convolution <strong>reduces the number of channels</strong>.
+                            It does not change the spatial dimensions when its stride is \(1\).
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Why Squeeze the Channels?</h4>
+                            <p>
+                                A \(3\times3\) convolution is much more expensive when it operates on a large
+                                number of channels. The bottleneck therefore performs the spatial operation at
+                                the smaller width \(w\)
+                            </p>
+                            \[
+                            C_{\mathrm{in}}
+                            \xrightarrow{\;1\times1\;}
+                            w
+                            \]
+                            <p style="margin-top: 10px;">
+                                This is the first part of the squeeze → spatial processing → expand pattern.
+                            </p>
+                        </div>
+
+                        <!-- ── conv2 ── -->
+                        <h4>4. <code>conv2 = conv3x3(width, width, stride, groups, dilation)</code></h4>
+                        <p>
+                            The \(3\times3\) convolution performs the main spatial processing of the block.
+                            It operates entirely at the reduced channel width.
+                        </p>
+
+                        <p>
+                            In the implementation shown here, <code>stride</code> is applied to this \(3\times3\)
+                            convolution. Therefore, the first Bottleneck block of stages
+                            <code>conv3_x</code>, <code>conv4_x</code>, and <code>conv5_x</code> performs
+                            spatial downsampling here.
+                        </p>
+
+                        <div class="note">
+                            <strong>Stride placement:</strong> The original 2015 ResNet paper places the stride
+                            on the first \(1\times1\) convolution of the Bottleneck. The commonly used
+                            "ResNet v1.5" implementation places it on the \(3\times3\) convolution instead.
+                            The code above follows the latter convention.
+                        </div>
+
+                        <!-- ── conv3 ── -->
+                        <h4>5. <code>conv3 = conv1x1(width, planes * expansion)</code></h4>
+                        <p>
+                            The final \(1\times1\) convolution expands the squeezed representation back to
+                            <code>planes × expansion</code> channels.
+                        </p>
+
+                        \[
+                        w
+                        \xrightarrow{\;1\times1\;}
+                        4p
+                        \]
+
+                        <p>
+                            This expansion is essential because the result must have the same shape as the
+                            shortcut before the residual addition.
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Example: First ResNet-50 Stage</h4>
+                            \[
+                            64
+                            \xrightarrow{\;1\times1\;}
+                            64
+                            \xrightarrow{\;3\times3\;}
+                            64
+                            \xrightarrow{\;1\times1\;}
+                            256
+                            \]
+                            <p style="margin-top: 10px;">
+                                The input to the first Bottleneck is \(64\) channels, while the block outputs
+                                \(256=64\times4\) channels. This is why the first block needs a projection
+                                shortcut.
+                            </p>
+                        </div>
+
+                        <!-- ── parameter count ── -->
+                        <h4>6. Why Is the Bottleneck Efficient?</h4>
+                        <p>
+                            Compare a Bottleneck block with a BasicBlock operating at the same final width
+                            \(4p\). The Bottleneck performs the expensive \(3\times3\) convolution at width \(p\)
+                            instead of \(4p\).
+                        </p>
+
+                        <div class="problem-statement">
+                            <h4>Parameter Comparison</h4>
+                            \[
+                            \underbrace{C_{\mathrm{in}}p}_{1\times1}
+                            +
+                            \underbrace{9p^2}_{3\times3}
+                            +
+                            \underbrace{4p^2}_{1\times1}
+                            \]
+                            <p style="margin-top: 10px;">
+                                The important term is \(9p^2\): the \(3\times3\) convolution sees only the
+                                compressed width \(p\), rather than the expanded \(4p\).
+                            </p>
+                        </div>
+
+                        <!-- ── downsample ── -->
+                        <h4>7. <code>downsample</code></h4>
+                        <p>
+                            The shortcut must have the same shape as the Bottleneck output before
+                            <code>out += identity</code>. A projection shortcut is therefore needed whenever
+                            the spatial size or channel count changes.
+                        </p>
+
+                        <pre><code>self.downsample = nn.Sequential(
+    conv1x1(inplanes, planes * expansion, stride),
+    norm_layer(planes * expansion),
+)</code></pre>
+
+                        <p>
+                            This is especially important in ResNet-50 because every Bottleneck expands its output
+                            by \(4\times\). Consequently, the first block of <strong>each stage</strong> needs
+                            a projection to establish the stage's expanded channel count.
+                        </p>
+
+                        <img src="../assets/resnet/res_projection_shortcut.png" alt="Identity vs projection shortcut"
+                            class="context-image" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                            loading="lazy">
+
+                        <br>
+
+                        <!-- ── forward ── -->
+                        <h4>8. <code>forward()</code></h4>
+
+                        <pre><code><span class="kw">def</span> <span class="fn">forward</span>(self, x: torch.Tensor) -&gt; torch.Tensor:
+    identity = x
+
+    out = self.conv1(x)
+    out = self.bn1(out)
+    out = self.relu(out)
+
+    out = self.conv2(out)
+    out = self.bn2(out)
+    out = self.relu(out)
+
+    out = self.conv3(out)
+    out = self.bn3(out)
+
+    <span class="kw">if</span> self.downsample <span class="kw">is not</span> <span class="kw">None</span>:
+        identity = self.downsample(x)
+
+    out += identity
+    out = self.relu(out)
+
+    <span class="kw">return</span> out</code></pre>
+
+                        <p>
+                            Notice the same pattern as ResNet-18: BatchNorm follows every convolution,
+                            the residual branch is added only after the final BatchNorm, and the final
+                            ReLU is applied <strong>after</strong> the residual addition.
+                        </p>
+
+                        <div class="tip">
+                            <strong>Key Insight:</strong> The Bottleneck is not a different residual-learning idea.
+                            It is the same residual connection used in ResNet-18, but with a
+                            squeeze → spatial processing → expand structure that makes much deeper networks
+                            computationally practical.
+                        </div>
+                    </div>
+
+                    <!-- Full ResNet-50 implementation -->
+                    <div class="context">
+                        <h3>Putting It All Together</h3>
+                        <p>
+                            Now that the Bottleneck is understood, the complete ResNet-50 follows the same
+                            stage-building idea as ResNet-18. The main differences are the block type,
+                            the \(4\times\) expansion factor, and the stage depths \(3,4,6,3\).
+                        </p>
+
+                        <div class="fullscreen-image-card">
+                            <button class="fullscreen-image-button" type="button"
+                                aria-label="Open complete ResNet-50 implementation in full screen">
+                                <img src="../assets/resnet/resnet50_complete.png"
+                                    alt="Complete ResNet-50 implementation with all blocks and stages"
+                                    class="fullscreen-preview-image" loading="lazy">
+                                <span class="fullscreen-image-overlay">
+                                    <span class="fullscreen-icon" aria-hidden="true">⛶</span>
+                                    <span>Click to view full screen</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div>
                         <h3 style="margin-top:0;">ResNet Notebook</h3>
                         <p>
