@@ -1,0 +1,321 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3264" height="2626" viewBox="0 0 3264 2626">
+<defs><marker id="ah0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#51606e"/></marker><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#9078a8"/></marker><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c98484"/></marker><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#243744"/></marker><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2c6fa8"/></marker><marker id="ah5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#9d86bd"/></marker></defs>
+<rect width="3264" height="2626" fill="#ffffff"/>
+<text x="1632.0" y="48.0" font-family="Georgia,'Times New Roman',serif" font-size="27" font-weight="bold" font-style="normal" fill="#17242f" text-anchor="middle">PaliGemma: the complete forward pass</text>
+<text x="1632.0" y="73.0" font-family="Georgia,'Times New Roman',serif" font-size="13.5" font-weight="normal" font-style="italic" fill="#5b6b7a" text-anchor="middle">shapes for google/paligemma-3b-pt-224  -  batch 1, 224x224 image, 256 image tokens</text>
+<rect x="58.0" y="124.0" width="964.0" height="852.0" rx="11" fill="#eaf2fb" stroke="#7fa3cc" stroke-width="1.9"/>
+<text x="78.0" y="154.0" font-family="Georgia,'Times New Roman',serif" font-size="17" font-weight="bold" font-style="normal" fill="#17242f" text-anchor="start">1.  Input &amp; Preprocessing</text>
+<text x="78.0" y="174.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start">inference.py  ·  processing_paligemma.py</text>
+<rect x="58.0" y="1036.0" width="964.0" height="1329.5" rx="11" fill="#eaf5e7" stroke="#86b47c" stroke-width="1.9"/>
+<text x="78.0" y="1066.0" font-family="Georgia,'Times New Roman',serif" font-size="17" font-weight="bold" font-style="normal" fill="#17242f" text-anchor="start">2.  SigLIP Vision Tower</text>
+<text x="78.0" y="1086.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start">modeling_siglip.py  ·  SiglipVisionModel.forward(pixel_values)</text>
+<rect x="1150.0" y="124.0" width="964.0" height="904.5" rx="11" fill="#fdeedd" stroke="#dba55f" stroke-width="1.9"/>
+<text x="1170.0" y="154.0" font-family="Georgia,'Times New Roman',serif" font-size="17" font-weight="bold" font-style="normal" fill="#17242f" text-anchor="start">3.  Multimodal Fusion</text>
+<text x="1170.0" y="174.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start">modeling_gemma.py  ·  PaliGemmaForConditionalGeneration.forward()</text>
+<rect x="1150.0" y="1088.5" width="964.0" height="1480.0" rx="11" fill="#fdecea" stroke="#cf8e8a" stroke-width="1.9"/>
+<text x="1170.0" y="1118.5" font-family="Georgia,'Times New Roman',serif" font-size="17" font-weight="bold" font-style="normal" fill="#17242f" text-anchor="start">4.  Gemma Language Model</text>
+<text x="1170.0" y="1138.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start">modeling_gemma.py  ·  GemmaForCausalLM.forward()</text>
+<rect x="2242.0" y="124.0" width="964.0" height="607.5" rx="11" fill="#f2eefa" stroke="#9d86bd" stroke-width="1.9"/>
+<text x="2262.0" y="154.0" font-family="Georgia,'Times New Roman',serif" font-size="17" font-weight="bold" font-style="normal" fill="#17242f" text-anchor="start">5.  Autoregressive Generation Loop</text>
+<text x="2262.0" y="174.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start">inference.py  ·  test_inference()  -  runs until &lt;eos&gt; or max_tokens</text>
+<rect x="2242.0" y="791.5" width="964.0" height="326.0" rx="11" fill="#fbfcfd" stroke="#9aa6b2" stroke-width="1.6"/>
+<text x="2262.0" y="821.5" font-family="Georgia,'Times New Roman',serif" font-size="17" font-weight="bold" font-style="normal" fill="#17242f" text-anchor="start">Legend</text>
+<rect x="80.0" y="1564.0" width="920.0" height="696.5" rx="9" fill="#f4eff9" stroke="#9078a8" stroke-width="1.6"/>
+<text x="95.0" y="1588.0" font-family="Georgia,'Times New Roman',serif" font-size="14" font-weight="bold" font-style="normal" fill="#453456" text-anchor="start">SiglipEncoder</text>
+<text x="95.0" y="1604.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#453456" text-anchor="start">repeat x27  ·  SiglipEncoderLayer.forward  ·  pre-norm</text>
+<rect x="1172.0" y="486.0" width="920.0" height="520.5" rx="9" fill="#fdf6e4" stroke="#c9a94a" stroke-width="1.6"/>
+<text x="1187.0" y="510.0" font-family="Georgia,'Times New Roman',serif" font-size="14" font-weight="bold" font-style="normal" fill="#6b5410" text-anchor="start">_merge_input_ids_with_image_features()</text>
+<text x="1187.0" y="526.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#6b5410" text-anchor="start">scatter both modalities into one sequence, then build mask + positions</text>
+<rect x="1172.0" y="1336.5" width="920.0" height="1028.5" rx="9" fill="#fdeceb" stroke="#c98484" stroke-width="1.6"/>
+<text x="1187.0" y="1360.5" font-family="Georgia,'Times New Roman',serif" font-size="14" font-weight="bold" font-style="normal" fill="#7a3330" text-anchor="start">GemmaModel.layers</text>
+<text x="1187.0" y="1376.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#7a3330" text-anchor="start">repeat x18  ·  GemmaDecoderLayer.forward  ·  pre-norm</text>
+<rect x="80.0" y="206.0" width="447.0" height="68.5" rx="4" fill="#eef5fb" stroke="#2c6fa8" stroke-width="1.4"/>
+<text x="303.5" y="228.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">Image.open(path)</text>
+<text x="303.5" y="243.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">PIL.Image, mode=RGB</text>
+<text x="303.5" y="259.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">shape (H, W, 3)</text>
+<line x1="303.5" y1="277.5" x2="303.5" y2="300.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="80.0" y="304.5" width="447.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="303.5" y="326.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">resize(size=(224, 224))</text>
+<text x="303.5" y="342.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">PIL BICUBIC resample</text>
+<text x="303.5" y="357.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(224, 224, 3)</text>
+<line x1="303.5" y1="376.0" x2="303.5" y2="399.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="80.0" y="403.0" width="447.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="303.5" y="425.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">np.array(image)</text>
+<text x="303.5" y="440.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">uint8   (224, 224, 3)</text>
+<line x1="303.5" y1="459.0" x2="303.5" y2="482.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="80.0" y="486.0" width="447.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="303.5" y="508.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">rescale(x * 1/255)</text>
+<text x="303.5" y="523.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">float32   (224, 224, 3)</text>
+<line x1="303.5" y1="542.0" x2="303.5" y2="565.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="80.0" y="569.0" width="447.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="303.5" y="591.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">normalize(mean=0.5, std=0.5)</text>
+<text x="303.5" y="606.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">float32   (224, 224, 3)</text>
+<line x1="303.5" y1="625.0" x2="303.5" y2="648.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="80.0" y="652.0" width="447.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="303.5" y="674.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">transpose(2, 0, 1)</text>
+<text x="303.5" y="689.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">channels-first   (3, 224, 224)</text>
+<line x1="303.5" y1="708.0" x2="303.5" y2="731.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="80.0" y="735.0" width="447.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="303.5" y="757.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">np.stack(images, axis=0)</text>
+<text x="303.5" y="772.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 3, 224, 224)</text>
+<line x1="303.5" y1="791.0" x2="303.5" y2="814.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="80.0" y="818.0" width="447.0" height="53.0" rx="4" fill="#e4f1e1" stroke="#4f8a46" stroke-width="1.4"/>
+<text x="303.5" y="840.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">torch.tensor(...)</text>
+<text x="303.5" y="855.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">pixel_values : (1, 3, 224, 224) float32</text>
+<rect x="553.0" y="206.0" width="447.0" height="53.0" rx="4" fill="#eef5fb" stroke="#2c6fa8" stroke-width="1.4"/>
+<text x="776.5" y="228.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">prompt : str</text>
+<text x="776.5" y="243.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">raw user text</text>
+<line x1="776.5" y1="262.0" x2="776.5" y2="285.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="553.0" y="289.0" width="447.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="776.5" y="311.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">add_image_tokens_to_prompt()</text>
+<text x="776.5" y="326.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">'&lt;image&gt;' * 256  +  &lt;bos&gt;  +  prompt  +  '\n'</text>
+<text x="776.5" y="342.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">one flat python string</text>
+<line x1="776.5" y1="360.5" x2="776.5" y2="383.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="553.0" y="387.5" width="447.0" height="68.5" rx="4" fill="#e4f1e1" stroke="#4f8a46" stroke-width="1.4"/>
+<text x="776.5" y="409.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">tokenizer(input_strings)</text>
+<text x="776.5" y="425.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">input_ids      : (1, Seq_Len) int64</text>
+<text x="776.5" y="440.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">attention_mask : (1, Seq_Len)</text>
+<text x="82.0" y="195.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" fill="#5b6b7a" text-anchor="start" font-style="italic">image branch</text>
+<text x="555.0" y="195.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" fill="#5b6b7a" text-anchor="start" font-style="italic">text branch</text>
+<rect x="80.0" y="901.0" width="920.0" height="53.0" rx="4" fill="#fdf3dc" stroke="#c79a28" stroke-width="1.4"/>
+<text x="540.0" y="923.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">move_inputs_to_device()</text>
+<text x="540.0" y="938.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">{ pixel_values, input_ids, attention_mask }  -&gt;  device</text>
+<polyline points="303.5,874.0 303.5,886.0 540.0,886.0 540.0,896.0" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<polyline points="776.5,459.0 776.5,678.5 540.0,678.5 540.0,896.0" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<rect x="80.0" y="1118.0" width="920.0" height="53.0" rx="4" fill="#eef5fb" stroke="#2c6fa8" stroke-width="1.4"/>
+<text x="540.0" y="1140.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">pixel_values</text>
+<text x="540.0" y="1155.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 3, 224, 224)</text>
+<rect x="80.0" y="1201.0" width="920.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="1223.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">SiglipVisionEmbeddings.patch_embedding</text>
+<text x="540.0" y="1238.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">Conv2d(3 -&gt; 1152, kernel=14, stride=14, padding='valid')</text>
+<text x="540.0" y="1254.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 3, 224, 224)  -&gt;  (1, 1152, 16, 16)</text>
+<rect x="80.0" y="1299.5" width="920.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="1321.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">flatten(2)</text>
+<text x="540.0" y="1337.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 1152, 16, 16)  -&gt;  (1, 1152, 256)</text>
+<rect x="80.0" y="1382.5" width="920.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="1404.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">transpose(1, 2)</text>
+<text x="540.0" y="1420.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 1152, 256)  -&gt;  (1, 256, 1152)</text>
+<rect x="80.0" y="1465.5" width="920.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="1487.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">+ position_embedding(position_ids)</text>
+<text x="540.0" y="1503.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">nn.Embedding(256, 1152)  -  learned, not sinusoidal</text>
+<text x="540.0" y="1518.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 256, 1152)</text>
+<rect x="112.0" y="1610.0" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="1632.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">hidden_states   (1, 256, 1152)</text>
+<text x="540.0" y="1647.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">residual copy #1</text>
+<line x1="540.0" y1="1666.0" x2="540.0" y2="1689.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="112.0" y="1693.0" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="1715.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">layer_norm1   nn.LayerNorm(1152, eps=1e-6)</text>
+<text x="540.0" y="1730.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 256, 1152)</text>
+<line x1="540.0" y1="1749.0" x2="540.0" y2="1772.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="112.0" y="1776.0" width="856.0" height="115.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="1798.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">SiglipAttention   -   fully bidirectional, no mask</text>
+<text x="540.0" y="1813.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">q/k/v_proj : Linear(1152 -&gt; 1152)  -&gt;  (1, 256, 1152) each</text>
+<text x="540.0" y="1829.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">view + transpose  -&gt;  (1, 16, 256, 72)</text>
+<text x="540.0" y="1844.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">attn = softmax(Q K^T * head_dim^-0.5)  -&gt;  (1, 16, 256, 256)</text>
+<text x="540.0" y="1860.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">attn @ V  -&gt;  (1, 16, 256, 72)  -&gt;  (1, 256, 1152)</text>
+<text x="540.0" y="1875.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">out_proj : Linear(1152 -&gt; 1152)</text>
+<line x1="540.0" y1="1894.0" x2="540.0" y2="1917.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="112.0" y="1921.0" width="856.0" height="37.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="1943.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">residual + attn_out   -&gt;   (1, 256, 1152)</text>
+<line x1="540.0" y1="1961.5" x2="540.0" y2="1984.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="112.0" y="1988.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="2010.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">layer_norm2   nn.LayerNorm(1152)</text>
+<text x="540.0" y="2026.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 256, 1152)</text>
+<line x1="540.0" y1="2044.5" x2="540.0" y2="2067.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="112.0" y="2071.5" width="856.0" height="84.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="2093.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">SiglipMLP</text>
+<text x="540.0" y="2109.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">fc1 : Linear(1152 -&gt; 4304)  -&gt;  (1, 256, 4304)</text>
+<text x="540.0" y="2124.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">GELU(approximate='tanh')</text>
+<text x="540.0" y="2140.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">fc2 : Linear(4304 -&gt; 1152)  -&gt;  (1, 256, 1152)</text>
+<line x1="540.0" y1="2158.5" x2="540.0" y2="2181.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="112.0" y="2185.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="540.0" y="2207.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">residual + mlp_out   -&gt;   (1, 256, 1152)</text>
+<text x="540.0" y="2223.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">output becomes the next layer's input</text>
+<polyline points="111.0,2212.0 94.0,2212.0 94.0,1636.5 109.0,1636.5" fill="none" stroke="#9078a8" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#ah1)" stroke-linejoin="round"/>
+<rect x="80.0" y="2290.5" width="920.0" height="53.0" rx="4" fill="#e4f1e1" stroke="#4f8a46" stroke-width="1.4"/>
+<text x="540.0" y="2312.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">post_layernorm   nn.LayerNorm(1152)</text>
+<text x="540.0" y="2328.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 256, 1152)   =   image last_hidden_state</text>
+<line x1="540.0" y1="1174.0" x2="540.0" y2="1196.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<line x1="540.0" y1="1272.5" x2="540.0" y2="1294.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<line x1="540.0" y1="1355.5" x2="540.0" y2="1377.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<line x1="540.0" y1="1438.5" x2="540.0" y2="1460.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<line x1="540.0" y1="1537.0" x2="540.0" y2="1605.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<line x1="540.0" y1="2241.5" x2="540.0" y2="2285.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1172.0" y="206.0" width="447.0" height="53.0" rx="4" fill="#eef5fb" stroke="#2c6fa8" stroke-width="1.4"/>
+<text x="1395.5" y="228.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">image last_hidden_state</text>
+<text x="1395.5" y="243.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 256, 1152)</text>
+<line x1="1395.5" y1="262.0" x2="1395.5" y2="285.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1172.0" y="289.0" width="447.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1395.5" y="311.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">PaliGemmaMultiModalProjector.linear</text>
+<text x="1395.5" y="326.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">Linear(1152 -&gt; 2048, bias=True)</text>
+<text x="1395.5" y="342.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 256, 1152)  -&gt;  (1, 256, 2048)</text>
+<line x1="1395.5" y1="360.5" x2="1395.5" y2="383.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1172.0" y="387.5" width="447.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1395.5" y="409.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">scaled_image_features</text>
+<text x="1395.5" y="425.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">image_features / sqrt(2048)</text>
+<text x="1395.5" y="440.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 256, 2048)</text>
+<rect x="1645.0" y="206.0" width="447.0" height="68.5" rx="4" fill="#eef5fb" stroke="#2c6fa8" stroke-width="1.4"/>
+<text x="1868.5" y="228.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">embed_tokens(input_ids)</text>
+<text x="1868.5" y="243.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">nn.Embedding(257152, 2048)</text>
+<text x="1868.5" y="259.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, Seq_Len)  -&gt;  (1, Seq_Len, 2048)</text>
+<text x="1174.0" y="195.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" fill="#5b6b7a" text-anchor="start" font-style="italic">vision side</text>
+<text x="1647.0" y="195.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" fill="#5b6b7a" text-anchor="start" font-style="italic">text side</text>
+<rect x="1204.0" y="532.0" width="856.0" height="37.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="554.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">final_embedding = zeros(1, Seq_Len, 2048)</text>
+<line x1="1632.0" y1="572.5" x2="1632.0" y2="595.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="599.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="621.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">text_mask / image_mask / pad_mask = f(input_ids)</text>
+<text x="1632.0" y="637.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, Seq_Len) bool   -&gt;   expand   -&gt;   (1, Seq_Len, 2048)</text>
+<line x1="1632.0" y1="655.5" x2="1632.0" y2="678.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="682.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="704.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">torch.where(text_mask, inputs_embeds, final_embedding)</text>
+<text x="1632.0" y="720.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">text token slots filled</text>
+<line x1="1632.0" y1="738.5" x2="1632.0" y2="761.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="765.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="787.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">masked_scatter(image_mask, scaled_image_features)</text>
+<text x="1632.0" y="803.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">the 256 &lt;image&gt; slots filled</text>
+<line x1="1632.0" y1="821.5" x2="1632.0" y2="844.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="848.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="870.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">torch.where(pad_mask, 0, final_embedding)</text>
+<text x="1632.0" y="886.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">inputs_embeds : (1, Seq_Len, 2048)</text>
+<line x1="1632.0" y1="904.5" x2="1632.0" y2="927.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="931.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="953.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">causal_mask (1, 1, Q_Len, KV_Len)  +  position_ids (1, Seq_Len)</text>
+<text x="1632.0" y="969.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">prefill -&gt; all-zero block;   decode -&gt; single-query row</text>
+<polyline points="1395.5,459.0 1395.5,494.0 1632.0,494.0 1632.0,527.0" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<polyline points="1868.5,277.5 1868.5,403.2 1632.0,403.2 1632.0,527.0" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<rect x="1172.0" y="1170.5" width="920.0" height="53.0" rx="4" fill="#eef5fb" stroke="#2c6fa8" stroke-width="1.4"/>
+<text x="1632.0" y="1192.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">inputs_embeds (1, Seq_Len, 2048)</text>
+<text x="1632.0" y="1208.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">causal_mask  ·  position_ids  ·  kv_cache</text>
+<rect x="1172.0" y="1253.5" width="920.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="1275.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">hidden_states = inputs_embeds * sqrt(2048)</text>
+<text x="1632.0" y="1291.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">the sqrt(d) normalizer that the image path already divided out</text>
+<rect x="1204.0" y="1382.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="1404.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">hidden_states   (1, Seq_Len, 2048)</text>
+<text x="1632.0" y="1420.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">residual copy #1</text>
+<line x1="1632.0" y1="1438.5" x2="1632.0" y2="1461.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="1465.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="1487.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">input_layernorm   GemmaRMSNorm(2048, eps=1e-6)</text>
+<text x="1632.0" y="1503.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, Seq_Len, 2048)</text>
+<line x1="1632.0" y1="1521.5" x2="1632.0" y2="1544.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="1548.5" width="856.0" height="84.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="1570.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">GemmaAttention   -   projections</text>
+<text x="1632.0" y="1586.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">q_proj : Linear(2048 -&gt; 8*256)  -&gt;  (1, 8, Seq_Len, 256)</text>
+<text x="1632.0" y="1601.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">k_proj : Linear(2048 -&gt; 1*256)  -&gt;  (1, 1, Seq_Len, 256)</text>
+<text x="1632.0" y="1617.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">v_proj : Linear(2048 -&gt; 1*256)  -&gt;  (1, 1, Seq_Len, 256)</text>
+<line x1="1632.0" y1="1635.5" x2="1632.0" y2="1658.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="1662.5" width="856.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="1684.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">GemmaRotaryEmbedding</text>
+<text x="1632.0" y="1700.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">cos, sin = f(position_ids)  -&gt;  (1, Seq_Len, 256)</text>
+<text x="1632.0" y="1715.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">apply_rotary_pos_emb(q, k, cos, sin)  -&gt;  rotated Q, K</text>
+<line x1="1632.0" y1="1734.0" x2="1632.0" y2="1757.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="1761.0" width="856.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="1783.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">kv_cache.update(k, v, layer_idx)</text>
+<text x="1632.0" y="1798.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">K, V : (1, 1, KV_Len, 256)</text>
+<text x="1632.0" y="1814.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">KV_Len grows by 1 on every decode step</text>
+<line x1="1632.0" y1="1832.5" x2="1632.0" y2="1855.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="1859.5" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="1881.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">repeat_kv(K, V, n_rep=8)</text>
+<text x="1632.0" y="1897.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 1, KV_Len, 256)  -&gt;  (1, 8, KV_Len, 256)</text>
+<line x1="1632.0" y1="1915.5" x2="1632.0" y2="1938.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="1942.5" width="856.0" height="84.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="1964.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">attn = softmax(Q K^T / sqrt(256) + causal_mask)</text>
+<text x="1632.0" y="1980.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 8, Seq_Len, KV_Len)</text>
+<text x="1632.0" y="1995.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">attn @ V  -&gt;  (1, 8, Seq_Len, 256)  -&gt;  (1, Seq_Len, 2048)</text>
+<text x="1632.0" y="2011.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">o_proj : Linear(2048 -&gt; 2048)</text>
+<line x1="1632.0" y1="2029.5" x2="1632.0" y2="2052.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="2056.5" width="856.0" height="37.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="2078.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">residual + attn_out   -&gt;   (1, Seq_Len, 2048)</text>
+<line x1="1632.0" y1="2097.0" x2="1632.0" y2="2120.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="2124.0" width="856.0" height="37.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="2146.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">post_attention_layernorm   GemmaRMSNorm(2048)</text>
+<line x1="1632.0" y1="2164.5" x2="1632.0" y2="2187.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="2191.5" width="856.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="2213.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">GemmaMLP   -   GeGLU</text>
+<text x="1632.0" y="2229.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">gate_proj, up_proj : Linear(2048 -&gt; 16384)</text>
+<text x="1632.0" y="2244.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">GELU(gate) * up   -&gt;   down_proj : Linear(16384 -&gt; 2048)</text>
+<line x1="1632.0" y1="2263.0" x2="1632.0" y2="2286.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="1204.0" y="2290.0" width="856.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="2312.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">residual + mlp_out   -&gt;   (1, Seq_Len, 2048)</text>
+<text x="1632.0" y="2327.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">output becomes the next layer's input</text>
+<polyline points="1203.0,2316.5 1186.0,2316.5 1186.0,1409.0 1201.0,1409.0" fill="none" stroke="#c98484" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#ah2)" stroke-linejoin="round"/>
+<rect x="1172.0" y="2395.0" width="920.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="1632.0" y="2417.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">norm   GemmaRMSNorm(2048)</text>
+<text x="1632.0" y="2432.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, Seq_Len, 2048)</text>
+<rect x="1172.0" y="2478.0" width="920.0" height="68.5" rx="4" fill="#e4f1e1" stroke="#4f8a46" stroke-width="1.4"/>
+<text x="1632.0" y="2500.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">lm_head : Linear(2048 -&gt; 257152, bias=False)</text>
+<text x="1632.0" y="2515.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">weights tied to embed_tokens  -  no extra parameters</text>
+<text x="1632.0" y="2531.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">logits.float()  -&gt;  (1, Seq_Len, 257152)</text>
+<line x1="1632.0" y1="1226.5" x2="1632.0" y2="1248.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<line x1="1632.0" y1="1309.5" x2="1632.0" y2="1377.5" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<line x1="1632.0" y1="2346.0" x2="1632.0" y2="2390.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<line x1="1632.0" y1="2451.0" x2="1632.0" y2="2473.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<rect x="2264.0" y="206.0" width="920.0" height="53.0" rx="4" fill="#eef5fb" stroke="#2c6fa8" stroke-width="1.4"/>
+<text x="2724.0" y="228.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">next_token_logits = logits[:, -1, :]</text>
+<text x="2724.0" y="243.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">(1, 257152)</text>
+<polygon points="2282.0,289.0 3166.0,289.0 3184.0,312.8 3166.0,336.5 2282.0,336.5 2264.0,312.8" fill="#fbe6da" stroke="#c1643a" stroke-width="1.4"/>
+<text x="2724.0" y="316.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">do_sample ?</text>
+<rect x="2264.0" y="366.5" width="447.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="2487.5" y="388.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">do_sample = False</text>
+<text x="2487.5" y="404.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">next_token = argmax(logits, dim=-1)</text>
+<text x="2487.5" y="419.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">greedy decoding</text>
+<rect x="2737.0" y="366.5" width="447.0" height="68.5" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="2960.5" y="388.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">do_sample = True</text>
+<text x="2960.5" y="404.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">probs = softmax(logits / temperature)</text>
+<text x="2960.5" y="419.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">next_token = _sample_top_p(probs, p=0.9)</text>
+<rect x="2264.0" y="465.0" width="920.0" height="53.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="2724.0" y="487.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">next_token  -&gt;  (1, 1)</text>
+<text x="2724.0" y="502.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">generated_tokens.append(next_token)</text>
+<polygon points="2282.0,548.0 3166.0,548.0 3184.0,571.8 3166.0,595.5 2282.0,595.5 2264.0,571.8" fill="#fbe6da" stroke="#c1643a" stroke-width="1.4"/>
+<text x="2724.0" y="575.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">next_token == eos_token_id ?</text>
+<rect x="2264.0" y="625.5" width="447.0" height="84.0" rx="4" fill="#fdf3dc" stroke="#c79a28" stroke-width="1.4"/>
+<text x="2487.5" y="647.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">no  -  keep decoding</text>
+<text x="2487.5" y="663.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">input_ids = next_token.unsqueeze(-1)  -&gt;  (1, 1)</text>
+<text x="2487.5" y="678.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">attention_mask = cat([mask, ones(1, 1)])</text>
+<text x="2487.5" y="694.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">kv_cache carries forward   (KV_Len += 1)</text>
+<rect x="2737.0" y="625.5" width="447.0" height="68.5" rx="4" fill="#e4f1e1" stroke="#4f8a46" stroke-width="1.4"/>
+<text x="2960.5" y="647.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#152230" text-anchor="middle">yes  -  stop</text>
+<text x="2960.5" y="663.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">tokenizer.decode(cat(generated_tokens))</text>
+<text x="2960.5" y="678.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="middle">print(prompt + decoded)</text>
+<line x1="2724.0" y1="262.0" x2="2724.0" y2="284.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<polyline points="2724.0,339.5 2724.0,351.5 2487.5,351.5 2487.5,361.5" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<polyline points="2724.0,339.5 2724.0,351.5 2960.5,351.5 2960.5,361.5" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<text x="2495.5" y="357.5" font-family="Georgia,'Times New Roman',serif" font-size="12" fill="#b3572e" text-anchor="start" font-style="italic">greedy</text>
+<text x="2968.5" y="357.5" font-family="Georgia,'Times New Roman',serif" font-size="12" fill="#b3572e" text-anchor="start" font-style="italic">sampled</text>
+<polyline points="2487.5,438.0 2487.5,450.0 2724.0,450.0 2724.0,460.0" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<polyline points="2960.5,438.0 2960.5,450.0 2724.0,450.0 2724.0,460.0" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<line x1="2724.0" y1="521.0" x2="2724.0" y2="543.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)"/>
+<polyline points="2724.0,598.5 2724.0,610.5 2487.5,610.5 2487.5,620.5" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<polyline points="2724.0,598.5 2724.0,610.5 2960.5,610.5 2960.5,620.5" fill="none" stroke="#51606e" stroke-width="1.6" marker-end="url(#ah0)" stroke-linejoin="round"/>
+<text x="2495.5" y="616.5" font-family="Georgia,'Times New Roman',serif" font-size="12" fill="#b3572e" text-anchor="start" font-style="italic">no</text>
+<text x="2968.5" y="616.5" font-family="Georgia,'Times New Roman',serif" font-size="12" fill="#b3572e" text-anchor="start" font-style="italic">yes</text>
+<polyline points="540.0,958.0 540.0,1006.0 540.0,1006.0 540.0,1112.0" fill="none" stroke="#243744" stroke-width="2.1" marker-end="url(#ah3)" stroke-linejoin="round"/>
+<text x="554.0" y="998.0" font-family="Georgia,'Times New Roman',serif" font-size="12.5" fill="#243744" text-anchor="start" font-style="italic">pixel_values</text>
+<polyline points="540.0,2347.5 540.0,2391.5 1086.0,2391.5 1086.0,232.5 1167.0,232.5" fill="none" stroke="#243744" stroke-width="2.1" marker-end="url(#ah3)" stroke-linejoin="round"/>
+<text x="1096.0" y="1299.0" font-family="Georgia,'Times New Roman',serif" font-size="12.5" fill="#243744" text-anchor="start" font-style="italic">image last_hidden_state</text>
+<polyline points="1632.0,988.5 1632.0,1058.5 1632.0,1058.5 1632.0,1164.5" fill="none" stroke="#243744" stroke-width="2.1" marker-end="url(#ah3)" stroke-linejoin="round"/>
+<text x="1646.0" y="1050.5" font-family="Georgia,'Times New Roman',serif" font-size="12.5" fill="#243744" text-anchor="start" font-style="italic">inputs_embeds, causal_mask, position_ids</text>
+<polyline points="1632.0,2550.5 1632.0,2594.5 2178.0,2594.5 2178.0,232.5 2259.0,232.5" fill="none" stroke="#243744" stroke-width="2.1" marker-end="url(#ah3)" stroke-linejoin="round"/>
+<text x="2188.0" y="1400.5" font-family="Georgia,'Times New Roman',serif" font-size="12.5" fill="#243744" text-anchor="start" font-style="italic">logits</text>
+<polyline points="1001.0,945.0 1108.0,945.0 1108.0,104.0 1868.5,104.0 1868.5,201.0" fill="none" stroke="#2c6fa8" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#ah4)" stroke-linejoin="round"/>
+<text x="1858.5" y="90.0" font-family="Georgia,'Times New Roman',serif" font-size="12.5" fill="#2c6fa8" text-anchor="end" font-style="italic">input_ids bypass the vision tower</text>
+<polyline points="2263.0,667.5 2196.0,667.5 2196.0,1197.0 2095.0,1197.0" fill="none" stroke="#9d86bd" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#ah5)" stroke-linejoin="round"/>
+<text x="2188.0" y="1154.5" font-family="Georgia,'Times New Roman',serif" font-size="12.5" fill="#7d66a0" text-anchor="end" font-style="italic">next decode step: one new token, KV-cache reused</text>
+<rect x="2268.0" y="849.5" width="44.0" height="24.0" rx="4" fill="#eef5fb" stroke="#2c6fa8" stroke-width="1.4"/>
+<text x="2326.0" y="866.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="start">an input to this stage</text>
+<rect x="2268.0" y="885.5" width="44.0" height="24.0" rx="4" fill="#e4f1e1" stroke="#4f8a46" stroke-width="1.4"/>
+<text x="2326.0" y="902.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="start">a named tensor the next stage consumes</text>
+<rect x="2268.0" y="921.5" width="44.0" height="24.0" rx="4" fill="#ffffff" stroke="#51606e" stroke-width="1.4"/>
+<text x="2326.0" y="938.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="start">an ordinary operation</text>
+<rect x="2268.0" y="957.5" width="44.0" height="24.0" rx="4" fill="#fdf3dc" stroke="#c79a28" stroke-width="1.4"/>
+<text x="2326.0" y="974.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="start">carries state between decode steps</text>
+<polygon points="2286.0,993.5 2294.0,993.5 2312.0,1006.5 2294.0,1019.5 2286.0,1019.5 2268.0,1006.5" fill="#fbe6da" stroke="#c1643a" stroke-width="1.4"/>
+<text x="2326.0" y="1011.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="start">a branch in the control flow</text>
+<polyline points="2268.0,1043.5 2310.0,1043.5" fill="none" stroke="#243744" stroke-width="2.1" marker-end="url(#ah3)" stroke-linejoin="round"/>
+<text x="2326.0" y="1047.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="start">tensor flow between stages</text>
+<polyline points="2268.0,1075.5 2310.0,1075.5" fill="none" stroke="#9078a8" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#ah1)" stroke-linejoin="round"/>
+<text x="2326.0" y="1079.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#3a4b5c" text-anchor="start">a loop, or a path that skips a stage</text>
+<text x="2268.0" y="1117.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#5b6b7a" text-anchor="start">Shapes are written [Batch, ...] with Batch = 1.</text>
+<text x="2268.0" y="1137.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#5b6b7a" text-anchor="start">Seq_Len = 256 image tokens + &lt;bos&gt; + prompt + newline.</text>
+<text x="2268.0" y="1157.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#5b6b7a" text-anchor="start">KV_Len grows by one on every decode step.</text>
+</svg>

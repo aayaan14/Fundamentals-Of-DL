@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1020" height="700" viewBox="0 0 1020 700">
+<defs><marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#51606e"/></marker><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b07808"/></marker><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8e6bb0"/></marker></defs>
+<rect width="1020" height="700" fill="#ffffff"/>
+<text x="510.0" y="30.0" font-family="Georgia,'Times New Roman',serif" font-size="19" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">PaliGemma = SigLIP + a linear projector + Gemma</text>
+<text x="510.0" y="56.0" font-family="Georgia,'Times New Roman',serif" font-size="13" font-weight="normal" font-style="italic" fill="#4a5a6a" text-anchor="middle" opacity="1.0">no cross-attention anywhere: the image becomes 256 ordinary tokens in the prompt</text>
+<rect x="50.0" y="120.0" width="150.0" height="56.0" rx="5" fill="#e8f4f8" stroke="#2c6fa8" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="125.0" y="144.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">224 x 224</text>
+<text x="125.0" y="160.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">RGB image</text>
+<rect x="50.0" y="206.0" width="150.0" height="70.0" rx="5" fill="#e4f1e1" stroke="#1e7e45" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="125.0" y="230.3" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">SigLIP-So400m/14</text>
+<text x="125.0" y="245.3" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">vision encoder</text>
+<text x="125.0" y="260.3" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">27 layers</text>
+<rect x="50.0" y="316.0" width="150.0" height="56.0" rx="5" fill="#fff9e6" stroke="#b07808" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="125.0" y="340.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Linear</text>
+<text x="125.0" y="356.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">1152 -&gt; 2048</text>
+<line x1="125.0" y1="178.0" x2="125.0" y2="203.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#a0)"/>
+<line x1="125.0" y1="278.0" x2="125.0" y2="313.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#a0)"/>
+<text x="208.0" y="298.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="start" opacity="1.0">(1, 256, 1152)</text>
+<text x="125.0" y="392.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="middle" opacity="1.0">(1, 256, 2048)</text>
+<rect x="50.0" y="440.0" width="150.0" height="56.0" rx="5" fill="#e8f4f8" stroke="#2c6fa8" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="125.0" y="464.1" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">prompt:</text>
+<text x="125.0" y="480.1" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">"this building is"</text>
+<rect x="50.0" y="526.0" width="150.0" height="56.0" rx="5" fill="#f2ecf8" stroke="#8e6bb0" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="125.0" y="550.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">tokenizer +</text>
+<text x="125.0" y="566.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">nn.Embedding</text>
+<line x1="125.0" y1="498.0" x2="125.0" y2="523.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#a0)"/>
+<text x="125.0" y="602.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="middle" opacity="1.0">(1, L, 2048)</text>
+<rect x="330.0" y="150.0" width="190.0" height="330.0" rx="7" fill="#fafbfc" stroke="#1f2a36" stroke-width="1.6" fill-opacity="1.0"/>
+<text x="425.0" y="136.0" font-family="Georgia,'Times New Roman',serif" font-size="13" font-weight="bold" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">one merged sequence</text>
+<rect x="348.0" y="174.0" width="154.0" height="26.0" rx="3" fill="#fff9e6" stroke="#b07808" stroke-width="1.1" fill-opacity="1.0"/>
+<text x="425.0" y="191.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">&lt;image&gt; 1</text>
+<rect x="348.0" y="210.0" width="154.0" height="26.0" rx="3" fill="#fff9e6" stroke="#b07808" stroke-width="1.1" fill-opacity="1.0"/>
+<text x="425.0" y="227.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">&lt;image&gt; 2</text>
+<rect x="348.0" y="246.0" width="154.0" height="26.0" rx="3" fill="#fff9e6" stroke="#b07808" stroke-width="1.1" fill-opacity="1.0"/>
+<text x="425.0" y="263.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">&lt;image&gt; 3</text>
+<text x="425.0" y="300.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="middle" opacity="1.0">.  .  .</text>
+<rect x="348.0" y="318.0" width="154.0" height="26.0" rx="3" fill="#fff9e6" stroke="#b07808" stroke-width="1.1" fill-opacity="1.0"/>
+<text x="425.0" y="335.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">&lt;image&gt; 256</text>
+<rect x="348.0" y="354.0" width="154.0" height="26.0" rx="3" fill="#f2ecf8" stroke="#8e6bb0" stroke-width="1.1" fill-opacity="1.0"/>
+<text x="425.0" y="371.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">&lt;bos&gt;</text>
+<rect x="348.0" y="390.0" width="154.0" height="26.0" rx="3" fill="#f2ecf8" stroke="#8e6bb0" stroke-width="1.1" fill-opacity="1.0"/>
+<text x="425.0" y="407.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">this building is</text>
+<rect x="348.0" y="426.0" width="154.0" height="26.0" rx="3" fill="#f2ecf8" stroke="#8e6bb0" stroke-width="1.1" fill-opacity="1.0"/>
+<text x="425.0" y="443.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">\n</text>
+<text x="425.0" y="502.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="middle" opacity="1.0">(1, 256 + L, 2048)</text>
+<polyline points="200.0,344.0 265.0,344.0 265.0,250.0 324.0,250.0" fill="none" stroke="#b07808" stroke-width="1.7" marker-end="url(#a1)" stroke-linejoin="round"/>
+<polyline points="200.0,554.0 265.0,554.0 265.0,410.0 324.0,410.0" fill="none" stroke="#8e6bb0" stroke-width="1.7" marker-end="url(#a2)" stroke-linejoin="round"/>
+<rect x="600.0" y="180.0" width="190.0" height="90.0" rx="5" fill="#fbe3e0" stroke="#c0392b" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="695.0" y="213.1" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Gemma-2B decoder</text>
+<text x="695.0" y="229.1" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">18 x GemmaDecoderLayer</text>
+<text x="695.0" y="245.1" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">RMSNorm, RoPE, MQA, GeGLU</text>
+<rect x="600.0" y="310.0" width="190.0" height="56.0" rx="5" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="695.0" y="342.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">final RMSNorm</text>
+<rect x="600.0" y="400.0" width="190.0" height="70.0" rx="5" fill="#e4f1e1" stroke="#1e7e45" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="695.0" y="424.1" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">lm_head</text>
+<text x="695.0" y="439.1" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">Linear(2048 -&gt; 257152)</text>
+<text x="695.0" y="454.1" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">tied to the embeddings</text>
+<rect x="600.0" y="510.0" width="190.0" height="50.0" rx="5" fill="#fff9e6" stroke="#b07808" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="695.0" y="539.3" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">argmax / top-p</text>
+<polyline points="526.0,315.0 565.0,315.0 565.0,225.0 596.0,225.0" fill="none" stroke="#51606e" stroke-width="1.8" marker-end="url(#a0)" stroke-linejoin="round"/>
+<line x1="695.0" y1="272.0" x2="695.0" y2="307.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#a0)"/>
+<line x1="695.0" y1="368.0" x2="695.0" y2="397.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#a0)"/>
+<line x1="695.0" y1="472.0" x2="695.0" y2="507.0" stroke="#51606e" stroke-width="1.6" marker-end="url(#a0)"/>
+<polyline points="790.0,535.0 885.0,535.0 885.0,205.0 794.0,205.0" fill="none" stroke="#b07808" stroke-width="1.7" stroke-dasharray="6 4" marker-end="url(#a1)" stroke-linejoin="round"/>
+<text x="893.0" y="352.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="normal" fill="#b07808" text-anchor="start" opacity="1.0">the new</text>
+<text x="893.0" y="367.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="normal" fill="#b07808" text-anchor="start" opacity="1.0">token is</text>
+<text x="893.0" y="382.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="normal" fill="#b07808" text-anchor="start" opacity="1.0">appended</text>
+<text x="893.0" y="397.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="normal" fill="#b07808" text-anchor="start" opacity="1.0">to the</text>
+<text x="893.0" y="412.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="normal" fill="#b07808" text-anchor="start" opacity="1.0">sequence</text>
+<rect x="50.0" y="626.0" width="920.0" height="56.0" rx="5" fill="#e8f4f8" stroke="#2c6fa8" stroke-width="1.3" fill-opacity="1.0"/>
+<rect x="50.0" y="626.0" width="4" height="56.0" fill="#2c6fa8"/>
+<text x="64.0" y="648.9" font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">The only new parameters PaliGemma introduces live in that one Linear layer. Everything else is a pre-trained</text>
+<text x="64.0" y="665.9" font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">SigLIP encoder and a pre-trained Gemma decoder, stitched together by putting image tokens in the prompt.</text>
+</svg>

@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="600" viewBox="0 0 1040 600">
+<defs><marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2c6fa8"/></marker><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b07808"/></marker><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1e7e45"/></marker></defs>
+<rect width="1040" height="600" fill="#ffffff"/>
+<text x="520.0" y="30.0" font-family="Georgia,'Times New Roman',serif" font-size="19" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Multi-head, grouped-query and multi-query attention</text>
+<text x="520.0" y="56.0" font-family="Georgia,'Times New Roman',serif" font-size="13" font-weight="normal" font-style="italic" fill="#4a5a6a" text-anchor="middle" opacity="1.0">how many distinct K/V heads do the 8 query heads have to share?</text>
+<rect x="40.0" y="112.0" width="300.0" height="356.0" rx="8" fill="#fdfdfe" stroke="#2c6fa8" stroke-width="1.6" fill-opacity="1.0"/>
+<text x="190.0" y="138.0" font-family="Georgia,'Times New Roman',serif" font-size="14.5" font-weight="bold" font-style="normal" fill="#2c6fa8" text-anchor="middle" opacity="1.0">MHA  (n_kv = 8)</text>
+<text x="190.0" y="156.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">8 query heads</text>
+<rect x="58.0" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="73.0" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q1</text>
+<rect x="91.4" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="106.4" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q2</text>
+<rect x="124.8" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="139.8" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q3</text>
+<rect x="158.2" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="173.2" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q4</text>
+<rect x="191.6" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="206.6" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q5</text>
+<rect x="225.0" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="240.0" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q6</text>
+<rect x="258.4" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="273.4" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q7</text>
+<rect x="291.8" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="306.8" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q8</text>
+<rect x="58.0" y="286.0" width="29.5" height="28.0" rx="3" fill="#bcd9ef" stroke="#2c6fa8" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="72.7" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="9.5" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">KV1</text>
+<polyline points="73.0,196.0 73.0,238.0 72.7,262.0 72.7,282.0" fill="none" stroke="#2c6fa8" stroke-width="1.1" marker-end="url(#a0)" stroke-linejoin="round"/>
+<rect x="91.5" y="286.0" width="29.5" height="28.0" rx="3" fill="#bcd9ef" stroke="#2c6fa8" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="106.2" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="9.5" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">KV2</text>
+<polyline points="106.4,196.0 106.4,238.0 106.2,262.0 106.2,282.0" fill="none" stroke="#2c6fa8" stroke-width="1.1" marker-end="url(#a0)" stroke-linejoin="round"/>
+<rect x="125.0" y="286.0" width="29.5" height="28.0" rx="3" fill="#bcd9ef" stroke="#2c6fa8" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="139.7" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="9.5" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">KV3</text>
+<polyline points="139.8,196.0 139.8,238.0 139.7,262.0 139.7,282.0" fill="none" stroke="#2c6fa8" stroke-width="1.1" marker-end="url(#a0)" stroke-linejoin="round"/>
+<rect x="158.4" y="286.0" width="29.5" height="28.0" rx="3" fill="#bcd9ef" stroke="#2c6fa8" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="173.2" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="9.5" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">KV4</text>
+<polyline points="173.2,196.0 173.2,238.0 173.2,262.0 173.2,282.0" fill="none" stroke="#2c6fa8" stroke-width="1.1" marker-end="url(#a0)" stroke-linejoin="round"/>
+<rect x="191.9" y="286.0" width="29.5" height="28.0" rx="3" fill="#bcd9ef" stroke="#2c6fa8" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="206.6" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="9.5" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">KV5</text>
+<polyline points="206.6,196.0 206.6,238.0 206.6,262.0 206.6,282.0" fill="none" stroke="#2c6fa8" stroke-width="1.1" marker-end="url(#a0)" stroke-linejoin="round"/>
+<rect x="225.4" y="286.0" width="29.5" height="28.0" rx="3" fill="#bcd9ef" stroke="#2c6fa8" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="240.1" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="9.5" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">KV6</text>
+<polyline points="240.0,196.0 240.0,238.0 240.1,262.0 240.1,282.0" fill="none" stroke="#2c6fa8" stroke-width="1.1" marker-end="url(#a0)" stroke-linejoin="round"/>
+<rect x="258.9" y="286.0" width="29.5" height="28.0" rx="3" fill="#bcd9ef" stroke="#2c6fa8" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="273.6" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="9.5" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">KV7</text>
+<polyline points="273.4,196.0 273.4,238.0 273.6,262.0 273.6,282.0" fill="none" stroke="#2c6fa8" stroke-width="1.1" marker-end="url(#a0)" stroke-linejoin="round"/>
+<rect x="292.3" y="286.0" width="29.5" height="28.0" rx="3" fill="#bcd9ef" stroke="#2c6fa8" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="307.1" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="9.5" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">KV8</text>
+<polyline points="306.8,196.0 306.8,238.0 307.1,262.0 307.1,282.0" fill="none" stroke="#2c6fa8" stroke-width="1.1" marker-end="url(#a0)" stroke-linejoin="round"/>
+<text x="190.0" y="332.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">8 key/value heads</text>
+<text x="190.0" y="356.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="bold" font-style="normal" fill="#2c6fa8" text-anchor="middle" opacity="1.0">144 KB / token</text>
+<text x="190.0" y="382.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">every query head owns its own</text>
+<text x="190.0" y="399.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">K and V - maximum capacity,</text>
+<text x="190.0" y="416.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">maximum cache</text>
+<text x="190.0" y="433.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">repeat_kv(..., n_rep=1)</text>
+<rect x="370.0" y="112.0" width="300.0" height="356.0" rx="8" fill="#fdfdfe" stroke="#b07808" stroke-width="1.6" fill-opacity="1.0"/>
+<text x="520.0" y="138.0" font-family="Georgia,'Times New Roman',serif" font-size="14.5" font-weight="bold" font-style="normal" fill="#b07808" text-anchor="middle" opacity="1.0">GQA  (n_kv = 2)</text>
+<text x="520.0" y="156.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">8 query heads</text>
+<rect x="388.0" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="403.0" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q1</text>
+<rect x="421.4" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="436.4" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q2</text>
+<rect x="454.8" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="469.8" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q3</text>
+<rect x="488.2" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="503.2" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q4</text>
+<rect x="521.6" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="536.6" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q5</text>
+<rect x="555.0" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="570.0" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q6</text>
+<rect x="588.4" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="603.4" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q7</text>
+<rect x="621.8" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="636.8" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q8</text>
+<rect x="388.0" y="286.0" width="129.9" height="28.0" rx="3" fill="#f6ddb0" stroke="#b07808" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="452.9" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">K1V1</text>
+<polyline points="403.0,196.0 403.0,238.0 452.9,262.0 452.9,282.0" fill="none" stroke="#b07808" stroke-width="1.1" marker-end="url(#a1)" stroke-linejoin="round"/>
+<polyline points="436.4,196.0 436.4,238.0 452.9,262.0 452.9,282.0" fill="none" stroke="#b07808" stroke-width="1.1" marker-end="url(#a1)" stroke-linejoin="round"/>
+<polyline points="469.8,196.0 469.8,238.0 452.9,262.0 452.9,282.0" fill="none" stroke="#b07808" stroke-width="1.1" marker-end="url(#a1)" stroke-linejoin="round"/>
+<polyline points="503.2,196.0 503.2,238.0 452.9,262.0 452.9,282.0" fill="none" stroke="#b07808" stroke-width="1.1" marker-end="url(#a1)" stroke-linejoin="round"/>
+<rect x="521.9" y="286.0" width="129.9" height="28.0" rx="3" fill="#f6ddb0" stroke="#b07808" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="586.9" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">K2V2</text>
+<polyline points="536.6,196.0 536.6,238.0 586.9,262.0 586.9,282.0" fill="none" stroke="#b07808" stroke-width="1.1" marker-end="url(#a1)" stroke-linejoin="round"/>
+<polyline points="570.0,196.0 570.0,238.0 586.9,262.0 586.9,282.0" fill="none" stroke="#b07808" stroke-width="1.1" marker-end="url(#a1)" stroke-linejoin="round"/>
+<polyline points="603.4,196.0 603.4,238.0 586.9,262.0 586.9,282.0" fill="none" stroke="#b07808" stroke-width="1.1" marker-end="url(#a1)" stroke-linejoin="round"/>
+<polyline points="636.8,196.0 636.8,238.0 586.9,262.0 586.9,282.0" fill="none" stroke="#b07808" stroke-width="1.1" marker-end="url(#a1)" stroke-linejoin="round"/>
+<text x="520.0" y="332.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">2 key/value heads</text>
+<text x="520.0" y="356.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="bold" font-style="normal" fill="#b07808" text-anchor="middle" opacity="1.0">36 KB / token</text>
+<text x="520.0" y="382.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">four query heads share one</text>
+<text x="520.0" y="399.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">K/V pair - most of the quality,</text>
+<text x="520.0" y="416.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">a quarter of the cache</text>
+<text x="520.0" y="433.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">repeat_kv(..., n_rep=4)</text>
+<rect x="700.0" y="112.0" width="300.0" height="356.0" rx="8" fill="#fdfdfe" stroke="#1e7e45" stroke-width="1.6" fill-opacity="1.0"/>
+<text x="850.0" y="138.0" font-family="Georgia,'Times New Roman',serif" font-size="14.5" font-weight="bold" font-style="normal" fill="#1e7e45" text-anchor="middle" opacity="1.0">MQA  (n_kv = 1)</text>
+<text x="850.0" y="156.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">8 query heads</text>
+<rect x="718.0" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="733.0" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q1</text>
+<rect x="751.4" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="766.4" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q2</text>
+<rect x="784.8" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="799.8" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q3</text>
+<rect x="818.2" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="833.2" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q4</text>
+<rect x="851.6" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="866.6" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q5</text>
+<rect x="885.0" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="900.0" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q6</text>
+<rect x="918.4" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="933.4" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q7</text>
+<rect x="951.8" y="166.0" width="30.0" height="28.0" rx="3" fill="#ffffff" stroke="#51606e" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="966.8" y="184.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">Q8</text>
+<rect x="718.0" y="286.0" width="263.8" height="28.0" rx="3" fill="#b9e0c6" stroke="#1e7e45" stroke-width="1.4" fill-opacity="1.0"/>
+<text x="849.9" y="304.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">K1V1</text>
+<polyline points="733.0,196.0 733.0,238.0 849.9,262.0 849.9,282.0" fill="none" stroke="#1e7e45" stroke-width="1.1" marker-end="url(#a2)" stroke-linejoin="round"/>
+<polyline points="766.4,196.0 766.4,238.0 849.9,262.0 849.9,282.0" fill="none" stroke="#1e7e45" stroke-width="1.1" marker-end="url(#a2)" stroke-linejoin="round"/>
+<polyline points="799.8,196.0 799.8,238.0 849.9,262.0 849.9,282.0" fill="none" stroke="#1e7e45" stroke-width="1.1" marker-end="url(#a2)" stroke-linejoin="round"/>
+<polyline points="833.2,196.0 833.2,238.0 849.9,262.0 849.9,282.0" fill="none" stroke="#1e7e45" stroke-width="1.1" marker-end="url(#a2)" stroke-linejoin="round"/>
+<polyline points="866.6,196.0 866.6,238.0 849.9,262.0 849.9,282.0" fill="none" stroke="#1e7e45" stroke-width="1.1" marker-end="url(#a2)" stroke-linejoin="round"/>
+<polyline points="900.0,196.0 900.0,238.0 849.9,262.0 849.9,282.0" fill="none" stroke="#1e7e45" stroke-width="1.1" marker-end="url(#a2)" stroke-linejoin="round"/>
+<polyline points="933.4,196.0 933.4,238.0 849.9,262.0 849.9,282.0" fill="none" stroke="#1e7e45" stroke-width="1.1" marker-end="url(#a2)" stroke-linejoin="round"/>
+<polyline points="966.8,196.0 966.8,238.0 849.9,262.0 849.9,282.0" fill="none" stroke="#1e7e45" stroke-width="1.1" marker-end="url(#a2)" stroke-linejoin="round"/>
+<text x="850.0" y="332.0" font-family="Georgia,'Times New Roman',serif" font-size="11" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">1 key/value head</text>
+<text x="850.0" y="356.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="bold" font-style="normal" fill="#1e7e45" text-anchor="middle" opacity="1.0">18 KB / token</text>
+<text x="850.0" y="382.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">one K/V pair for all eight</text>
+<text x="850.0" y="399.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">queries - what Gemma-2B and</text>
+<text x="850.0" y="416.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">therefore PaliGemma uses</text>
+<text x="850.0" y="433.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">repeat_kv(..., n_rep=8)</text>
+<rect x="40.0" y="492.0" width="960.0" height="73.0" rx="5" fill="#e4f1e1" stroke="#1e7e45" stroke-width="1.3" fill-opacity="1.0"/>
+<rect x="40.0" y="492.0" width="4" height="73.0" fill="#1e7e45"/>
+<text x="54.0" y="514.9" font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">repeat_kv does not allocate: it expands a stride-0 view, and only the reshape() materialises it. The win is not</text>
+<text x="54.0" y="531.9" font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">in the matmul - the 8 query heads still each run their own attention - it is in the cache. Decoding is memory-</text>
+<text x="54.0" y="548.9" font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">bandwidth bound, so shrinking the bytes you must stream per step is the biggest single lever on tokens/second.</text>
+</svg>

@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="760" viewBox="0 0 1040 760">
+<defs></defs>
+<rect width="1040" height="760" fill="#ffffff"/>
+<text x="520.0" y="30.0" font-family="Georgia,'Times New Roman',serif" font-size="19" font-weight="bold" font-style="normal" fill="#1f2a36" text-anchor="middle" opacity="1.0">The KV cache turns O(T^2) decoding into O(T)</text>
+<text x="520.0" y="56.0" font-family="Georgia,'Times New Roman',serif" font-size="13" font-weight="normal" font-style="italic" fill="#4a5a6a" text-anchor="middle" opacity="1.0">keys and values for a token never change once computed, so compute them once</text>
+<rect x="50.0" y="112.0" width="460.0" height="296.0" rx="8" fill="#fff7f6" stroke="#c0392b" stroke-width="1.6" fill-opacity="1.0"/>
+<text x="280.0" y="138.0" font-family="Georgia,'Times New Roman',serif" font-size="14.5" font-weight="bold" font-style="normal" fill="#c0392b" text-anchor="middle" opacity="1.0">no cache</text>
+<text x="280.0" y="158.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">every step re-runs k_proj / v_proj over the whole prefix</text>
+<rect x="92.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="107.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">1</text>
+<rect x="122.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="137.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">2</text>
+<rect x="152.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="167.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">3</text>
+<rect x="182.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="197.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">4</text>
+<rect x="212.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="227.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">5</text>
+<rect x="242.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="257.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">6</text>
+<text x="382.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">6 K/V computed</text>
+<text x="84.0" y="196.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="end" opacity="1.0">t1</text>
+<rect x="92.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="107.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">1</text>
+<rect x="122.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="137.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">2</text>
+<rect x="152.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="167.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">3</text>
+<rect x="182.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="197.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">4</text>
+<rect x="212.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="227.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">5</text>
+<rect x="242.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="257.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">6</text>
+<rect x="272.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="287.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">7</text>
+<text x="382.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">7 K/V computed</text>
+<text x="84.0" y="238.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="end" opacity="1.0">t2</text>
+<rect x="92.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="107.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">1</text>
+<rect x="122.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="137.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">2</text>
+<rect x="152.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="167.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">3</text>
+<rect x="182.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="197.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">4</text>
+<rect x="212.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="227.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">5</text>
+<rect x="242.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="257.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">6</text>
+<rect x="272.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="287.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">7</text>
+<rect x="302.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="317.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">8</text>
+<text x="382.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">8 K/V computed</text>
+<text x="84.0" y="280.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="end" opacity="1.0">t3</text>
+<rect x="92.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="107.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">1</text>
+<rect x="122.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="137.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">2</text>
+<rect x="152.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="167.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">3</text>
+<rect x="182.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="197.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">4</text>
+<rect x="212.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="227.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">5</text>
+<rect x="242.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="257.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">6</text>
+<rect x="272.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="287.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">7</text>
+<rect x="302.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="317.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">8</text>
+<rect x="332.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#c0392b" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="347.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">9</text>
+<text x="382.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">9 K/V computed</text>
+<text x="84.0" y="322.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="end" opacity="1.0">t4</text>
+<text x="280.0" y="356.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#c0392b" text-anchor="middle" opacity="1.0">total work  =  6 + 7 + 8 + 9  =  O(T^2)</text>
+<text x="280.0" y="380.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">and every step re-reads the full weight matrices</text>
+<rect x="530.0" y="112.0" width="460.0" height="296.0" rx="8" fill="#f6fbf5" stroke="#1e7e45" stroke-width="1.6" fill-opacity="1.0"/>
+<text x="760.0" y="138.0" font-family="Georgia,'Times New Roman',serif" font-size="14.5" font-weight="bold" font-style="normal" fill="#1e7e45" text-anchor="middle" opacity="1.0">with the KV cache</text>
+<text x="760.0" y="158.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">prefill once, then one new column per step</text>
+<rect x="572.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#1e7e45" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="587.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">1</text>
+<rect x="602.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#1e7e45" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="617.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">2</text>
+<rect x="632.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#1e7e45" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="647.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">3</text>
+<rect x="662.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#1e7e45" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="677.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">4</text>
+<rect x="692.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#1e7e45" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="707.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">5</text>
+<rect x="722.0" y="176.0" width="30.0" height="30.0" rx="0" fill="#1e7e45" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="737.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">6</text>
+<text x="862.0" y="195.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">prefill: 6 K/V</text>
+<text x="564.0" y="196.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="end" opacity="1.0">t1</text>
+<rect x="572.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="587.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">1</text>
+<rect x="602.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="617.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">2</text>
+<rect x="632.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="647.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">3</text>
+<rect x="662.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="677.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">4</text>
+<rect x="692.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="707.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">5</text>
+<rect x="722.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="737.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">6</text>
+<rect x="752.0" y="218.0" width="30.0" height="30.0" rx="0" fill="#1e7e45" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="767.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">7</text>
+<text x="862.0" y="237.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">1 new K/V</text>
+<text x="564.0" y="238.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="end" opacity="1.0">t2</text>
+<rect x="572.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="587.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">1</text>
+<rect x="602.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="617.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">2</text>
+<rect x="632.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="647.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">3</text>
+<rect x="662.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="677.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">4</text>
+<rect x="692.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="707.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">5</text>
+<rect x="722.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="737.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">6</text>
+<rect x="752.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="767.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">7</text>
+<rect x="782.0" y="260.0" width="30.0" height="30.0" rx="0" fill="#1e7e45" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="797.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">8</text>
+<text x="862.0" y="279.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">1 new K/V</text>
+<text x="564.0" y="280.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="end" opacity="1.0">t3</text>
+<rect x="572.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="587.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">1</text>
+<rect x="602.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="617.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">2</text>
+<rect x="632.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="647.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">3</text>
+<rect x="662.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="677.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">4</text>
+<rect x="692.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="707.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">5</text>
+<rect x="722.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="737.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">6</text>
+<rect x="752.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="767.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">7</text>
+<rect x="782.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#f3f5f7" stroke="#d8dde2" stroke-width="1.0" fill-opacity="1.0"/>
+<text x="797.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#aab4bc" text-anchor="middle" opacity="1.0">8</text>
+<rect x="812.0" y="302.0" width="30.0" height="30.0" rx="0" fill="#1e7e45" stroke="#1f2a36" stroke-width="1.3" fill-opacity="1.0"/>
+<text x="827.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle" opacity="1.0">9</text>
+<text x="862.0" y="321.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">1 new K/V</text>
+<text x="564.0" y="322.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" font-weight="normal" font-style="normal" fill="#7f8c8d" text-anchor="end" opacity="1.0">t4</text>
+<text x="760.0" y="356.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" font-style="normal" fill="#1e7e45" text-anchor="middle" opacity="1.0">total work  =  6 + 1 + 1 + 1  =  O(T)</text>
+<text x="760.0" y="380.0" font-family="Georgia,'Times New Roman',serif" font-size="11.5" font-weight="normal" font-style="italic" fill="#7f8c8d" text-anchor="middle" opacity="1.0">grey cells are read straight out of the cache</text>
+<rect x="50.0" y="432.0" width="460.0" height="204.0" rx="8" fill="#fbfcfd" stroke="#51606e" stroke-width="1.5" fill-opacity="1.0"/>
+<text x="280.0" y="456.0" font-family="Georgia,'Times New Roman',serif" font-size="13" font-weight="bold" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">KVCache.update()</text>
+<text x="78.0" y="482.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">if len(self.key_cache) &lt;= layer_idx:</text>
+<text x="78.0" y="500.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">    self.key_cache.append(key_states)</text>
+<text x="78.0" y="518.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">else:</text>
+<text x="78.0" y="536.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">    self.key_cache[layer_idx] = torch.cat(</text>
+<text x="78.0" y="554.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">        [self.key_cache[layer_idx], key_states],</text>
+<text x="78.0" y="572.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">        dim=-2)</text>
+<text x="78.0" y="590.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0"></text>
+<text x="78.0" y="608.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">return self.key_cache[layer_idx], ...</text>
+<rect x="530.0" y="432.0" width="460.0" height="204.0" rx="8" fill="#fff9e6" stroke="#b07808" stroke-width="1.5" fill-opacity="1.0"/>
+<text x="760.0" y="456.0" font-family="Georgia,'Times New Roman',serif" font-size="13" font-weight="bold" font-style="normal" fill="#b07808" text-anchor="middle" opacity="1.0">what it costs, per token of context</text>
+<text x="760.0" y="486.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">2 (K and V)  x  18 layers  x  n_kv_heads  x  256  x  2 B</text>
+<text x="760.0" y="506.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0"></text>
+<text x="760.0" y="526.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">n_kv_heads = 8  (plain MHA):    144 KB / token</text>
+<text x="760.0" y="546.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">n_kv_heads = 1  (Gemma's MQA):   18 KB / token</text>
+<text x="760.0" y="566.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0"></text>
+<text x="760.0" y="586.0" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="middle" opacity="1.0">a 1024-token context:   144 MB   vs   18 MB</text>
+<rect x="50.0" y="662.0" width="940.0" height="73.0" rx="5" fill="#e8f4f8" stroke="#2c6fa8" stroke-width="1.3" fill-opacity="1.0"/>
+<rect x="50.0" y="662.0" width="4" height="73.0" fill="#2c6fa8"/>
+<text x="64.0" y="684.9" font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">Note dim=-2: keys are (B, n_kv_heads, KV_Len, head_dim), so the cache grows along the sequence axis. Each</text>
+<text x="64.0" y="701.9" font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">decode step feeds exactly one query against a steadily longer key/value history - which is why position_ids</text>
+<text x="64.0" y="718.9" font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="normal" font-style="normal" fill="#4a5a6a" text-anchor="start" opacity="1.0">for a decode step is a single number rather than a range.</text>
+</svg>
