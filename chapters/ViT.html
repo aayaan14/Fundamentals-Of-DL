@@ -18,24 +18,21 @@
         <a href="../index.html" class="back-link">← Back to Home</a>
 
         <header>
-            <h1>Vision Transformer</h1>
+            <h1 style="text-align: center;">Vision Transformer</h1>
 
             <div class="chapter-intro">
                 <p>In the last chapter we taught a Transformer to translate German into English. In this
                     one we'll hand it an <em>image</em> instead of a sentence, and build
-                    <strong>PaliGemma</strong> — a vision-language model — from scratch in PyTorch.
+                    <strong>PaliGemma</strong> — a vision-language model.
                 </p>
 
                 <p>Our running example is a photograph of a building and the prompt
-                    <code>"this building is "</code>. By the end of the chapter we'll have written every line
-                    of code that turns those two things into the words <em>"the Space Needle in Seattle"</em>:
-                    a SigLIP vision encoder, a linear projector, a Gemma decoder with RoPE, RMSNorm,
-                    grouped-query attention and a KV cache, and the sampling loop on top.
+                    <code>"this building is "</code>.
+                <p>By the end of the chapter we'll turns those two things into the words <em>"the Space Needle in
+                        Seattle"</em>.</p>
                 </p>
 
-                <p>The road there runs through a surprising amount of beautiful machinery — contrastive
-                    learning, the numerics of softmax, and the question of <em>why</em> a vision encoder
-                    should be trained on captions at all. Let's start there.</p>
+                <p>Let's get started!!</p>
             </div>
 
             <div class="chapter">
@@ -45,7 +42,7 @@
                     <h3>The Big Picture</h3>
 
                     <div class="context">
-                        <p>At the highest level, PaliGemma is almost embarrassingly simple:</p>
+                        <p>At the highest level, PaliGemma looks like this:</p>
 
                         <br>
                         <img src="../assets/vit/vit_paligemma_arch.svg"
@@ -63,10 +60,9 @@
                             </li>
                         </ul>
 
-                        <p>The entire trick is this: <strong>run the image through a vision encoder, project the
-                                resulting vectors into the language model's embedding space, and then paste them
-                                into the prompt as if they were ordinary tokens.</strong> The decoder never learns
-                            that some of its tokens came from a camera.</p>
+                        <p>The entire trick is this: <strong>run the image through a vision encoder -> project the
+                                resulting vectors into the language model's embedding space -> then paste them
+                                into the prompt as if they were ordinary tokens.</strong></p>
 
                         <div class="note">
                             <strong>Note:</strong> This is why the architecture is sometimes described as
@@ -91,8 +87,13 @@
                                 tied <code>lm_head</code> and a sampling loop.</li>
                         </ol>
 
-                        <p>Here are the concrete numbers we'll be working with throughout, taken from the
-                            <code>google/paligemma-3b-pt-224</code> checkpoint:
+                        <p>
+                            Here are the concrete numbers we'll be working with throughout, taken from the
+                            <a href="https://huggingface.co/google/paligemma-3b-pt-224/blob/main/config.json" target="_blank"
+                                rel="noopener noreferrer">
+                                <code>google/paligemma-3b-pt-224</code>
+                            </a>
+                            checkpoint:
                         </p>
 
                         <table class="data-table">
@@ -159,7 +160,6 @@
                             trained on ImageNet is a few lines of <code>torchvision</code>. Why not just use that?
                         </p>
 
-                        <p>The answer is about <strong>what the features mean</strong>, not how good they are.</p>
                     </div>
 
                     <div class="problem-statement">
@@ -176,15 +176,22 @@
                             is actively discarded, because discarding it is free.</p>
 
                         <p>Concretely, a feature vector from an ImageNet backbone is excellent at telling you
-                            "this is a <code>golden retriever</code>" and has no particular reason to encode:</p>
+                            "this is a <code>golden retriever</code>" and has no particular reason to encode the inner details such as:</p>
                         <ul>
-                            <li>that the dog is <em>wet</em>,</li>
-                            <li>that it is <em>to the left of</em> a red frisbee,</li>
-                            <li>that there are <em>three</em> of them,</li>
-                            <li>that the photo was taken <em>at dusk</em>.</li>
+                            <li>is the dog <em>wet</em>?,</li>
+                            <li>is it to the <em> left of</em> a red frisbee?,</li>
+                            <li>are there <em>three</em> of them?,</li>
+                            <li>was the photo taken <em>at dusk</em>?</li>
                         </ul>
+                        <img >
 
-                        <p>But those are exactly the things a user will ask a vision-language model about. The
+                        <br>
+                        <img src="../assets/vit/golden_retriever.jpg"
+                            alt="CLIP: dual encoders producing an N by N similarity matrix with positives on the diagonal"
+                            class="context-image zoom-image"
+                            style="max-width: 100%; height: auto; display: block; margin: 0 auto;" loading="lazy">
+                        <br>
+                        <p>These are the questions, I'll be asking the model to answer. The
                             1000-way label was a bottleneck, and it threw away most of what we need.</p>
                     </div>
 
@@ -197,9 +204,8 @@
                                 about it. Now the training signal is not "pick one of 1000 buckets" but
                                 <em>"which of these N sentences describes this picture?"</em>
                             </p>
-                            <p>To answer that, the encoder has to keep anything a caption might mention — colour,
-                                count, relative position, material, mood, text in the image, the time of day.
-                                The supervision is no longer a bottleneck; it is as wide as language itself.</p>
+                            <p>To answer that, the encoder has to keep anything a caption might mention — color,
+                                count, relative position, material, mood, text in the image, the time of day.</p>
                         </div>
 
                         <div class="step">
@@ -213,8 +219,7 @@
                             \quad (i \neq j)
                             \]
                             <p>For that inequality to hold, the image embedding must live in a space where
-                                <em>direction encodes meaning in the same way it does for text</em>. The encoder's
-                                output is already semantically aligned with language.
+                                <em>direction encodes meaning in the same way it does for text</em>.
                             </p>
                             <p>That is why a <strong>single linear layer</strong> is enough to glue SigLIP to
                                 Gemma. We are not asking the projector to translate between two alien
@@ -2909,7 +2914,7 @@ hidden_states = hidden_states * normalizer</pre>
                             implementation with one <code>n_rep</code> parameter covers all three.</p>
 
                         <p>For PaliGemma's decoder:</p>
-                        <pre><code><span class="cm"># google/paligemma-3b-pt-224, text_config</span>
+                        <pre><code><span class="cm"># <a href="https://huggingface.co/google/paligemma-3b-pt-224">google/paligemma-3b-pt-224</a> checkpoint:</span>
 {
   <span class="st">"hidden_size"</span>:          <span class="num">2048</span>,
   <span class="st">"intermediate_size"</span>:   <span class="num">16384</span>,
